@@ -3,7 +3,7 @@ ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfac
 Copyright (C) 2018 J. Férard <https://github.com/jferard>
 
 # Warning
-This project if currently on hold, since I'm totally overbooked.
+This project if currently on hold, since I'm totally overworked.
 
 I will focus, when possible, on a "smart decompiler": display the source bytecode as a Java array with comments.
 Here is an example of exepected output fro the constant pool:
