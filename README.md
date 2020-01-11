@@ -5,8 +5,33 @@ Copyright (C) 2018 J. Férard <https://github.com/jferard>
 # Warning
 This project if currently on hold, since I'm totally overworked.
 
+# General design
+There are families of objects:
+
+## Regular objects
+Regular objects are human-readable-JVM objects. There is no constant pool: names are Strings, not indices.
+They are encodable into JVM objects. Every regular object is associated to an encoded objects.
+
+    class R implements Encodable<E>
+        encode: E
+
+## Encoded objects
+Encoded objects are JVM objects as described in the specs. Some encoded objects do not have a regular object, for instance the `constant pool`.
+Encoded objects are convertible, to writable objects:
+
+    class E implements Encoded<Factory<O>>
+        toWritable(Factory<O>): Writable<O>
+
+## Writable objects
+A writable object can be... written to a given output in a given format.
+
+    class Writable<O>
+        write(O)
+
+
+# The decompiler
 I will focus, when possible, on a "smart decompiler": display the source bytecode as a Java array with comments.
-Here is an example of exepected output fro the constant pool:
+Here is an example of expected output from the constant pool:
 
     /* CONSTANT POOL */
                     0x00, 0x10, // number of entries: 15
