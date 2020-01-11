@@ -19,7 +19,7 @@
 package com.github.jferard.classwriter.tool
 
 import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.parsed.writer.TextClassEncodedWriter
+import com.github.jferard.classwriter.parsed.writer.*
 import com.github.jferard.classwriter.tool.decoder.ClassFileParser
 import com.github.jferard.classwriter.tool.decoder.ConstantPoolParser
 import com.github.jferard.classwriter.tool.decoder.HeaderParser
@@ -51,7 +51,11 @@ object ConstantPoolHelper {
                 constantPoolParser, interfacesParser)
         val encodedClassFile =
                 decoder.parse(input)
-        val writer = TextClassEncodedWriter(w)
+        val entries = encodedClassFile.entries
+        val writer = TextClassEncodedWriter(w, TextConstantPoolEncodedWriter(w,
+                TextConstantPoolEntriesEncodedWriter(w, entries, arrayListOf(),
+                        TextConstantPoolEntriesSummaryEncodedWriter(w, entries),
+                        ParsedBootstrapMethodsAttributeEncodedWriter(w))))
         encodedClassFile.write(writer)
         return w.toString()
     }

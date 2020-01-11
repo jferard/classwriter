@@ -34,10 +34,8 @@ class ClassFileParser(private val headerParser: HeaderParser,
     override fun parse(
             input: DataInput): EncodedClassFile {
         val header = headerParser.parse(input)
-        println(header)
         val constantPool =
                 constantPoolParser.parse(input)
-        println(constantPool)
         val entries =
                 constantPool.entries
         val fieldsParser: FieldsParser = FieldsParser.create(entries)
@@ -47,15 +45,10 @@ class ClassFileParser(private val headerParser: HeaderParser,
         val accessFlags = input.readShort().toInt()
         val thisIndex = input.readShort().toInt()
         val superIndex = input.readShort().toInt()
-        println(listOf(accessFlags, thisIndex, superIndex))
         val encodedInterfaces = interfacesParser.parse(input)
-        println(encodedInterfaces)
         val encodedFields = fieldsParser.parse(input)
-        println(encodedFields)
         val encodedMethods = methodsParser.parse(input)
-        println(encodedMethods)
         val encodedAttributes = classAttributesParser.parse(input)
-        println(encodedAttributes)
         return EncodedClassFile(header, constantPool, accessFlags, thisIndex, superIndex,
                 encodedInterfaces, encodedFields, encodedMethods, encodedAttributes)
     }

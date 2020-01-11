@@ -26,19 +26,18 @@ import java.io.Writer
 import java.nio.charset.StandardCharsets
 import kotlin.experimental.and
 
-class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
-                                             private val entries: List<EncodedConstantPoolEntry>,
-                                             private val bootstrapMethods: List<EncodedBootstrapMethod>,
-                                             private val parsedConstantPoolEntriesSummaryWriter: ParsedConstantPoolEntriesSummaryEncodedWriter,
-                                             private val parsedBootstrapMethodsAttributeWriter: ParsedBootstrapMethodsAttributeEncodedWriter) :
+class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
+                                           private val entries: List<EncodedConstantPoolEntry>,
+                                           private val bootstrapMethods: List<EncodedBootstrapMethod>,
+                                           private val textConstantPoolEntriesSummaryWriter: TextConstantPoolEntriesSummaryEncodedWriter,
+                                           private val parsedBootstrapMethodsAttributeWriter: ParsedBootstrapMethodsAttributeEncodedWriter) :
         ConstantPoolEntriesEncodedWriter {
     override fun classEntry(nameIndex: Int) {
-        output.append("ConstantTags.CLASS").append(", ")
-                .append(ByteViewerFactory.hex(nameIndex shr 8)).append(", ")
-                .append(ByteViewerFactory.hex(nameIndex)).append(", // #")
-                .append(nameIndex.toString()).append(" -> \"")
-        //parsedConstantPoolEntriesSummaryWriter.classEntry(nameIndex).write(output)
-        output.append("\"")
+        output.write(
+                "ConstantTags.CLASS, %s, %s, // #%s -> ".format(
+                        ByteViewerFactory.hex(nameIndex shr 8),
+                        ByteViewerFactory.hex(nameIndex), nameIndex))
+        textConstantPoolEntriesSummaryWriter.classEntry(nameIndex)
     }
 
     override fun utf8Entry(text: String) {
@@ -51,10 +50,10 @@ class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
             }
         }
         val length = text.length
-        output.write(String.format("%s, %s, %s, %s, // %s", "ConstantTags.UTF8",
+        output.write(String.format("%s, %s, %s, %s, // %s (len: %s)", "ConstantTags.UTF8",
                 ByteViewerFactory.hex(length shr 8),
                 ByteViewerFactory.hex(length), str,
-                "u\"$text\""))
+                "u\"$text\"", text.length))
     }
 
     override fun invokeDynamicEntry(bootstrapMethodIndex: Int,
@@ -68,8 +67,8 @@ class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
         bootstrapMethods[bootstrapMethodIndex]
                 .write(parsedBootstrapMethodsAttributeWriter)
         output.write(':'.toInt())
-        entries[descriptorIndex-1].write(
-                parsedConstantPoolEntriesSummaryWriter)
+        entries[descriptorIndex - 1].write(
+                textConstantPoolEntriesSummaryWriter)
     }
 
     override fun nameAndTypeEntry(nameIndex: Int, descriptorIndex: Int) {
@@ -79,15 +78,15 @@ class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
                 ByteViewerFactory.hex(descriptorIndex shr 8),
                 ByteViewerFactory.hex(descriptorIndex),
                 "#$nameIndex:#$descriptorIndex -> "))
-        entries[nameIndex-1].write(
-                parsedConstantPoolEntriesSummaryWriter)
+        entries[nameIndex - 1].write(
+                textConstantPoolEntriesSummaryWriter)
         output.write(':'.toInt())
-        entries[descriptorIndex-1].write(parsedConstantPoolEntriesSummaryWriter)
+        entries[descriptorIndex - 1].write(textConstantPoolEntriesSummaryWriter)
         // output.write(sw.toString().replace('/', '.'))
     }
 
     override fun methodRefEntry(classIndex: Int, nameAndTypeIndex: Int) {
-        return createFieldOrMethdRefDecoded(classIndex, nameAndTypeIndex, "ConstantTags.METHODREF")
+        return createFieldOrMethodRefDecoded(classIndex, nameAndTypeIndex, "ConstantTags.METHODREF")
     }
 
     override fun doubleEntry(value: Double) {
@@ -103,7 +102,9 @@ class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
     }
 
     override fun integerEntry(value: Int) {
-        TODO("not implemented")
+        output.write("%s, %s, %s, %s, %s // %s".format("ConstantTags.INTEGER",
+                ByteViewerFactory.hex(value shr 24), ByteViewerFactory.hex(value shr 16),
+                ByteViewerFactory.hex(value shr 8), ByteViewerFactory.hex(value), value))
     }
 
     override fun methodHandleEntry(kind: Int, index: Int) {
@@ -115,31 +116,33 @@ class ParsedConstantPoolEntriesEncodedWriter(private val output: Writer,
     }
 
     override fun fieldRefEntry(classIndex: Int, nameAndTypeIndex: Int) {
-        return createFieldOrMethdRefDecoded(classIndex, nameAndTypeIndex, "ConstantTags.FIELDREF")
+        return createFieldOrMethodRefDecoded(classIndex, nameAndTypeIndex, "ConstantTags.FIELDREF")
     }
 
-    private fun createFieldOrMethdRefDecoded(classIndex: Int, nameAndTypeIndex: Int,
-                                             code: String) {
+    private fun createFieldOrMethodRefDecoded(classIndex: Int, nameAndTypeIndex: Int,
+                                              code: String) {
         output.write(String.format("%s, %s, %s, %s, %s, // %s",
                 code, ByteViewerFactory.hex(classIndex shr 8), ByteViewerFactory.hex(classIndex),
                 ByteViewerFactory.hex(nameAndTypeIndex shr 8),
                 ByteViewerFactory.hex(nameAndTypeIndex),
                 "#$classIndex~#$nameAndTypeIndex -> "))
-        entries[classIndex-1]
-                .write(parsedConstantPoolEntriesSummaryWriter)
+        entries[classIndex - 1]
+                .write(textConstantPoolEntriesSummaryWriter)
         output.append('~')
-        entries[nameAndTypeIndex-1]
-                .write(parsedConstantPoolEntriesSummaryWriter)
+        entries[nameAndTypeIndex - 1]
+                .write(textConstantPoolEntriesSummaryWriter)
     }
 
     override fun stringEntry(index: Int) {
-        TODO("not implemented")
+        output.write(String.format("%s, %s, // \"", "ConstantTags.STRING", index))
+        entries[index - 1].write(textConstantPoolEntriesSummaryWriter)
+        output.write("\"")
     }
 
     companion object {
         fun create(output: Writer,
                    entries: List<EncodedConstantPoolEntry>,
-                   bootstrapMethods: List<EncodedBootstrapMethod>): ParsedConstantPoolEntriesEncodedWriter {
+                   bootstrapMethods: List<EncodedBootstrapMethod>): TextConstantPoolEntriesEncodedWriter {
 //            return ParsedConstantPoolEntriesEncodedWriter(
 //                    output, entries, bootstrapMethods,
 //                    ParsedConstantPoolEntriesSummaryEncodedWriter(entries),

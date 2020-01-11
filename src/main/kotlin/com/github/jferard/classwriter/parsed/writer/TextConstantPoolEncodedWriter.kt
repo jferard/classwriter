@@ -22,30 +22,29 @@ import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.tool.byteviewer.ByteViewerFactory
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import java.io.IOException
 import java.io.Writer
 
-class ParsedConstantPoolEncodedWriter(private val output: Writer,
-                                      private val entries: List<EncodedConstantPoolEntry>,
-                                      private val bootstrapMethods: List<EncodedBootstrapMethod>) :
+class TextConstantPoolEncodedWriter(private val output: Writer,
+                                    private val constantPoolEntriesEncodedWriter: ConstantPoolEntriesEncodedWriter) :
         ConstantPoolEncodedWriter {
     override fun constantPool(
             entries: List<EncodedConstantPoolEntry>,
             bootstrapMethods: List<EncodedBootstrapMethod>?) {
         /** We'll need this
         val decodedConstantPoolEntriesEncodedWriter: DecodedConstantPoolEntriesEncodedWriter =
-                DecodedConstantPoolEntriesEncodedWriter.create(this.entries,
-                        this.bootstrapMethods)
-        */
+        DecodedConstantPoolEntriesEncodedWriter.create(this.entries,
+        this.bootstrapMethods)
+         */
         output.append("/* CONSTANT POOL */\n")
         this.viewEntryCount(output, entries.size)
         for (i in 1 until entries.size) {
-            val entry = entries[i-1]
-            output.append(String.format("/* %4s */", "#$i"))
-            //entry.write(this)
+            val entry = entries[i - 1]
+            output.append(String.format("/* %4s */ ", "#$i"))
+            entry.write(constantPoolEntriesEncodedWriter)
             output.append('\n')
         }
-        return Unit
     }
 
     @Throws(IOException::class)

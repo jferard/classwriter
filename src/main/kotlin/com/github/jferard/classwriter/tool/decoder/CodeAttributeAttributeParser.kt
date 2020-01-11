@@ -41,7 +41,6 @@ class CodeAttributeAttributeParser(
             input: DataInput): EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter> {
         val attributeNameIndex = input.readShort().toInt()
         val attributeName = entries[attributeNameIndex - 1].utf8Text()
-        println("Code attr $attributeName")
         when (attributeName) {
             StackMapTableAttribute.STACK_MAP_TABLE_NAME -> return parseStackMapTableAttribute(
                     attributeNameIndex, input)

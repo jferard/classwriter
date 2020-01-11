@@ -60,15 +60,14 @@ class ConstantPool : Encodable<ConstantPool, ConstantPool, ConstantPoolEncodable
     /**
      * @return the size of the pool
      */
-    override val size: Int
-        get() = indexByEntry.keys.map(ConstantPoolEntry::size).sum()
+    override val size: Int = indexByEntry.keys.map(ConstantPoolEntry::size).sum()
 
     fun count(): Int {
         return indexByEncoded.size
     }
 
-    override fun write(writer: ConstantPoolEncodedWriter) {
-        return writer.constantPool(entries, null)
+    override fun write(encodedWriter: ConstantPoolEncodedWriter) {
+        return encodedWriter.constantPool(entries, null)
     }
 
     override fun encode(context: GlobalContext,

@@ -35,7 +35,6 @@ class MethodParser(private val methodAttributeParser: MethodAttributeParser) :
         val attributesCount = input.readShort().toInt()
         val encodedAttributes =
                 (1..attributesCount).map {
-                    println(it)
                     methodAttributeParser.parse(
                             input) as EncodedMethodAttribute<*, *, MethodAttributeEncodedWriter>
                 }

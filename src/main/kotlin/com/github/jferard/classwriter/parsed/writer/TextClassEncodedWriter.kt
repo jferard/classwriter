@@ -26,18 +26,25 @@ import com.github.jferard.classwriter.encoded.EncodedInterfaces
 import com.github.jferard.classwriter.encoded.EncodedMethods
 import com.github.jferard.classwriter.pool.ConstantPool
 import com.github.jferard.classwriter.writer.encoded.ClassEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
 import java.io.Writer
 
-class TextClassEncodedWriter(private val output: Writer) : ClassEncodedWriter {
-    override fun classFile(header: Header, pool: ConstantPool, accessFlags: Int, thisIndex: Int,
+class TextClassEncodedWriter(private val output: Writer, private val constantPoolEncodedWriter: ConstantPoolEncodedWriter) :
+        ClassEncodedWriter {
+    override fun classFile(header: Header, constantPool: ConstantPool, accessFlags: Int,
+                           thisIndex: Int,
                            superIndex: Int, encodedInterfaces: EncodedInterfaces,
                            encodedFields: EncodedFields, encodedMethods: EncodedMethods,
                            encodedAttributes: EncodedClassFileAttributes) {
-        println("/** CLASS FILE */")
+        output.write("/** CLASS FILE */")
+        header.write(this)
+        constantPool.write(constantPoolEncodedWriter)
     }
 
     override fun header(minorVersion: Int, majorVersion: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.write("/** header */\n")
+        output.write("Minor version: $minorVersion\n")
+        output.write("Major version: $majorVersion\n")
     }
 
     override fun interfaces(encodedInterfaces: List<Int>) {

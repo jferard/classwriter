@@ -21,6 +21,7 @@ package com.github.jferard.classwriter.encoded
 import com.github.jferard.classwriter.api.ClassFile
 import com.github.jferard.classwriter.api.Header
 import com.github.jferard.classwriter.api.PlainClassRef
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.pool.ConstantPool
@@ -41,6 +42,8 @@ class EncodedClassFile(private val header: Header,
                         superIndex, encodedInterfaces, encodedFields,
                         encodedMethods, encodedAttributes)
     }
+
+    val entries: List<EncodedConstantPoolEntry> = pool.entries
 
     override val size: Int
         get() = 0

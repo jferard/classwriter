@@ -52,7 +52,6 @@ class ClassAttributesParser(
             input: DataInput): EncodedClassFileAttribute<*, *, *> {
         val attributeNameIndex = input.readUnsignedShort()
         val attributeName = entries[attributeNameIndex - 1].utf8Text()
-        println("Parse $attributeName")
         return when (attributeName) {
             InnerClassesAttribute.INNER_CLASSES_NAME -> parseInnerClassesAttribute(
                     attributeNameIndex, input)

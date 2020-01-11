@@ -23,13 +23,13 @@ import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import java.io.StringWriter
 import java.io.Writer
+import java.lang.Appendable
 
-class ParsedConstantPoolEntriesSummaryEncodedWriter(private val output: Writer,
-                                                    private val entries: List<EncodedConstantPoolEntry>) :
+class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, private val entries: List<EncodedConstantPoolEntry>) :
         ConstantPoolEntriesEncodedWriter {
+
     override fun classEntry(nameIndex: Int) {
-        entries[nameIndex-1].write(this)
-        // output.write(sw.toString().replace('/', '.'))
+        output.write(entries[nameIndex - 1].utf8Text().replace('/', '.'))
     }
 
     override fun utf8Entry(text: String) {
@@ -43,15 +43,9 @@ class ParsedConstantPoolEntriesSummaryEncodedWriter(private val output: Writer,
 
     override fun nameAndTypeEntry(nameIndex: Int,
                                   descriptorIndex: Int) {
-        val decodedName = entries[nameIndex-1]
-                .write(this) as Writable<Writer>
-        val decodedDescriptor = entries[descriptorIndex-1]
-                .write(this) as Writable<Writer>
-        decodedName.write(output)
+        entries[nameIndex - 1].write(this)
         output.append(':')
-        val sw = StringWriter()
-        decodedDescriptor.write(sw)
-        output.write(sw.toString().replace('/', '.'))
+        entries[descriptorIndex - 1].write(this) // replace('/', '.'))
     }
 
     override fun methodRefEntry(classIndex: Int,
@@ -61,9 +55,9 @@ class ParsedConstantPoolEntriesSummaryEncodedWriter(private val output: Writer,
 
     private fun getFieldOrMethodRefDecodedSummary(classIndex: Int,
                                                   nameAndTypeIndex: Int) {
-        val decodedClassName = entries[classIndex-1]
+        val decodedClassName = entries[classIndex - 1]
                 .write(this) as Writable<Writer>
-        val decodedNameAndType = entries[nameAndTypeIndex-1]
+        val decodedNameAndType = entries[nameAndTypeIndex - 1]
                 .write(this) as Writable<Writer>
         decodedClassName.write(output)
         output.write('~'.toInt())
@@ -102,5 +96,4 @@ class ParsedConstantPoolEntriesSummaryEncodedWriter(private val output: Writer,
     override fun stringEntry(index: Int) {
         TODO("not implemented")
     }
-
 }
