@@ -35,8 +35,8 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
     override fun classEntry(nameIndex: Int) {
         output.write(
                 "ConstantTags.CLASS, %s, %s, // #%s -> ".format(
-                        ByteViewerFactory.hex(nameIndex shr 8),
-                        ByteViewerFactory.hex(nameIndex), nameIndex))
+                        TextEncodedWriterHelper.hex(nameIndex shr 8),
+                        TextEncodedWriterHelper.hex(nameIndex), nameIndex))
         textConstantPoolEntriesSummaryWriter.classEntry(nameIndex)
     }
 
@@ -45,24 +45,24 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
         val str = bytes.indices.joinToString(", ") {
             val b: Int = (bytes[it] and 0xff.toByte()).toInt()
             when {
-                b >= 32 -> ByteViewerFactory.chr(b.toChar())
-                else -> ByteViewerFactory.hex(b)
+                b >= 32 -> TextEncodedWriterHelper.chr(b.toChar())
+                else -> TextEncodedWriterHelper.hex(b)
             }
         }
         val length = text.length
         output.write(String.format("%s, %s, %s, %s, // %s (len: %s)", "ConstantTags.UTF8",
-                ByteViewerFactory.hex(length shr 8),
-                ByteViewerFactory.hex(length), str,
+                TextEncodedWriterHelper.hex(length shr 8),
+                TextEncodedWriterHelper.hex(length), str,
                 "u\"$text\"", text.length))
     }
 
     override fun invokeDynamicEntry(bootstrapMethodIndex: Int,
                                     descriptorIndex: Int) {
         output.write(String.format("%s, %s, %s, %s, %s, // %s", "ConstantTags.INVOKEDYNAMIC",
-                ByteViewerFactory.hex(bootstrapMethodIndex shr 8),
-                ByteViewerFactory.hex(bootstrapMethodIndex),
-                ByteViewerFactory.hex(descriptorIndex shr 8),
-                ByteViewerFactory.hex(descriptorIndex),
+                TextEncodedWriterHelper.hex(bootstrapMethodIndex shr 8),
+                TextEncodedWriterHelper.hex(bootstrapMethodIndex),
+                TextEncodedWriterHelper.hex(descriptorIndex shr 8),
+                TextEncodedWriterHelper.hex(descriptorIndex),
                 "#$bootstrapMethodIndex:#$descriptorIndex -> "))
         bootstrapMethods[bootstrapMethodIndex]
                 .write(parsedBootstrapMethodsAttributeWriter)
@@ -73,10 +73,10 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
 
     override fun nameAndTypeEntry(nameIndex: Int, descriptorIndex: Int) {
         output.write(String.format("%s, %s, %s, %s, %s, // %s", "ConstantTags.NAMEANDTYPE",
-                ByteViewerFactory.hex(nameIndex shr 8),
-                ByteViewerFactory.hex(nameIndex),
-                ByteViewerFactory.hex(descriptorIndex shr 8),
-                ByteViewerFactory.hex(descriptorIndex),
+                TextEncodedWriterHelper.hex(nameIndex shr 8),
+                TextEncodedWriterHelper.hex(nameIndex),
+                TextEncodedWriterHelper.hex(descriptorIndex shr 8),
+                TextEncodedWriterHelper.hex(descriptorIndex),
                 "#$nameIndex:#$descriptorIndex -> "))
         entries[nameIndex - 1].write(
                 textConstantPoolEntriesSummaryWriter)
@@ -103,8 +103,8 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
 
     override fun integerEntry(value: Int) {
         output.write("%s, %s, %s, %s, %s // %s".format("ConstantTags.INTEGER",
-                ByteViewerFactory.hex(value shr 24), ByteViewerFactory.hex(value shr 16),
-                ByteViewerFactory.hex(value shr 8), ByteViewerFactory.hex(value), value))
+                TextEncodedWriterHelper.hex(value shr 24), TextEncodedWriterHelper.hex(value shr 16),
+                TextEncodedWriterHelper.hex(value shr 8), TextEncodedWriterHelper.hex(value), value))
     }
 
     override fun methodHandleEntry(kind: Int, index: Int) {
@@ -122,9 +122,9 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
     private fun createFieldOrMethodRefDecoded(classIndex: Int, nameAndTypeIndex: Int,
                                               code: String) {
         output.write(String.format("%s, %s, %s, %s, %s, // %s",
-                code, ByteViewerFactory.hex(classIndex shr 8), ByteViewerFactory.hex(classIndex),
-                ByteViewerFactory.hex(nameAndTypeIndex shr 8),
-                ByteViewerFactory.hex(nameAndTypeIndex),
+                code, TextEncodedWriterHelper.hex(classIndex shr 8), TextEncodedWriterHelper.hex(classIndex),
+                TextEncodedWriterHelper.hex(nameAndTypeIndex shr 8),
+                TextEncodedWriterHelper.hex(nameAndTypeIndex),
                 "#$classIndex~#$nameAndTypeIndex -> "))
         entries[classIndex - 1]
                 .write(textConstantPoolEntriesSummaryWriter)
@@ -143,12 +143,9 @@ class TextConstantPoolEntriesEncodedWriter(private val output: Writer,
         fun create(output: Writer,
                    entries: List<EncodedConstantPoolEntry>,
                    bootstrapMethods: List<EncodedBootstrapMethod>): TextConstantPoolEntriesEncodedWriter {
-//            return ParsedConstantPoolEntriesEncodedWriter(
-//                    output, entries, bootstrapMethods,
-//                    ParsedConstantPoolEntriesSummaryEncodedWriter(entries),
-//                    ParsedBootstrapMethodsAttributeEncodedWriter()
-//                    )
-            TODO()
+            return TextConstantPoolEntriesEncodedWriter(output, entries, bootstrapMethods,
+                    TextConstantPoolEntriesSummaryEncodedWriter(output, entries),
+                    ParsedBootstrapMethodsAttributeEncodedWriter(output))
         }
     }
 

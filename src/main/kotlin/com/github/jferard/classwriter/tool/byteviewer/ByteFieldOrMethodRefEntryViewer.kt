@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 
 internal class ByteFieldOrMethodRefEntryViewer(private val code: String,
@@ -29,10 +30,10 @@ internal class ByteFieldOrMethodRefEntryViewer(private val code: String,
             i: Int): String {
         return kotlin.String.format(
                 ByteEntryViewerFactory.NUM_FORMAT + "%s, %s, %s, %s, %s, // %s", "#$i",
-                code, ByteViewerFactory.hex(classIndex shr 8),
-                ByteViewerFactory.hex(classIndex),
-                ByteViewerFactory.hex(nameAndTypeIndex shr 8),
-                ByteViewerFactory.hex(nameAndTypeIndex),
+                code, TextEncodedWriterHelper.hex(classIndex shr 8),
+                TextEncodedWriterHelper.hex(classIndex),
+                TextEncodedWriterHelper.hex(nameAndTypeIndex shr 8),
+                TextEncodedWriterHelper.hex(nameAndTypeIndex),
                 "#" + classIndex + "~#" + nameAndTypeIndex + " -> " +
                         viewSummary(entries))
     }

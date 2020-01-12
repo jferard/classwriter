@@ -65,20 +65,6 @@ class ByteViewerFactory(private val entryViewerFactory: EntryViewerFactory,
                     ByteMethodAttributeViewerFactory())
         }
 
-        fun hex(shifted: Int): String {
-            val s: String
-            val b = shifted and 0xff
-            s = if (b > Byte.MAX_VALUE) {
-                String.format("(byte) 0x%02X", b)
-            } else {
-                String.format("0x%02X", b)
-            }
-            return s
-        }
-
-        fun chr(b: Char): String {
-            return String.format("'%c'", b)
-        }
     }
 
 }

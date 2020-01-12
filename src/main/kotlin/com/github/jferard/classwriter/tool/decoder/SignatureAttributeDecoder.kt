@@ -19,9 +19,7 @@
 package com.github.jferard.classwriter.tool.decoder
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribute
-import com.github.jferard.classwriter.encoded.attribute.EncodedSignatureAttribute
 import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.EncodedSignatureAttributeWriter
 import java.io.DataInput
 import java.io.IOException
 

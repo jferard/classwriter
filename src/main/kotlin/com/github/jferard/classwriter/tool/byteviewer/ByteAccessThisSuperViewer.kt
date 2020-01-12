@@ -19,6 +19,7 @@
 package com.github.jferard.classwriter.tool.byteviewer
 
 import com.github.jferard.classwriter.internal.access.ClassAccess
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.AccessThisSuperViewer
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolViewer
 import java.io.IOException
@@ -36,12 +37,12 @@ class ByteAccessThisSuperViewer(private val accessFlags: Int, private val thisIn
     override fun view(w: Writer) {
         w.append(FlagJoiner.getAccessFlags(ClassAccess::class.java, accessFlags))
         w.append(String.format("%s, %s, // this: %s -> %s\n",
-                ByteViewerFactory.hex(thisIndex shr 8),
-                ByteViewerFactory.hex(thisIndex),
+                TextEncodedWriterHelper.hex(thisIndex shr 8),
+                TextEncodedWriterHelper.hex(thisIndex),
                 "#" + thisIndex, viewer!!.entrySummary(thisIndex)))
         w.append(String.format("%s, %s, // super: %s -> %s\n",
-                ByteViewerFactory.hex(superIndex),
-                ByteViewerFactory.hex(superIndex shr 8),
+                TextEncodedWriterHelper.hex(superIndex),
+                TextEncodedWriterHelper.hex(superIndex shr 8),
                 "#" + superIndex, viewer!!.entrySummary(superIndex)))
     }
 

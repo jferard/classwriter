@@ -39,8 +39,8 @@ class ParsedMethodEncodedWriter(private val output: Writer,
     }
 
     private fun byteTuple(descriptorIndex: Int): Array<Any> {
-        return arrayOf(ByteViewerFactory.hex(descriptorIndex shr 8),
-                ByteViewerFactory.hex(descriptorIndex),
+        return arrayOf(TextEncodedWriterHelper.hex(descriptorIndex shr 8),
+                TextEncodedWriterHelper.hex(descriptorIndex),
                 descriptorIndex)
     }
 

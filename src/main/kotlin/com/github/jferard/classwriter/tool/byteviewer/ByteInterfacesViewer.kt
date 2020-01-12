@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.InterfaceViewer
 import com.github.jferard.classwriter.tool.viewer.InterfacesViewer
 import java.io.IOException
@@ -29,8 +30,8 @@ class ByteInterfacesViewer(private val interfaceViewers: List<InterfaceViewer>) 
     override fun view(w: Writer) {
         val count = interfaceViewers.size
         w.append(String.format("%s, %s, // interfaces count: %d\n",
-                ByteViewerFactory.hex(count shr 8),
-                ByteViewerFactory.hex(count), count))
+                TextEncodedWriterHelper.hex(count shr 8),
+                TextEncodedWriterHelper.hex(count), count))
         for (interfaceViewer in interfaceViewers) {
             interfaceViewer.view(w)
         }

@@ -33,7 +33,20 @@ object ClassAccess {
     const val ACC_ANNOTATION =
             AccessFlags.ACC_ANNOTATION
     const val ACC_ENUM = AccessFlags.ACC_ENUM
+    const val ACC_MODULE = AccessFlags.ACC_MODULE
     fun builder(): ClassAccessFlagsBuilder {
         return ClassAccessFlagsBuilder()
     }
+
+    val entries: List<Pair<Int, String>> = listOf(
+            Pair(ACC_PUBLIC, "ClassAccess.ACC_PUBLIC"),
+            Pair(ACC_FINAL, "ClassAccess.ACC_FINAL"),
+            Pair(ACC_SUPER, "ClassAccess.ACC_SUPER"),
+            Pair(ACC_INTERFACE, "ClassAccess.ACC_INTERFACE"),
+            Pair(ACC_ABSTRACT, "ClassAccess.ACC_ABSTRACT"),
+            Pair(ACC_SYNTHETIC, "ClassAccess.ACC_SYNTHETIC"),
+            Pair(ACC_ANNOTATION, "ClassAccess.ACC_ANNOTATION"),
+            Pair(ACC_ENUM, "ClassAccess.ACC_ENUM"),
+            Pair(ACC_MODULE, "ClassAccess.ACC_MODULE")
+    )
 }

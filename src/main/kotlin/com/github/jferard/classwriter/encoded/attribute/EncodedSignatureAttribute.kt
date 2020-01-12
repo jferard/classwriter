@@ -23,7 +23,7 @@ import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.SignatureAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.writer.encoded.EncodedSignatureAttributeWriter
+import com.github.jferard.classwriter.writer.encoded.SignatureAttributeEncodedWriter
 
 /**
  * 4.7.9. The Signature Attribute (ClassFile, field_info, or method_info structure)
@@ -37,8 +37,8 @@ import com.github.jferard.classwriter.writer.encoded.EncodedSignatureAttributeWr
  */
 class EncodedSignatureAttribute(private val attributeNameIndex: Int,
                                 private val signatureIndex: Int) :
-        EncodedCFMAttribute<SignatureAttribute, EncodedSignatureAttribute, EncodedSignatureAttributeWriter> {
-    override fun write(encodedWriter: EncodedSignatureAttributeWriter) {
+        EncodedCFMAttribute<SignatureAttribute, EncodedSignatureAttribute, SignatureAttributeEncodedWriter> {
+    override fun write(encodedWriter: SignatureAttributeEncodedWriter) {
         return encodedWriter.signatureAttribute(attributeNameIndex, signatureIndex)
     }
 

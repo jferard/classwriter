@@ -21,6 +21,7 @@ package com.github.jferard.classwriter.writer.encodable
 import com.github.jferard.classwriter.Field
 import com.github.jferard.classwriter.api.*
 import com.github.jferard.classwriter.encoded.EncodedClassFile
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.ClassFileAttribute
 import com.github.jferard.classwriter.parsed.writer.*
 import com.github.jferard.classwriter.tool.byteviewer.ByteViewerFactory
@@ -29,7 +30,7 @@ import java.io.Writer
 
 class TextClassEncodableWriter(private val output: Writer,
                                private val attributeWritableFactory: ParsedClassFileAttributeEncodedWriter,
-                               private val fieldWritableFactory: ParsedFieldEncodedWriter,
+                               private val fieldWritableFactory: TextFieldEncodedWriter,
                                private val methodWritableFactory: ParsedMethodEncodedWriter) :
         ClassEncodableWriter {
 
@@ -61,16 +62,16 @@ class TextClassEncodableWriter(private val output: Writer,
     override fun header(minorVersion: Int, majorVersion: Int) {
         output.append("/* HEADER */\n")
         output.append(String.format("%s, %s, %s, %s, // magic number\n",
-                ByteViewerFactory.hex(EncodedClassFile.MAGIC_NUMBER shr 24),
-                ByteViewerFactory.hex(EncodedClassFile.MAGIC_NUMBER shr 16),
-                ByteViewerFactory.hex(EncodedClassFile.MAGIC_NUMBER shr 8),
-                ByteViewerFactory.hex(EncodedClassFile.MAGIC_NUMBER)))
+                TextEncodedWriterHelper.hex(EncodedClassFile.MAGIC_NUMBER shr 24),
+                TextEncodedWriterHelper.hex(EncodedClassFile.MAGIC_NUMBER shr 16),
+                TextEncodedWriterHelper.hex(EncodedClassFile.MAGIC_NUMBER shr 8),
+                TextEncodedWriterHelper.hex(EncodedClassFile.MAGIC_NUMBER)))
         output.append(String.format("%s, %s, // %d -> minor version\n",
-                ByteViewerFactory.hex(minorVersion shr 8),
-                ByteViewerFactory.hex(minorVersion), minorVersion))
+                TextEncodedWriterHelper.hex(minorVersion shr 8),
+                TextEncodedWriterHelper.hex(minorVersion), minorVersion))
         output.append(String.format("%s, %s, // %d -> major version\n",
-                ByteViewerFactory.hex(majorVersion shr 8),
-                ByteViewerFactory.hex(majorVersion), majorVersion))
+                TextEncodedWriterHelper.hex(majorVersion shr 8),
+                TextEncodedWriterHelper.hex(majorVersion), majorVersion))
     }
 
     override fun winterface(classRef: ClassRef) {
@@ -102,11 +103,11 @@ class TextClassEncodableWriter(private val output: Writer,
     }
 
     companion object {
-        fun create(output: Writer): TextClassEncodableWriter {
+        fun create(output: Writer, entries: List<EncodedConstantPoolEntry>): TextClassEncodableWriter {
             return TextClassEncodableWriter(output,
                     ParsedClassFileAttributeEncodedWriter(output,
                             ParsedBootstrapMethodsAttributeEncodedWriter(output)),
-                    ParsedFieldEncodedWriter.create(output),
+                    TextFieldEncodedWriter.create(output, entries),
                     ParsedMethodEncodedWriter(output,
                             ParsedMethodAttributeEncodedWriter.create(output)))
         }

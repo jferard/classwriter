@@ -20,16 +20,22 @@
 package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.api.Header
-import com.github.jferard.classwriter.encoded.EncodedClassFileAttributes
-import com.github.jferard.classwriter.encoded.EncodedFields
-import com.github.jferard.classwriter.encoded.EncodedInterfaces
-import com.github.jferard.classwriter.encoded.EncodedMethods
+import com.github.jferard.classwriter.encoded.*
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.internal.access.ClassAccess
+import com.github.jferard.classwriter.internal.access.FieldAccess
 import com.github.jferard.classwriter.pool.ConstantPool
 import com.github.jferard.classwriter.writer.encoded.ClassEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
 import java.io.Writer
 
-class TextClassEncodedWriter(private val output: Writer, private val constantPoolEncodedWriter: ConstantPoolEncodedWriter) :
+class TextClassEncodedWriter(private val output: Writer,
+                             private val entries: List<EncodedConstantPoolEntry>,
+                             private val constantPoolEntriesSummaryEncodedWriter: ConstantPoolEntriesEncodedWriter,
+                             private val constantPoolEncodedWriter: ConstantPoolEncodedWriter,
+                             private val fieldEncodedWriter: FieldEncodedWriter) :
         ClassEncodedWriter {
     override fun classFile(header: Header, constantPool: ConstantPool, accessFlags: Int,
                            thisIndex: Int,
@@ -39,19 +45,56 @@ class TextClassEncodedWriter(private val output: Writer, private val constantPoo
         output.write("/** CLASS FILE */")
         header.write(this)
         constantPool.write(constantPoolEncodedWriter)
+        TextEncodedWriterHelper.writeAccessFlags(output, ClassAccess.entries, accessFlags)
+        writeThisAndSuper(thisIndex, superIndex)
+        encodedInterfaces.write(this)
+        encodedFields.write(fieldEncodedWriter)
+    }
+
+    private fun writeThisAndSuper(thisIndex: Int, superIndex: Int) {
+        thisOrSuper(thisIndex, "this index")
+        thisOrSuper(superIndex, "super index")
+    }
+
+    private fun thisOrSuper(index: Int, comment: String) {
+        output.append(String.format("%s, %s, // $comment: #$index -> ",
+                TextEncodedWriterHelper.hex(index shr 8),
+                TextEncodedWriterHelper.hex(index)))
+        entries[index - 1].write(constantPoolEntriesSummaryEncodedWriter)
+        output.write("\n")
     }
 
     override fun header(minorVersion: Int, majorVersion: Int) {
         output.write("/** header */\n")
-        output.write("Minor version: $minorVersion\n")
-        output.write("Major version: $majorVersion\n")
+        TextEncodedWriterHelper.writeU4(output, "magic", EncodedClassFile.MAGIC_NUMBER)
+        TextEncodedWriterHelper.writeU2(output, "minor version", minorVersion)
+        TextEncodedWriterHelper.writeU2(output, "major version", majorVersion)
     }
 
     override fun interfaces(encodedInterfaces: List<Int>) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.write("/** Interfaces */\n")
+        TextEncodedWriterHelper.writeU2(output, "number of interfaces", encodedInterfaces.size)
+        for ((i, encodedInterface) in encodedInterfaces.withIndex()) {
+            output.write(
+                    "%s, %s, // #%s -> ".format(TextEncodedWriterHelper.hex(encodedInterface shr 8),
+                            TextEncodedWriterHelper.hex(encodedInterface),
+                            encodedInterface))
+            entries[encodedInterface - 1].write(constantPoolEntriesSummaryEncodedWriter)
+            output.write("\n")
+        }
     }
 
     override fun bootstrapMethod(methodRefIndex: Int, argumentIndexes: List<Int>) {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
+    companion object {
+        fun create(output: Writer,
+                   entries: List<EncodedConstantPoolEntry>): TextClassEncodedWriter {
+            return TextClassEncodedWriter(output, entries,
+                    TextConstantPoolEntriesSummaryEncodedWriter(output, entries),
+                    TextConstantPoolEncodedWriter.create(output, entries),
+                    TextFieldEncodedWriter.create(output, entries))
+        }
     }
 }

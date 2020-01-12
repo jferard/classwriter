@@ -34,7 +34,20 @@ object FieldAccess {
     const val ACC_SYNTHETIC =
             AccessFlags.ACC_SYNTHETIC
     const val ACC_ENUM = AccessFlags.ACC_ENUM
+    
     fun builder(): FieldAccessFlagsBuilder {
         return FieldAccessFlagsBuilder()
     }
+
+    val entries: List<Pair<Int, String>> = listOf(
+            Pair(ACC_PUBLIC, "FieldAccess.ACC_PUBLIC"),
+            Pair(ACC_PRIVATE, "FieldAccess.ACC_PRIVATE"),
+            Pair(ACC_PROTECTED, "FieldAccess.ACC_PROTECTED"),
+            Pair(ACC_STATIC, "FieldAccess.ACC_STATIC"),
+            Pair(ACC_FINAL, "FieldAccess.ACC_FINAL"),
+            Pair(ACC_VOLATILE, "FieldAccess.ACC_VOLATILE"),
+            Pair(ACC_TRANSIENT, "FieldAccess.ACC_TRANSIENT"),
+            Pair(ACC_SYNTHETIC, "FieldAccess.ACC_SYNTHETIC"),
+            Pair(ACC_ENUM, "FieldAccess.ACC_ENUM")
+    )
 }

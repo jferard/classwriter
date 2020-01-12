@@ -19,6 +19,7 @@
 package com.github.jferard.classwriter.tool.byteviewer
 
 import com.github.jferard.classwriter.Writable
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 import java.io.ByteArrayOutputStream
 import java.io.DataOutput
@@ -37,14 +38,14 @@ internal class ByteUTF8EntryViewer(private val text: String) :
         val bytes = text.toByteArray(StandardCharsets.UTF_8)
         val str = IntStream.range(0, bytes.size).mapToObj<String> { j: Int ->
             val b: Int = (bytes[j] and 0xff.toByte()).toInt()
-            if (b >= 32) ByteViewerFactory.chr(
-                    b.toChar()) else ByteViewerFactory.hex(b)
+            if (b >= 32) TextEncodedWriterHelper.chr(
+                    b.toChar()) else TextEncodedWriterHelper.hex(b)
         }.collect(Collectors.joining(", "))
         val length = text.length
         return String.format(
                 ByteEntryViewerFactory.NUM_FORMAT + "%s, %s, %s, %s, // %s", "#$i",
-                "ConstantTags.UTF8", ByteViewerFactory.hex(length shr 8),
-                ByteViewerFactory.hex(length), str, "u\"$text\"")
+                "ConstantTags.UTF8", TextEncodedWriterHelper.hex(length shr 8),
+                TextEncodedWriterHelper.hex(length), str, "u\"$text\"")
     }
 
     override fun viewSummary(

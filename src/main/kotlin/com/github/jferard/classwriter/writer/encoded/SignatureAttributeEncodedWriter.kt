@@ -21,6 +21,6 @@ package com.github.jferard.classwriter.writer.encoded
 
 import com.github.jferard.classwriter.api.EncodedWriter
 
-interface EncodedSignatureAttributeWriter : EncodedWriter {
+interface SignatureAttributeEncodedWriter : EncodedWriter {
     fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int)
 }

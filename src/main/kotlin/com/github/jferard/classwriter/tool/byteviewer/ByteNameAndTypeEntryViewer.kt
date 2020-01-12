@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 
 internal class ByteNameAndTypeEntryViewer(private val nameIndex: Int,
@@ -28,10 +29,10 @@ internal class ByteNameAndTypeEntryViewer(private val nameIndex: Int,
             i: Int): String {
         return kotlin.String.format(
                 ByteEntryViewerFactory.NUM_FORMAT + "%s, %s, %s, %s, %s, // %s", "#$i",
-                "ConstantTags.NAMEANDTYPE", ByteViewerFactory.hex(nameIndex shr 8),
-                ByteViewerFactory.hex(nameIndex),
-                ByteViewerFactory.hex(descriptorIndex shr 8),
-                ByteViewerFactory.hex(descriptorIndex),
+                "ConstantTags.NAMEANDTYPE", TextEncodedWriterHelper.hex(nameIndex shr 8),
+                TextEncodedWriterHelper.hex(nameIndex),
+                TextEncodedWriterHelper.hex(descriptorIndex shr 8),
+                TextEncodedWriterHelper.hex(descriptorIndex),
                 "#" + nameIndex + ":#" + descriptorIndex + " -> " +
                         viewSummary(entries))
     }

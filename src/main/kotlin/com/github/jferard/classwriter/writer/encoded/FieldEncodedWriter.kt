@@ -25,7 +25,7 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedFieldAttribute
 /**
  * Can write fields
  */
-interface FieldEncodedWriter : EncodedWriter {
+interface   FieldEncodedWriter : EncodedWriter {
     fun field(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
               encodedAttributes: List<EncodedFieldAttribute<*, *, FieldAttributeEncodedWriter>>)
 

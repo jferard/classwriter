@@ -52,10 +52,7 @@ object ConstantPoolHelper {
         val encodedClassFile =
                 decoder.parse(input)
         val entries = encodedClassFile.entries
-        val writer = TextClassEncodedWriter(w, TextConstantPoolEncodedWriter(w,
-                TextConstantPoolEntriesEncodedWriter(w, entries, arrayListOf(),
-                        TextConstantPoolEntriesSummaryEncodedWriter(w, entries),
-                        ParsedBootstrapMethodsAttributeEncodedWriter(w))))
+        val writer = TextClassEncodedWriter.create(w, entries)
         encodedClassFile.write(writer)
         return w.toString()
     }

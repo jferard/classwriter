@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolViewer
 import com.github.jferard.classwriter.tool.viewer.MethodViewer
 import com.github.jferard.classwriter.tool.viewer.MethodsViewer
@@ -31,8 +32,8 @@ class ByteMethodsViewer(private val methodViewers: List<MethodViewer>) :
     override fun view(w: Writer) {
         val count = methodViewers.size
         w.append(String.format("%s, %s, // methods count: %d\n",
-                ByteViewerFactory.hex(count shr 8),
-                ByteViewerFactory.hex(count), count))
+                TextEncodedWriterHelper.hex(count shr 8),
+                TextEncodedWriterHelper.hex(count), count))
         for (methodViewer in methodViewers) {
             methodViewer.setConstantPoolViewer(constantPoolViewer!!)
             methodViewer.view(w)

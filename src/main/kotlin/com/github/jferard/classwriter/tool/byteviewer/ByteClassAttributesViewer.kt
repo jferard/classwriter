@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ClassAttributeViewer
 import com.github.jferard.classwriter.tool.viewer.ClassAttributesViewer
 import java.io.IOException
@@ -30,8 +31,8 @@ class ByteClassAttributesViewer(
     override fun view(w: Writer) {
         val count = classAttributeViewers.size
         w.append(String.format("%s, %s, // class attributes count: %d\n",
-                ByteViewerFactory.hex(count shr 8),
-                ByteViewerFactory.hex(count), count))
+                TextEncodedWriterHelper.hex(count shr 8),
+                TextEncodedWriterHelper.hex(count), count))
         for (classAttributeViewer in classAttributeViewers) {
             classAttributeViewer.view(w)
         }

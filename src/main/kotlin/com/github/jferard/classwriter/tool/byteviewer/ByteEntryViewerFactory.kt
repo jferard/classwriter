@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 import com.github.jferard.classwriter.tool.viewer.EntryViewerFactory
 import java.io.IOException
@@ -29,8 +30,8 @@ class ByteEntryViewerFactory :
     override fun writeEntryCount(writer: Writer, entryCount: Int) {
         writer.append("/* CONSTANT POOL */\n")
         writer.append(String.format("%s, %s, // number of entries: %d\n",
-                ByteViewerFactory.hex(entryCount + 1 shr 8),
-                ByteViewerFactory.hex(entryCount + 1),
+                TextEncodedWriterHelper.hex(entryCount + 1 shr 8),
+                TextEncodedWriterHelper.hex(entryCount + 1),
                 entryCount))
     }
 

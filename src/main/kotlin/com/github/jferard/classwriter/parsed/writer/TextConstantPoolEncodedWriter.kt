@@ -20,10 +20,8 @@ package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import com.github.jferard.classwriter.tool.byteviewer.ByteViewerFactory
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import java.io.IOException
 import java.io.Writer
 
 class TextConstantPoolEncodedWriter(private val output: Writer,
@@ -37,22 +35,20 @@ class TextConstantPoolEncodedWriter(private val output: Writer,
         DecodedConstantPoolEntriesEncodedWriter.create(this.entries,
         this.bootstrapMethods)
          */
-        output.append("/* CONSTANT POOL */\n")
-        this.viewEntryCount(output, entries.size)
-        for (i in 1 until entries.size) {
-            val entry = entries[i - 1]
-            output.append(String.format("/* %4s */ ", "#$i"))
+        output.append("/** CONSTANT POOL */\n")
+        TextEncodedWriterHelper.writeU2(output, "number of entries (plus one)", entries.size + 1)
+        for (i in 1..entries.size) {
+            val entry = entries[i-1]
+            output.append(String.format("    /* %4s */ ", "#$i"))
             entry.write(constantPoolEntriesEncodedWriter)
             output.append('\n')
         }
     }
 
-    @Throws(IOException::class)
-    private fun viewEntryCount(writer: Writer, entryCount: Int) {
-        writer.append(String.format("%s, %s, // number of writableEntries: %d\n",
-                ByteViewerFactory.hex(entryCount + 1 shr 8),
-                ByteViewerFactory.hex(entryCount + 1),
-                entryCount))
+    companion object {
+        fun create(output: Writer, entries: List<EncodedConstantPoolEntry>) : TextConstantPoolEncodedWriter {
+            return TextConstantPoolEncodedWriter(output,
+                    TextConstantPoolEntriesEncodedWriter.create(output, entries, arrayListOf()))
+        }
     }
-
 }

@@ -19,6 +19,7 @@
 package com.github.jferard.classwriter.tool.byteviewer
 
 import com.github.jferard.classwriter.internal.access.MethodAccess
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolViewer
 import com.github.jferard.classwriter.tool.viewer.MethodAttributeViewer
 import com.github.jferard.classwriter.tool.viewer.MethodViewer
@@ -34,12 +35,12 @@ class ByteMethodViewer(private val accessFlags: Int, private val nameIndex: Int,
     override fun view(w: Writer) {
         w.append(FlagJoiner.getAccessFlags(MethodAccess::class.java, accessFlags))
         w.append(String.format("%s, %s, // name:%s -> %s\n",
-                ByteViewerFactory.hex(nameIndex shr 8),
-                ByteViewerFactory.hex(nameIndex),
+                TextEncodedWriterHelper.hex(nameIndex shr 8),
+                TextEncodedWriterHelper.hex(nameIndex),
                 "#" + nameIndex, constantPoolViewer!!.entrySummary(nameIndex)))
         w.append(String.format("%s, %s, // descriptor: %s -> %s\n",
-                ByteViewerFactory.hex(descriptorIndex shr 8),
-                ByteViewerFactory.hex(descriptorIndex), "#" + descriptorIndex,
+                TextEncodedWriterHelper.hex(descriptorIndex shr 8),
+                TextEncodedWriterHelper.hex(descriptorIndex), "#" + descriptorIndex,
                 constantPoolViewer!!.entrySummary(descriptorIndex)))
         for (methodAttributeViewer in methodAttributeViewers) {
             methodAttributeViewer.view(w)

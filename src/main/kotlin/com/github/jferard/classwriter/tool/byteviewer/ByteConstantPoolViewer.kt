@@ -29,19 +29,11 @@ class ByteConstantPoolViewer(
     @Throws(IOException::class)
     override fun view(writer: Writer) {
         writer.append("/* CONSTANT POOL */\n")
-        viewEntryCount(writer, entries.size)
+        // viewEntryCount(writer, entries.size)
         for (i in 1 until entries.size) {
             val entry = entries[i-1]
             writer.append(entry.view(entries, i)).append('\n')
         }
-    }
-
-    @Throws(IOException::class)
-    private fun viewEntryCount(writer: Writer, entryCount: Int) {
-        writer.append(String.format("%s, %s, // number of entries: %d\n",
-                ByteViewerFactory.hex(entryCount + 1 shr 8),
-                ByteViewerFactory.hex(entryCount + 1),
-                entryCount))
     }
 
     override fun entrySummary(i: Int): String {

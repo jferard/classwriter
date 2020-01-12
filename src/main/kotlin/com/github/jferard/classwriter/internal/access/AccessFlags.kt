@@ -94,4 +94,8 @@ internal object AccessFlags {
      * Declared as an enum type.
      */
     const val ACC_ENUM = 0x4000
+    /**
+     * Is a module, not a class or interface.
+     */
+    const val ACC_MODULE = 0x8000
 }

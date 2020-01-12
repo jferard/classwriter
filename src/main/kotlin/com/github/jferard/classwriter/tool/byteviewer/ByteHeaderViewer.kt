@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.HeaderViewer
 import java.io.IOException
 import java.io.Writer
@@ -29,17 +30,17 @@ class ByteHeaderViewer(private val magic: Int, private val minorVersion: Int,
     override fun view(w: Writer) {
         w.append("/* HEADER */\n")
         w.append(String.format("%s, %s, %s, %s, // magic number\n",
-                ByteViewerFactory.hex(magic shr 24),
-                ByteViewerFactory.hex(magic shr 16),
-                ByteViewerFactory.hex(magic shr 8),
-                ByteViewerFactory.hex(magic)))
+                TextEncodedWriterHelper.hex(magic shr 24),
+                TextEncodedWriterHelper.hex(magic shr 16),
+                TextEncodedWriterHelper.hex(magic shr 8),
+                TextEncodedWriterHelper.hex(magic)))
         w.append(String.format("%s, %s, // %d -> minor version\n",
-                ByteViewerFactory.hex(minorVersion shr 8),
-                ByteViewerFactory.hex(minorVersion),
+                TextEncodedWriterHelper.hex(minorVersion shr 8),
+                TextEncodedWriterHelper.hex(minorVersion),
                 minorVersion))
         w.append(String.format("%s, %s, // %d -> major version\n",
-                ByteViewerFactory.hex(majorVersion shr 8),
-                ByteViewerFactory.hex(majorVersion),
+                TextEncodedWriterHelper.hex(majorVersion shr 8),
+                TextEncodedWriterHelper.hex(majorVersion),
                 majorVersion))
     }
 

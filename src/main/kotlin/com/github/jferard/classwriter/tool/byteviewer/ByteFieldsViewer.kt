@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.FieldViewer
 import com.github.jferard.classwriter.tool.viewer.FieldsViewer
 import java.io.IOException
@@ -29,8 +30,8 @@ class ByteFieldsViewer(private val fieldViewers: List<FieldViewer>) :
     override fun view(w: Writer) {
         val count = fieldViewers.size
         w.append(String.format("%s, %s, // fields count: %d\n",
-                ByteViewerFactory.hex(count shr 8),
-                ByteViewerFactory.hex(count), count))
+                TextEncodedWriterHelper.hex(count shr 8),
+                TextEncodedWriterHelper.hex(count), count))
         for (fieldViewer in fieldViewers) {
             fieldViewer.view(w)
         }

@@ -33,7 +33,7 @@ class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, pr
     }
 
     override fun utf8Entry(text: String) {
-        output.append(text)
+        output.append("u\"$text\"")
     }
 
     override fun invokeDynamicEntry(bootstrapMethodIndex: Int,
