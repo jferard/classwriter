@@ -37,7 +37,7 @@ internal class ClassFileBuilderTest {
     @Throws(IOException::class)
     fun test0() {
         val fname =
-                "/home/jferard/prog/java/classwriter/target/classes/com/github/jferard/classwriter/api/ClassFile.class"
+                "target/classes/com/github/jferard/classwriter/api/ClassFile.class"
         println("Parsing $fname")
         val stream = DataInputStream(FileInputStream(fname))
         println(ConstantPoolHelper.viewClass(stream))

@@ -33,11 +33,11 @@ interface CodeAttributeAttributeEncodedWriter :
     fun localVariableTypeTable(startPc: Int, length: Int, nameIndex: Int, signatureIndex: Int,
                                index: Int)
 
-    fun lineNumberTableAttribute(nameIndex: Int,
+    fun lineNumberTableAttribute(attributeNameIndex: Int,
                                  positionAndLineNumbers: List<PositionAndLineNumber>)
 
-    fun variableTableAttribute(attributeNameIndex: Int,
-                               encodedLocalVariables: List<EncodedLocalVariableTable>)
+    fun localVariableTableAttribute(attributeNameIndex: Int,
+                                    encodedLocalVariables: List<EncodedLocalVariableTable>)
 
     fun variableTypeTableAttribute(attributeNameIndex: Int,
                                    encodedLocalVariableTypes: List<EncodedLocalVariableTypeTable>)

@@ -40,7 +40,7 @@ class EncodedSameLocals1StackItemFrameExtended constructor(private val offsetDel
 
     override fun write(
             encodedWriter: StackMapFrameEncodedWriter) {
-        return encodedWriter.localsSame1StackItemFrameExtended(this.offsetDelta,
+        return encodedWriter.sameLocals1StackItemFrameExtended(this.offsetDelta,
                 this.encodedFirstStackItemVerificationType)
     }
 

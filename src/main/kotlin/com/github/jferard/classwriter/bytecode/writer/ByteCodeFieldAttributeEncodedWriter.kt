@@ -19,6 +19,7 @@
 
 package com.github.jferard.classwriter.bytecode.writer
 
+import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import java.io.DataOutput
 
@@ -40,6 +41,11 @@ class ByteCodeFieldAttributeEncodedWriter(private val output: DataOutput) :
     override fun signatureAttribute(attributeNameIndex: Int,
                                     signatureIndex: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun annotationAttribute(annotationsNameIndex: Int,
+                                     encodedAnnotations: List<EncodedAnnotation>) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
 }

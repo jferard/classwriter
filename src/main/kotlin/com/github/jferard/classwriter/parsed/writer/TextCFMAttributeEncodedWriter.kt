@@ -20,47 +20,49 @@ package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.DeprecatedAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.SignatureAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.SyntheticAttributeEncodedWriter
 import java.io.Writer
 
 /**
  * Decoder for EncodedAttribute (EncodedCodeAttribute, EncodedStackMapTableAttribute, ...)
  */
-class TextFieldAttributeEncodedWriter(private val output: Writer,
-                                      private val entries: List<EncodedConstantPoolEntry>,
-                                      private val summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter,
-                                      private val cfmAttributeEncodedWriter: TextCFMAttributeEncodedWriter) :
-        FieldAttributeEncodedWriter {
-    override fun constantValueAttribute(attributeNameIndex: Int,
-                                        valueIndex: Int) {
-        output.write("constant\n")
-    }
-
+class TextCFMAttributeEncodedWriter(private val output: Writer,
+                                    private val entries: List<EncodedConstantPoolEntry>,
+                                    private val summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter) :
+        DeprecatedAttributeEncodedWriter, SyntheticAttributeEncodedWriter,
+        SignatureAttributeEncodedWriter, AnnotationsEncodedWriter {
     override fun deprecatedAttribute(attributeNameIndex: Int) {
-        cfmAttributeEncodedWriter.deprecatedAttribute(attributeNameIndex)
+        output.write("deprecated\n")
     }
 
     override fun syntheticAttribute(attributeNameIndex: Int) {
-        cfmAttributeEncodedWriter.syntheticAttribute(attributeNameIndex)
+        output.write("synthetic\n")
     }
 
     override fun signatureAttribute(attributeNameIndex: Int,
                                     signatureIndex: Int) {
-        cfmAttributeEncodedWriter.signatureAttribute(attributeNameIndex, signatureIndex)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "Attribute", attributeNameIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU2(output, "length", 2)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "Signature", signatureIndex, entries,
+                summaryEncodedWriter)
     }
 
     override fun annotationAttribute(annotationsNameIndex: Int,
                                      encodedAnnotations: List<EncodedAnnotation>) {
-        cfmAttributeEncodedWriter.annotationAttribute(annotationsNameIndex, encodedAnnotations)
+        output.write("TODO ANNOTATIONS")
     }
 
     companion object {
         fun create(output: Writer,
                    entries: List<EncodedConstantPoolEntry>,
-                   summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter): TextFieldAttributeEncodedWriter {
-            return TextFieldAttributeEncodedWriter(output, entries, summaryEncodedWriter,
-                    TextCFMAttributeEncodedWriter.create(output, entries, summaryEncodedWriter))
+                   summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter): TextCFMAttributeEncodedWriter {
+            return TextCFMAttributeEncodedWriter(output, entries, summaryEncodedWriter)
         }
+
     }
 
 }

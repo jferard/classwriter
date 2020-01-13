@@ -40,14 +40,6 @@ class ByteCodeMethodEncodedWriter(
         }
     }
 
-    override fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
-                                 catchTypeIndex: Int) {
-        output.writeShort(startPc)
-        output.writeShort(endPc)
-        output.writeShort(handlerPc)
-        output.writeShort(catchTypeIndex)
-    }
-
     override fun methods(
             encodedMethods: List<EncodedMethod>) {
         output.writeShort(encodedMethods.size)

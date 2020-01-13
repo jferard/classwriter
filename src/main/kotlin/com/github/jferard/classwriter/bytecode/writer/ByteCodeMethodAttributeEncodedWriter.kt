@@ -71,6 +71,26 @@ class ByteCodeMethodAttributeEncodedWriter(
         }
     }
 
+    override fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
+                                 catchTypeIndex: Int) {
+        output.writeShort(startPc)
+        output.writeShort(endPc)
+        output.writeShort(handlerPc)
+        output.writeShort(catchTypeIndex)
+    }
+
+    override fun syntheticAttribute(attributeNameIndex: Int) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun deprecatedAttribute(attributeNameIndex: Int) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
     companion object {
         fun create(output: DataOutput): MethodAttributeEncodedWriter {
             return ByteCodeMethodAttributeEncodedWriter(

@@ -48,7 +48,7 @@ class MethodAttributeParser(
                     attributeNameIndex, input)
             AnnotationsAttribute.RUNTIME_INVISIBLE_PARAMETER_ANNOTATIONS -> parseInvisibleParameterAnnotations(
                     attributeNameIndex, input)
-            else -> throw IllegalStateException("method attr decoder: $attributeName")
+            else -> throw IllegalStateException("Unknown method attribute: $attributeName")
         }
     }
 

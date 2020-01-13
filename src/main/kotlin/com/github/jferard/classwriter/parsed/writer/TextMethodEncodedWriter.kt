@@ -20,45 +20,44 @@ package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.encoded.EncodedMethod
 import com.github.jferard.classwriter.encoded.attribute.EncodedMethodAttribute
-import com.github.jferard.classwriter.tool.byteviewer.ByteViewerFactory
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.internal.access.MethodAccess
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import java.io.Writer
 
-class ParsedMethodEncodedWriter(private val output: Writer,
-                                private val parsedAttributeWritableFactory: ParsedMethodAttributeEncodedWriter) :
+class TextMethodEncodedWriter(private val output: Writer,
+                              private val entries: List<EncodedConstantPoolEntry>,
+                              private val summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter,
+                              private val methodAttributeEncodedWriter: TextMethodAttributeEncodedWriter) :
         MethodEncodedWriter {
     override fun method(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
                         encodedAttributes: List<EncodedMethodAttribute<*, *, MethodAttributeEncodedWriter>>) {
-        output.append("// method */\n")
-        output.append(String.format("%s, %s, // accessFlags: %s\n", *byteTuple(accessFlags)))
-        output.append(String.format("%s, %s, // nameIndex: %s\n", *byteTuple(nameIndex)))
-        output.append(
-                String.format("%s, %s, // descriptorIndex: %s\n", *byteTuple(descriptorIndex)))
-        encodedAttributes.forEach { it.write(parsedAttributeWritableFactory) }
-    }
-
-    private fun byteTuple(descriptorIndex: Int): Array<Any> {
-        return arrayOf(TextEncodedWriterHelper.hex(descriptorIndex shr 8),
-                TextEncodedWriterHelper.hex(descriptorIndex),
-                descriptorIndex)
-    }
-
-    override fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
-                                 catchTypeIndex: Int) {
-        TODO("not implemented")
+        output.append("/** method ")
+        entries[nameIndex - 1].write(summaryEncodedWriter)
+        output.append(" ")
+        entries[descriptorIndex - 1].write(summaryEncodedWriter)
+        output.append("\n")
+        TextEncodedWriterHelper.writeAccessFlags(output, MethodAccess.entries, accessFlags)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "nameIndex", nameIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "descriptorIndex", descriptorIndex, entries,
+                summaryEncodedWriter)
+        encodedAttributes.forEach { it.write(methodAttributeEncodedWriter) }
     }
 
     override fun methods(
             encodedMethods: List<EncodedMethod>) {
-        output.write("/* METHODS */")
+        output.write("/* METHODS */\n")
         encodedMethods.forEach { it.write(this) }
     }
 
     companion object {
-        fun create(output: Writer): ParsedMethodEncodedWriter {
-            return ParsedMethodEncodedWriter(output,
-                    ParsedMethodAttributeEncodedWriter.create(output))
+        fun create(output: Writer,
+                   entries: List<EncodedConstantPoolEntry>,
+                   constantPoolEntriesSummaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter): TextMethodEncodedWriter {
+            return TextMethodEncodedWriter(output, entries, constantPoolEntriesSummaryEncodedWriter,
+                    TextMethodAttributeEncodedWriter.create(output, entries))
         }
     }
 

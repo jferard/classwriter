@@ -27,8 +27,5 @@ interface MethodEncodedWriter :
     fun method(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
                encodedAttributes: List<EncodedMethodAttribute<*, *, MethodAttributeEncodedWriter>>)
 
-    fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
-                        catchTypeIndex: Int)
-
     fun methods(encodedMethods: List<EncodedMethod>)
 }

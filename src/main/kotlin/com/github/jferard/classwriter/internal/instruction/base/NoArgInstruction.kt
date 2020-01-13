@@ -122,11 +122,11 @@ class NoArgInstruction private constructor(private val opcode: Int, private val 
             return NoArgInstruction(opcode, stackDelta, emptyList(), n)
         }
 
-        fun monitor(opcode: Int): BaseInstruction {
+        fun monitor(opcode: Int): NoArgInstruction {
             return NoArgInstruction(opcode, 1, emptyList(), 0)
         }
 
-        fun pop(opcode: Int, popStackCount: Int): BaseInstruction {
+        fun pop(opcode: Int, popStackCount: Int): NoArgInstruction {
             return NoArgInstruction(opcode, popStackCount, emptyList(), 0)
         }
     }

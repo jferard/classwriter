@@ -57,8 +57,8 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
         output.writeShort(lineNumber)
     }
 
-    override fun variableTableAttribute(attributeNameIndex: Int,
-                                        encodedLocalVariables: List<EncodedLocalVariableTable>) {
+    override fun localVariableTableAttribute(attributeNameIndex: Int,
+                                             encodedLocalVariables: List<EncodedLocalVariableTable>) {
         val length = encodedLocalVariables.map(EncodedLocalVariableTable::size).sum()
         output.writeShort(attributeNameIndex)
         output.writeInt(length)

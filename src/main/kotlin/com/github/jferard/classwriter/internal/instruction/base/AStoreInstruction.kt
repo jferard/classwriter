@@ -55,7 +55,7 @@ class AStoreInstruction(private val opcode: Int, private val verificationType: V
     }
 
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.aStoreInstruction(opcode)
+        return encodedWriter.aStoreNInstruction(opcode)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {

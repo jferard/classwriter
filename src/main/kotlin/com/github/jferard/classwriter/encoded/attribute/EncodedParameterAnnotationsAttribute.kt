@@ -23,13 +23,16 @@ import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
 
 class EncodedParameterAnnotationsAttribute(private val attributeNameIndex: Int, private val
 parameterAnnotations: List<List<EncodedAnnotation>>) :
         EncodedCFMAttribute<ParameterAnnotationsAttribute, EncodedParameterAnnotationsAttribute, AnnotationsEncodedWriter> {
     override fun write(encodedWriter: AnnotationsEncodedWriter) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        parameterAnnotations.forEach {
+            encodedWriter.annotationAttribute(attributeNameIndex, it)
+        }
     }
 
     override fun decode(context: GlobalContext,

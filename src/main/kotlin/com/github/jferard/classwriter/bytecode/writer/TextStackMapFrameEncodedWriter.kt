@@ -22,57 +22,58 @@ import com.github.jferard.classwriter.encoded.stackmap.EncodedVerificationType
 import com.github.jferard.classwriter.encoded.stackmap.StackMapFrameConstants
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import java.io.DataOutput
+import java.io.Writer
 
-class ByteCodeStackMapFrameEncodedWriter(
-        private val output: DataOutput,
-        private val verificationTypeFactory: VerificationTypeEncodedWriter) :
+class TextStackMapFrameEncodedWriter(
+        private val output: Writer) :
         StackMapFrameEncodedWriter {
 
-    override fun chopFrame(k: Int, offsetDelta: Int) {
-        output.writeByte(StackMapFrameConstants.CHOP_FRAME_BASE - k)
-        output.writeShort(offsetDelta)
+    override fun sameFrame(offsetDelta: Int) {
+        TextEncodedWriterHelper.writeU1(output, "same frame, offset_delta", offsetDelta)
     }
 
-    override fun sameFrame(offsetDelta: Int) {
-        output.writeByte(StackMapFrameConstants.SAME_FRAME_BASE + offsetDelta)
+    override fun sameLocals1StackItemFrame(offsetDelta: Int,
+                                           encodedFirstStackItemVerificationType: EncodedVerificationType) {
+//        output.writeByte(StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_BASE + offsetDelta)
+//        encodedFirstStackItemVerificationType.write(verificationTypeFactory)
+    }
+
+    override fun chopFrame(k: Int, offsetDelta: Int) {
+        output.write("StackMapFrameConstants.CHOP_FRAME_BASE, ")
+        TextEncodedWriterHelper.writeU2(output, "offset_delta", offsetDelta + k)
     }
 
     override fun fullFrame(offsetDelta: Int,
                            encodedLocals: List<EncodedVerificationType>,
                            encodedStackItems: List<EncodedVerificationType>) {
-        output.writeByte(StackMapFrameConstants.FULL_FRAME)
-        output.writeShort(offsetDelta)
-        output.writeShort(encodedLocals.size)
-        encodedLocals.forEach { it.write(verificationTypeFactory) }
-        output.writeShort(encodedStackItems.size)
-        encodedStackItems.forEach { it.write(verificationTypeFactory) }
+ //       output.writeByte(StackMapFrameConstants.FULL_FRAME)
+ //       output.writeShort(offsetDelta)
+ //       output.writeShort(encodedLocals.size)
+//        encodedLocals.forEach { it.write(verificationTypeFactory) }
+  //      output.writeShort(encodedStackItems.size)
+//        encodedStackItems.forEach { it.write(verificationTypeFactory) }
     }
 
     override fun appendFrame(k: Int, offsetDelta: Int,
                              encodedNewTypes: List<EncodedVerificationType>) {
-        output.writeByte(StackMapFrameConstants.APPEND_FRAME_BASE + k)
-        output.writeShort(offsetDelta)
-        encodedNewTypes.forEach { it.write(verificationTypeFactory) }
-    }
-
-    override fun sameLocals1StackItemFrame(offsetDelta: Int,
-                                           encodedFirstStackItemVerificationType: EncodedVerificationType) {
-        output.writeByte(StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_BASE + offsetDelta)
-        encodedFirstStackItemVerificationType.write(verificationTypeFactory)
+//        output.writeByte(StackMapFrameConstants.APPEND_FRAME_BASE + k)
+//        output.writeShort(offsetDelta)
+//        encodedNewTypes.forEach { it.write(verificationTypeFactory) }
     }
 
     override fun sameLocals1StackItemFrameExtended(offsetDelta: Int,
                                                    encodedFirstStackItemVerificationType: EncodedVerificationType) {
-        output.writeByte(StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_EXTENDED_BASE)
-        output.writeShort(offsetDelta)
-        encodedFirstStackItemVerificationType
-                .write(verificationTypeFactory)
+//        output.writeByte(StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_EXTENDED_BASE)
+//        output.writeShort(offsetDelta)
+//        encodedFirstStackItemVerificationType
+//                .write(verificationTypeFactory)
     }
 
     override fun sameFrameExtended(offsetDelta: Int) {
-        output.writeByte(StackMapFrameConstants.SAME_FRAME_EXTENDED_BASE)
-        output.writeShort(offsetDelta)
+ //       output.writeByte(StackMapFrameConstants.SAME_FRAME_EXTENDED_BASE)
+ //       output.writeShort(offsetDelta)
     }
 
 }

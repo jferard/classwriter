@@ -45,7 +45,7 @@ class EncodedLocalVariableTableAttribute(private val attributeNameIndex: Int,
         EncodedCodeAttributeAttribute<LocalVariableTableAttribute, EncodedLocalVariableTableAttribute, CodeAttributeAttributeEncodedWriter> {
     override fun write(
             encodedWriter: CodeAttributeAttributeEncodedWriter) {
-        encodedWriter.variableTableAttribute(attributeNameIndex, encodedLocalVariables)
+        encodedWriter.localVariableTableAttribute(attributeNameIndex, encodedLocalVariables)
     }
 
     override val size: Int =

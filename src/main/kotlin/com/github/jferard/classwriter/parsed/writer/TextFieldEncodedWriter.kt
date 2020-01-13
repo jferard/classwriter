@@ -42,11 +42,7 @@ class TextFieldEncodedWriter(private val output: Writer,
     override fun field(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
                        encodedAttributes: List<EncodedFieldAttribute<*, *, FieldAttributeEncodedWriter>>) {
         TextEncodedWriterHelper.writeAccessFlags(output, FieldAccess.entries, accessFlags)
-        output.write(
-                "%s, %s // Field: #%s -> ".format(TextEncodedWriterHelper.hex(nameIndex shr 8), TextEncodedWriterHelper.hex(nameIndex),
-                        nameIndex))
-        entries[nameIndex - 1].write(summaryEncodedWriter)
-        output.write("\n")
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "Field", nameIndex, entries, summaryEncodedWriter)
         for (encodedAttribute in encodedAttributes) {
             encodedAttribute.write(fieldAttributeEncodedWriter)
         }

@@ -23,6 +23,7 @@ import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.internal.instruction.ExceptionInCode
+import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 
 /**
@@ -31,8 +32,8 @@ import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 class EncodedExceptionInCode(private val startPc: Int, private val endPc: Int,
                              private val handlerPc: Int,
                              private val catchTypeIndex: Int) :
-        Encoded<ExceptionInCode, EncodedExceptionInCode, MethodEncodedWriter> {
-    override fun write(encodedWriter: MethodEncodedWriter) {
+        Encoded<ExceptionInCode, EncodedExceptionInCode, MethodAttributeEncodedWriter> {
+    override fun write(encodedWriter: MethodAttributeEncodedWriter) {
         return encodedWriter.exceptionInCode(startPc, endPc, handlerPc, catchTypeIndex)
     }
 

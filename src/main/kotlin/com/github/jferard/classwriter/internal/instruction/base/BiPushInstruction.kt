@@ -30,7 +30,7 @@ import com.github.jferard.classwriter.pool.EncodableWriter
 /**
  * bipush: push a byte onto the stack as an integer value.
  */
-class BiPushInstruction(private val b: Byte) : BaseInstruction, EncodedInstruction {
+class BiPushInstruction(private val b: Int) : BaseInstruction, EncodedInstruction {
     override fun preprocess(context: GlobalContext,
                             codeContext: MethodContext) {
         codeContext.offsetDelta(2)

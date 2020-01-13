@@ -16,29 +16,25 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.internal.instruction.base
 
+package com.github.jferard.classwriter.tool.decoder
+
+import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.internal.instruction.base.InstructionEncodedWriter
 
-
-/** ```
- * ldc
- * index
- * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
-        EncodedInstruction {
+class EncodedIfNonNullInstruction(private val branch: Int) : EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+        encodedWriter.ifNonNullInstruction(branch)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size = 2 * BytecodeHelper.BYTE_SIZE
-
+    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 }

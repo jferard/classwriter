@@ -30,7 +30,7 @@ class EncodeLocalVariableTableAttribute(private val attributeNameIndex: Int,
         EncodedCodeAttributeAttribute<LocalVariableTableAttribute, EncodeLocalVariableTableAttribute, CodeAttributeAttributeEncodedWriter> {
     override fun write(
             encodedWriter: CodeAttributeAttributeEncodedWriter) {
-        throw IllegalStateException()
+        encodedWriter.localVariableTableAttribute(attributeNameIndex, encodedLocalVariableTables)
     }
 
     override val size: Int

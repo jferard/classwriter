@@ -185,7 +185,7 @@ class RawCodeBuilder(private val paddingHelper: PaddingHelper) : CodeBuilder {
      * Other bytes (count: 1): byte.
      * Stack: () -> (value).
      */
-    fun bipush(b: Byte): RawCodeBuilder {
+    fun bipush(b: Int): RawCodeBuilder {
         instructions.add(BiPushInstruction(b))
         return this
     }

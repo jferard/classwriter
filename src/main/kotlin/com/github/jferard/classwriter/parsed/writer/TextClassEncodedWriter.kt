@@ -23,45 +23,39 @@ import com.github.jferard.classwriter.api.Header
 import com.github.jferard.classwriter.encoded.*
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.access.ClassAccess
-import com.github.jferard.classwriter.internal.access.FieldAccess
 import com.github.jferard.classwriter.pool.ConstantPool
-import com.github.jferard.classwriter.writer.encoded.ClassEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.*
 import java.io.Writer
 
 class TextClassEncodedWriter(private val output: Writer,
                              private val entries: List<EncodedConstantPoolEntry>,
-                             private val constantPoolEntriesSummaryEncodedWriter: ConstantPoolEntriesEncodedWriter,
+                             private val summaryEncodedWriter: ConstantPoolEntriesEncodedWriter,
                              private val constantPoolEncodedWriter: ConstantPoolEncodedWriter,
-                             private val fieldEncodedWriter: FieldEncodedWriter) :
+                             private val fieldEncodedWriter: FieldEncodedWriter,
+                             private val methodEncodedWriter: MethodEncodedWriter,
+                             private val attributeEncodedWriter: ClassFileAttributeEncodedWriter) :
         ClassEncodedWriter {
     override fun classFile(header: Header, constantPool: ConstantPool, accessFlags: Int,
                            thisIndex: Int,
                            superIndex: Int, encodedInterfaces: EncodedInterfaces,
                            encodedFields: EncodedFields, encodedMethods: EncodedMethods,
                            encodedAttributes: EncodedClassFileAttributes) {
-        output.write("/** CLASS FILE */")
+        output.write("/** CLASS FILE */\n")
         header.write(this)
         constantPool.write(constantPoolEncodedWriter)
         TextEncodedWriterHelper.writeAccessFlags(output, ClassAccess.entries, accessFlags)
         writeThisAndSuper(thisIndex, superIndex)
         encodedInterfaces.write(this)
         encodedFields.write(fieldEncodedWriter)
+        encodedMethods.write(methodEncodedWriter)
+        encodedAttributes.write(attributeEncodedWriter)
     }
 
     private fun writeThisAndSuper(thisIndex: Int, superIndex: Int) {
-        thisOrSuper(thisIndex, "this index")
-        thisOrSuper(superIndex, "super index")
-    }
-
-    private fun thisOrSuper(index: Int, comment: String) {
-        output.append(String.format("%s, %s, // $comment: #$index -> ",
-                TextEncodedWriterHelper.hex(index shr 8),
-                TextEncodedWriterHelper.hex(index)))
-        entries[index - 1].write(constantPoolEntriesSummaryEncodedWriter)
-        output.write("\n")
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "this index", thisIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "super index", superIndex, entries,
+                summaryEncodedWriter)
     }
 
     override fun header(minorVersion: Int, majorVersion: Int) {
@@ -74,13 +68,9 @@ class TextClassEncodedWriter(private val output: Writer,
     override fun interfaces(encodedInterfaces: List<Int>) {
         output.write("/** Interfaces */\n")
         TextEncodedWriterHelper.writeU2(output, "number of interfaces", encodedInterfaces.size)
-        for ((i, encodedInterface) in encodedInterfaces.withIndex()) {
-            output.write(
-                    "%s, %s, // #%s -> ".format(TextEncodedWriterHelper.hex(encodedInterface shr 8),
-                            TextEncodedWriterHelper.hex(encodedInterface),
-                            encodedInterface))
-            entries[encodedInterface - 1].write(constantPoolEntriesSummaryEncodedWriter)
-            output.write("\n")
+        encodedInterfaces.forEach {
+            TextEncodedWriterHelper.writeShortEntryIndex(output, "interface", it, entries,
+                    summaryEncodedWriter)
         }
     }
 
@@ -91,10 +81,15 @@ class TextClassEncodedWriter(private val output: Writer,
     companion object {
         fun create(output: Writer,
                    entries: List<EncodedConstantPoolEntry>): TextClassEncodedWriter {
+            val constantPoolEntriesSummaryEncodedWriter =
+                    TextConstantPoolEntriesSummaryEncodedWriter(output, entries)
             return TextClassEncodedWriter(output, entries,
-                    TextConstantPoolEntriesSummaryEncodedWriter(output, entries),
+                    constantPoolEntriesSummaryEncodedWriter,
                     TextConstantPoolEncodedWriter.create(output, entries),
-                    TextFieldEncodedWriter.create(output, entries))
+                    TextFieldEncodedWriter.create(output, entries),
+                    TextMethodEncodedWriter.create(output, entries,
+                            constantPoolEntriesSummaryEncodedWriter),
+                    TextClassFileAttributeEncodedWriter.create(output))
         }
     }
 }

@@ -32,10 +32,10 @@ interface StackMapFrameEncodedWriter : EncodedWriter {
     fun appendFrame(k: Int, offsetDelta: Int,
                     encodedNewTypes: List<EncodedVerificationType>)
 
-    fun localsSame1StackItemFrame(offsetDelta: Int,
+    fun sameLocals1StackItemFrame(offsetDelta: Int,
                                   encodedFirstStackItemVerificationType: EncodedVerificationType)
 
-    fun localsSame1StackItemFrameExtended(offsetDelta: Int,
+    fun sameLocals1StackItemFrameExtended(offsetDelta: Int,
                                           encodedFirstStackItemVerificationType: EncodedVerificationType)
 
     fun sameFrameExtended(offsetDelta: Int)

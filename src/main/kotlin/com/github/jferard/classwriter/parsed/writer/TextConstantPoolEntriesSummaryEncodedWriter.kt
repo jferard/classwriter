@@ -18,12 +18,9 @@
  */
 package com.github.jferard.classwriter.parsed.writer
 
-import com.github.jferard.classwriter.Writable
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import java.io.StringWriter
 import java.io.Writer
-import java.lang.Appendable
 
 class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, private val entries: List<EncodedConstantPoolEntry>) :
         ConstantPoolEntriesEncodedWriter {
@@ -43,9 +40,9 @@ class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, pr
 
     override fun nameAndTypeEntry(nameIndex: Int,
                                   descriptorIndex: Int) {
-        entries[nameIndex - 1].write(this)
+        output.write(entries[nameIndex - 1].utf8Text())
         output.append(':')
-        entries[descriptorIndex - 1].write(this) // replace('/', '.'))
+        output.write(entries[descriptorIndex - 1].utf8Text().replace('/', '.'))
     }
 
     override fun methodRefEntry(classIndex: Int,
@@ -55,13 +52,9 @@ class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, pr
 
     private fun getFieldOrMethodRefDecodedSummary(classIndex: Int,
                                                   nameAndTypeIndex: Int) {
-        val decodedClassName = entries[classIndex - 1]
-                .write(this) as Writable<Writer>
-        val decodedNameAndType = entries[nameAndTypeIndex - 1]
-                .write(this) as Writable<Writer>
-        decodedClassName.write(output)
-        output.write('~'.toInt())
-        decodedNameAndType.write(output)
+        entries[classIndex - 1].write(this)
+        output.append('~')
+        entries[nameAndTypeIndex - 1].write(this)
     }
 
     override fun doubleEntry(value: Double) {
@@ -93,7 +86,8 @@ class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, pr
         return getFieldOrMethodRefDecodedSummary(classIndex, nameAndTypeIndex)
     }
 
-    override fun stringEntry(index: Int) {
-        TODO("not implemented")
+    override fun stringEntry(stringIndex: Int) {
+        val text = entries[stringIndex - 1].utf8Text()
+        output.append("\"$text\"")
     }
 }

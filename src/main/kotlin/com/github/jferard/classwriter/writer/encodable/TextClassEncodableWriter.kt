@@ -21,17 +21,15 @@ package com.github.jferard.classwriter.writer.encodable
 import com.github.jferard.classwriter.Field
 import com.github.jferard.classwriter.api.*
 import com.github.jferard.classwriter.encoded.EncodedClassFile
-import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.ClassFileAttribute
 import com.github.jferard.classwriter.parsed.writer.*
-import com.github.jferard.classwriter.tool.byteviewer.ByteViewerFactory
 import java.io.IOException
 import java.io.Writer
 
 class TextClassEncodableWriter(private val output: Writer,
-                               private val attributeWritableFactory: ParsedClassFileAttributeEncodedWriter,
+                               private val attributeWritableFactory: TextClassFileAttributeEncodedWriter,
                                private val fieldWritableFactory: TextFieldEncodedWriter,
-                               private val methodWritableFactory: ParsedMethodEncodedWriter) :
+                               private val methodWritableFactory: TextMethodEncodedWriter) :
         ClassEncodableWriter {
 
     override fun classFile(header: Header,
@@ -100,17 +98,6 @@ class TextClassEncodableWriter(private val output: Writer,
 
     override fun accessFlags(accessFlags: Int) {
         output.write("access flags: $accessFlags\n") //TODO: decode access flags
-    }
-
-    companion object {
-        fun create(output: Writer, entries: List<EncodedConstantPoolEntry>): TextClassEncodableWriter {
-            return TextClassEncodableWriter(output,
-                    ParsedClassFileAttributeEncodedWriter(output,
-                            ParsedBootstrapMethodsAttributeEncodedWriter(output)),
-                    TextFieldEncodedWriter.create(output, entries),
-                    ParsedMethodEncodedWriter(output,
-                            ParsedMethodAttributeEncodedWriter.create(output)))
-        }
     }
 
 }

@@ -24,21 +24,14 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.internal.instruction.Instruction
 
-
-/** ```
- * ldc
- * index
- * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
-        EncodedInstruction {
+class EncodedNewInstruction(private val classIndex: Int) : EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+        encodedWriter.newInstruction(classIndex)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size = 2 * BytecodeHelper.BYTE_SIZE
-
+    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 }

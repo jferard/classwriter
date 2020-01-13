@@ -18,14 +18,12 @@
  */
 package com.github.jferard.classwriter.internal.instruction.base
 
-import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.internal.context.ReferenceVerificationType
-import com.github.jferard.classwriter.internal.instruction.Instruction
 import com.github.jferard.classwriter.pool.EncodableWriter
 
 
@@ -34,7 +32,7 @@ import com.github.jferard.classwriter.pool.EncodableWriter
  * Stack: (arrayref, index) -> (value).
  */
 class ALoadInstruction(private val opcode: Int, private val verificationType: VerificationType) :
-        BaseInstruction, EncodedInstruction {
+        BaseInstruction {
     override fun preprocess(context: GlobalContext,
                             codeContext: MethodContext) {
         codeContext.offsetDelta(1)
@@ -52,18 +50,6 @@ class ALoadInstruction(private val opcode: Int, private val verificationType: Ve
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInstruction {
-        return this
+        return EncodedALoadNInstruction(this.opcode)
     }
-
-    override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.aLoadInstruction(opcode)
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE
-
 }

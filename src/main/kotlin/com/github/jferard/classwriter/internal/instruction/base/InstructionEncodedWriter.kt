@@ -26,8 +26,8 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
  * Writable instructions factory.
  */
 interface InstructionEncodedWriter : EncodedWriter {
-    fun aLoadInstruction(opcode: Int)
-    fun aStoreInstruction(opcode: Int)
+    fun aLoadNInstruction(opcode: Int)
+    fun aStoreInstruction(opcode: Int, referenceIndex: Int)
     fun gotoWInstruction(branch: Int)
     fun returnInstruction(opcode: Int)
     fun blockInstruction(
@@ -42,7 +42,7 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun retInstruction(index: Int)
     fun wideIincInstruction(index: Int, c: Int)
     fun ldcInstruction(index: Int, stackSize: Int)
-    fun biPushInstruction(b: Byte)
+    fun biPushInstruction(b: Int)
     fun constInstruction(opcode: Int)
     fun gotoInstruction(branch: Int)
     fun storeInstruction(opcode: Int, index: Int)
@@ -73,4 +73,23 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun wideRetInstruction(index: Int)
     fun wideStoreInstruction(opcode: Int, index: Int)
     fun aThrowInstruction()
+    fun newInstruction(classIndex: Int)
+    fun invokeSpecialInstruction(classIndex: Int)
+    fun putStaticInstruction(fieldIndex: Int)
+    fun getStaticInstruction(fieldIndex: Int)
+    fun invokeVirtualInstruction(methodIndex: Int)
+    fun invokeStaticInstruction(methodIndex: Int)
+    fun aLoadInstruction(referenceIndex: Int)
+    fun putFieldInstruction(fieldIndex: Int)
+    fun checkCastInstruction(referenceIndex: Int)
+    fun getFieldInstruction(fieldIndex: Int)
+    fun aStoreNInstruction(opcode: Int)
+    fun iStoreInstruction(index: Int)
+    fun iStoreNInstruction(opcode: Int)
+    fun ifNonNullInstruction(branch: Int)
+    fun iConstNInstruction(opcode: Int)
+    fun ifInstruction(opcode: Int, branch: Int)
+    fun popInstruction()
+    fun iLoadInstruction(referenceIndex: Int)
+    fun iLoadNInstruction(opcode: Int)
 }

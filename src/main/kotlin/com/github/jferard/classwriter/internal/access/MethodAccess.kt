@@ -41,4 +41,19 @@ object MethodAccess {
     fun builder(): MethodAccessFlagsBuilder {
         return MethodAccessFlagsBuilder()
     }
+
+    val entries: List<Pair<Int, String>> = listOf(
+            Pair(ACC_PUBLIC, "MethodAccess.ACC_PUBLIC"),
+            Pair(ACC_PRIVATE, "MethodAccess.ACC_PRIVATE"),
+            Pair(ACC_PROTECTED, "MethodAccess.ACC_PROTECTED"),
+            Pair(ACC_STATIC, "MethodAccess.ACC_STATIC"),
+            Pair(ACC_FINAL, "MethodAccess.ACC_FINAL"),
+            Pair(ACC_SYNCHRONIZED, "MethodAccess.ACC_SYNCHRONIZED"),
+            Pair(ACC_BRIDGE, "MethodAccess.ACC_BRIDGE"),
+            Pair(ACC_VARARGS, "MethodAccess.ACC_VARARGS"),
+            Pair(ACC_NATIVE, "MethodAccess.ACC_NATIVE"),
+            Pair(ACC_ABSTRACT, "MethodAccess.ACC_ABSTRACT"),
+            Pair(ACC_STRICT, "MethodAccess.ACC_STRICT"),
+            Pair(ACC_SYNTHETIC, "MethodAccess.ACC_SYNTHETIC")
+    )
 }

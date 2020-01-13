@@ -19,11 +19,9 @@
 package com.github.jferard.classwriter.writer.encoded
 
 import com.github.jferard.classwriter.api.EncodedWriter
-import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedExceptionInCode
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
-import com.github.jferard.classwriter.tool.decoder.EncodedInstructions
 
 /**
  * Table 4.7-C. Predefined class file attributes (by location)
@@ -31,12 +29,13 @@ import com.github.jferard.classwriter.tool.decoder.EncodedInstructions
  * RuntimeInvisibleParameterAnnotations,AnnotationDefault, MethodParameters.
  */
 interface MethodAttributeEncodedWriter :
-        EncodedWriter {
+        EncodedWriter, SyntheticAttributeEncodedWriter, DeprecatedAttributeEncodedWriter,
+        SignatureAttributeEncodedWriter, AnnotationsEncodedWriter {
     fun codeAttribute(attributeNameIndex: Int, maxStack: Int, maxLocals: Int,
                       encodedCode: EncodedInstruction,
                       encodedExceptions: List<EncodedExceptionInCode>,
                       encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>>)
 
-    fun annotationAttribute(annotationsNameIndex: Int,
-                            encodedAnnotations: List<EncodedAnnotation>)
+    fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
+                        catchTypeIndex: Int)
 }

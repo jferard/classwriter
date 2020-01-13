@@ -28,8 +28,8 @@ import java.io.Writer
 /**
  * Decoder for EncodedAttribute (EncodedCodeAttribute, EncodedStackMapTableAttribute, ...)
  */
-class ParsedClassFileAttributeEncodedWriter(private val output: Writer,
-                                            private val parsedBootstrapMethodsAttributeWritableFactory: ParsedBootstrapMethodsAttributeEncodedWriter) :
+class TextClassFileAttributeEncodedWriter(private val output: Writer,
+                                          private val parsedBootstrapMethodsAttributeWritableFactory: ParsedBootstrapMethodsAttributeEncodedWriter) :
         ClassFileAttributeEncodedWriter,
         CommonAttributeEncodedWriter {
     override fun innerClass(innerClassIndex: Int, outerClassNameIndex: Int,
@@ -60,8 +60,8 @@ class ParsedClassFileAttributeEncodedWriter(private val output: Writer,
     }
 
     companion object {
-        fun create(output: Writer): ParsedClassFileAttributeEncodedWriter {
-            return ParsedClassFileAttributeEncodedWriter(
+        fun create(output: Writer): TextClassFileAttributeEncodedWriter {
+            return TextClassFileAttributeEncodedWriter(
                     output,
                     ParsedBootstrapMethodsAttributeEncodedWriter(output))
         }

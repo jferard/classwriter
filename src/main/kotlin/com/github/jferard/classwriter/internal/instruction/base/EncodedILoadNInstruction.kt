@@ -20,25 +20,26 @@ package com.github.jferard.classwriter.internal.instruction.base
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
+
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.internal.instruction.Instruction
 
 
-/** ```
- * ldc
- * index
- * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
+/**
+ * aaload: load onto the stack a reference from an array.
+ * Stack: (arrayref, index) -> (value).
+ */
+class EncodedILoadNInstruction(private val opcode: Int) :
         EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+        return encodedWriter.iLoadNInstruction(opcode)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size = 2 * BytecodeHelper.BYTE_SIZE
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
 }

@@ -21,9 +21,7 @@ package com.github.jferard.classwriter.writer.encoded
 import com.github.jferard.classwriter.api.EncodedWriter
 
 interface FieldAttributeEncodedWriter :
-        EncodedWriter {
+        EncodedWriter, SyntheticAttributeEncodedWriter, DeprecatedAttributeEncodedWriter,
+        SignatureAttributeEncodedWriter, AnnotationsEncodedWriter {
     fun constantValueAttribute(attributeNameIndex: Int, valueIndex: Int)
-    fun deprecatedAttribute(attributeNameIndex: Int)
-    fun syntheticAttribute(attributeNameIndex: Int)
-    fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int)
 }

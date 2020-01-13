@@ -19,37 +19,63 @@
 
 package com.github.jferard.classwriter.parsed.writer
 
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import java.io.IOException
 import java.io.Writer
 
 object TextEncodedWriterHelper {
     @Throws(IOException::class)
     fun writeU1(writer: Writer, comment: String, u1: Int) {
-        writer.append("%s, // %s: %s\n".format(
+        writer.write("%s, // %s: %s\n".format(
                 hex(u1), comment, u1))
     }
 
     @Throws(IOException::class)
     fun writeU2(writer: Writer, comment: String, u2: Int) {
-        writer.append("%s, %s, // %s: %s\n".format(
+        writer.write("%s, %s, // %s: %s\n".format(
                 hex(u2 shr 8), hex(u2), comment, u2))
     }
 
     @Throws(IOException::class)
     fun writeU4(writer: Writer, comment: String, u4: Int) {
-        writer.append("%s, %s, %s, %s, // %s: %s\n".format(
+        writer.write("%s, %s, %s, %s, // %s: %s\n".format(
                 hex(u4 shr 24), hex(u4 shr 16), hex(u4 shr 8), hex(u4), comment, u4))
     }
 
     @Throws(IOException::class)
     fun writeAccessFlags(writer: Writer,
-                                 entries: List<Pair<Int, String>>,
-                                 accessFlags: Int) {
+                         entries: List<Pair<Int, String>>,
+                         accessFlags: Int) {
         val flags = entries.filter { (flag, _) -> accessFlags and flag != 0 }
                 .joinToString(" | ") { (_, name) -> name }
         writer.write(
-                "%s, %s, // access flags:%s -> %s\n".format(TextEncodedWriterHelper.hex(accessFlags shr 8),
-                        TextEncodedWriterHelper.hex(accessFlags), accessFlags, flags))
+                "%s, %s, // access flags:#%s -> %s\n".format(
+                        hex(accessFlags shr 8),
+                        hex(accessFlags), accessFlags, flags))
+    }
+
+    fun writeShortEntryIndex(output: Writer, name: String,
+                             attributeNameIndex: Int,
+                             entries: List<EncodedConstantPoolEntry>,
+                             summaryEncodedWriter: ConstantPoolEntriesEncodedWriter) {
+        output.write(
+                "%s, %s, // $name: #%s -> ".format(
+                        hex(attributeNameIndex shr 8),
+                        hex(attributeNameIndex), attributeNameIndex))
+        entries[attributeNameIndex - 1].write(summaryEncodedWriter)
+        output.write("\n")
+    }
+
+    fun writeByteEntryIndex(output: Writer, name: String,
+                             attributeNameIndex: Int,
+                             entries: List<EncodedConstantPoolEntry>,
+                             summaryEncodedWriter: ConstantPoolEntriesEncodedWriter) {
+        output.write(
+                "%s, // $name: #%s -> ".format(
+                        hex(attributeNameIndex), attributeNameIndex))
+        entries[attributeNameIndex - 1].write(summaryEncodedWriter)
+        output.write("\n")
     }
 
     fun hex(shifted: Int): String {

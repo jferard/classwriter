@@ -20,6 +20,7 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 
 import java.io.DataOutput
 
@@ -49,5 +50,10 @@ class ByteCodeAttributeEncodedWriter(private val output: DataOutput) :
         output.writeInt(
                 BytecodeHelper.SHORT_SIZE)
         output.writeShort(signatureIndex)
+    }
+
+    override fun annotationAttribute(annotationsNameIndex: Int,
+                                     encodedAnnotations: List<EncodedAnnotation>) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 }
