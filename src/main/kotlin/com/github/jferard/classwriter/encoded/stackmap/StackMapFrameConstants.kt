@@ -25,6 +25,6 @@ object StackMapFrameConstants {
     const val FULL_FRAME = 255
     const val APPEND_FRAME_BASE = 251
     const val SAME_LOCALS_1_STACK_ITEM_BASE = 64
-    const val SAME_LOCALS_1_STACK_ITEM_EXTENDED_BASE = 247
-    const val SAME_FRAME_EXTENDED_BASE = 251
+    const val SAME_LOCALS_1_STACK_ITEM_EXTENDED = 247
+    const val SAME_FRAME_EXTENDED = 251
 }

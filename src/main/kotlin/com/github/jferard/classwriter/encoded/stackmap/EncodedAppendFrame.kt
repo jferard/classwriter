@@ -33,12 +33,12 @@ import com.github.jferard.classwriter.internal.context.MethodContext
  * }
  * ```
  */
-class EncodedAppendFrame(private val k: Int, private val offsetDelta: Int,
+class EncodedAppendFrame(private val frameType: Int, private val offsetDelta: Int,
                          private val encodedNewTypes: List<EncodedVerificationType>) :
         EncodedStackMapFrame {
     override fun write(
             encodedWriter: StackMapFrameEncodedWriter) {
-        encodedWriter.appendFrame(k, offsetDelta, encodedNewTypes)
+        encodedWriter.appendFrame(frameType, offsetDelta, encodedNewTypes)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): StackMapFrame {

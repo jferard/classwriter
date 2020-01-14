@@ -26,11 +26,12 @@ import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
  * 4.7.4. The StackMapTable Attribute
- * ```Object_variable_info {
- * u1 tag = ITEM_Object; // 7
- * u2 cpool_index;
+ * ```
+ * Object_variable_info {
+ *     u1 tag = ITEM_Object; // 7
+ *     u2 cpool_index;
  * }
-* ``` *
+ *```
  */
 class EncodedObjectVerificationType(private val classIndex: Int) : EncodedVerificationType {
     override fun write(

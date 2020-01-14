@@ -19,7 +19,6 @@
 package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.bytecode.writer.TextStackMapFrameEncodedWriter
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
@@ -91,10 +90,10 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
                     summaryEncodedWriter,
                     TextInstructionEncodedWriter(output, entries, summaryEncodedWriter),
                     TextCFMAttributeEncodedWriter.create(output, entries, summaryEncodedWriter),
-                    TextCodeAttributeAttributeEncodedWriter(output, entries, summaryEncodedWriter,
-                            TextStackMapFrameEncodedWriter(output)))
+                    TextCodeAttributeAttributeEncodedWriter.create(output, entries,
+                            summaryEncodedWriter)
+            )
         }
-
     }
 
 }

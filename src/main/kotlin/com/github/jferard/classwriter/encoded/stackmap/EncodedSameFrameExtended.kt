@@ -33,9 +33,9 @@ import com.github.jferard.classwriter.internal.context.MethodContext
  * }
  * ```
  */
-class EncodedSameFrameExtended constructor(private var offsetDelta: Int) : EncodedStackMapFrame {
+class EncodedSameFrameExtended(private var offsetDelta: Int) : EncodedStackMapFrame {
     override fun write(encodedWriter: StackMapFrameEncodedWriter) {
-        return encodedWriter.sameFrameExtended(this.offsetDelta)
+        return encodedWriter.sameFrameExtended(offsetDelta)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): StackMapFrame {

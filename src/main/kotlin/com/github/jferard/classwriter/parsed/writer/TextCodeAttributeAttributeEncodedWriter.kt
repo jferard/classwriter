@@ -19,6 +19,8 @@
 package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.bytecode.writer.TextStackMapFrameEncodedWriter
+import com.github.jferard.classwriter.bytecode.writer.TextVerificationTypeEncodedWriter
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTable
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTypeTable
@@ -73,7 +75,7 @@ class TextCodeAttributeAttributeEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute", attributeNameIndex,
                 entries, summaryEncodedWriter)
         TextEncodedWriterHelper.writeU4(output, "len",
-                BytecodeHelper.SHORT_SIZE + encodedLocalVariables.map(Encoded<*,*,*>::size).sum())
+                BytecodeHelper.SHORT_SIZE + encodedLocalVariables.map(Encoded<*, *, *>::size).sum())
         TextEncodedWriterHelper.writeU2(output, "local variable table length",
                 encodedLocalVariables.size)
         encodedLocalVariables.forEach { it.write(this) }
@@ -84,8 +86,10 @@ class TextCodeAttributeAttributeEncodedWriter(private val output: Writer,
                                     index: Int) {
         TextEncodedWriterHelper.writeU2(output, "start pc", startPc)
         TextEncodedWriterHelper.writeU2(output, "length", length)
-        TextEncodedWriterHelper.writeShortEntryIndex(output, "name", nameIndex, entries, summaryEncodedWriter)
-        TextEncodedWriterHelper.writeShortEntryIndex(output, "descriptor", descriptorIndex, entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "name", nameIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "descriptor", descriptorIndex, entries,
+                summaryEncodedWriter)
         TextEncodedWriterHelper.writeU2(output, "local index", index)
     }
 
@@ -98,5 +102,15 @@ class TextCodeAttributeAttributeEncodedWriter(private val output: Writer,
     override fun variableTypeTableAttribute(attributeNameIndex: Int,
                                             encodedLocalVariableTypes: List<EncodedLocalVariableTypeTable>) {
         TODO("not implemented")
+    }
+
+    companion object {
+        fun create(output: Writer,
+                   entries: List<EncodedConstantPoolEntry>,
+                   summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter): TextCodeAttributeAttributeEncodedWriter {
+            return TextCodeAttributeAttributeEncodedWriter(output, entries, summaryEncodedWriter,
+                    TextStackMapFrameEncodedWriter(output,
+                            TextVerificationTypeEncodedWriter(output, entries, summaryEncodedWriter)))
+        }
     }
 }

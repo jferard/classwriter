@@ -87,7 +87,7 @@ class StackMapFrame(previous: StackMapFrame?, offset: Int,
         val encodedFirstStackItemVerificationType: EncodedVerificationType = stackItems[0]
                 .encode(context, MethodContext.create(0))
         return if (offsetDelta < MAX_SAME) {
-            EncodedSameLocals1StackItemFrame(offsetDelta,
+            EncodedSameLocals1StackItemFrame(offsetDelta + 64,
                     encodedFirstStackItemVerificationType)
         } else {
             EncodedSameLocals1StackItemFrameExtended(offsetDelta,

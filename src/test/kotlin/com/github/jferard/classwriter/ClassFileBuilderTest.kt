@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test
 import java.io.*
 
 internal class ClassFileBuilderTest {
+    /** javap -v -p -s -sysinfo -constants target/classes/com/github/jferard/classwriter/api/ClassFile.class */
     @Test
     @Throws(IOException::class)
     fun test0() {

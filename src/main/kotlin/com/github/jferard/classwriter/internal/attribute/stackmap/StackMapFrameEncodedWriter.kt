@@ -19,20 +19,19 @@
 package com.github.jferard.classwriter.internal.attribute.stackmap
 
 import com.github.jferard.classwriter.api.EncodedWriter
-import com.github.jferard.classwriter.encoded.stackmap.EncodedStackMapFrame
 import com.github.jferard.classwriter.encoded.stackmap.EncodedVerificationType
 
 interface StackMapFrameEncodedWriter : EncodedWriter {
-    fun chopFrame(k: Int, offsetDelta: Int)
-    fun sameFrame(offsetDelta: Int)
+    fun chopFrame(frameType: Int, offsetDelta: Int)
+    fun sameFrame(frameType: Int)
     fun fullFrame(offsetDelta: Int,
                   encodedLocals: List<EncodedVerificationType>,
                   encodedStackItems: List<EncodedVerificationType>)
 
-    fun appendFrame(k: Int, offsetDelta: Int,
+    fun appendFrame(frameType: Int, offsetDelta: Int,
                     encodedNewTypes: List<EncodedVerificationType>)
 
-    fun sameLocals1StackItemFrame(offsetDelta: Int,
+    fun sameLocals1StackItemFrame(frameType: Int,
                                   encodedFirstStackItemVerificationType: EncodedVerificationType)
 
     fun sameLocals1StackItemFrameExtended(offsetDelta: Int,

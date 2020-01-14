@@ -24,19 +24,19 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
- * ```Uninitialized_variable_info{
- * u1 tag=ITEM_Uninitialized; // 8
- * u2 offset;
+ * ```
+ * Uninitialized_variable_info{
+ *     u1 tag=ITEM_Uninitialized; // 8
+ *     u2 offset;
  * }
-* ``` *
+ * ```
  */
 class UninitializedOffsetVerificationType(private val offset: Int) : VerificationType,
         EncodedVerificationType {
-    override val isLong: Boolean
-        get() = false
+    override val isLong: Boolean = false
 
     override fun isAssignable(expectedType: VerificationType): Boolean {
-        return expectedType!!.isAssignable(VerificationType.UNITIALIZED)
+        return expectedType.isAssignable(VerificationType.UNITIALIZED)
     }
 
     override fun write(encodableWriter: VerificationTypeEncodableWriter) {

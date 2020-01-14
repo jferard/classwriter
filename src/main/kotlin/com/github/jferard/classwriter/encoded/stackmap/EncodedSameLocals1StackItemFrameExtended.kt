@@ -34,14 +34,14 @@ import com.github.jferard.classwriter.internal.context.MethodContext
  * }
  * ```
  */
-class EncodedSameLocals1StackItemFrameExtended constructor(private val offsetDelta: Int,
-                                                           private val encodedFirstStackItemVerificationType: EncodedVerificationType) :
+class EncodedSameLocals1StackItemFrameExtended(private val offsetDelta: Int,
+                                               private val encodedFirstStackItemVerificationType: EncodedVerificationType) :
         EncodedStackMapFrame {
 
     override fun write(
             encodedWriter: StackMapFrameEncodedWriter) {
-        return encodedWriter.sameLocals1StackItemFrameExtended(this.offsetDelta,
-                this.encodedFirstStackItemVerificationType)
+        return encodedWriter.sameLocals1StackItemFrameExtended(offsetDelta,
+                encodedFirstStackItemVerificationType)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): StackMapFrame {

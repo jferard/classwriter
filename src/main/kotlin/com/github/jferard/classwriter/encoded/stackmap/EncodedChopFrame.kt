@@ -25,15 +25,16 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
- * ```chop_frame {
- * u1 frame_type = CHOP; // 248-250
- * u2 offset_delta;
+ * ```
+ * chop_frame {
+ *     u1 frame_type = CHOP; // 248-250
+ *     u2 offset_delta;
  * }
- * ``` *
+ * ```
  */
-class EncodedChopFrame(private val k: Int, private val offsetDelta: Int) : EncodedStackMapFrame {
+class EncodedChopFrame(private val frameType: Int, private val offsetDelta: Int) : EncodedStackMapFrame {
     override fun write(encodedWriter: StackMapFrameEncodedWriter) {
-        return encodedWriter.chopFrame(k, offsetDelta)
+        return encodedWriter.chopFrame(frameType, offsetDelta)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): StackMapFrame {

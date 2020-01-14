@@ -35,8 +35,7 @@ class ByteVerificationType(private val code: Int, private val parent: Verificati
         return this
     }
 
-    override val isLong: Boolean
-        get() = false
+    override val isLong: Boolean = false
 
     override fun isAssignable(expectedType: VerificationType): Boolean {
         return this == expectedType ||

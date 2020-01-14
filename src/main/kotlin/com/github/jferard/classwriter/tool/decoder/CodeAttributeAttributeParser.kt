@@ -77,30 +77,29 @@ class CodeAttributeAttributeParser(
      */
     private fun parseStackMapTableEntry(input: DataInput): EncodedStackMapFrame {
         return when (val tag = input.readUnsignedByte()) {
-            in 0..63 -> EncodedSameFrame(tag.toInt())
-            in 64..127 -> EncodedSameLocals1StackItemFrame(tag.toInt() - 64,
-                    parseVerificationType(input))
+            in 0..63 -> EncodedSameFrame(tag)
+            in 64..127 -> EncodedSameLocals1StackItemFrame(tag, parseVerificationType(input))
             in 128..246 -> throw IllegalArgumentException("Future use")
-            247 -> {
+            StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_EXTENDED -> {
                 val offsetDelta = input.readShort()
                 val verificationType = parseVerificationType(input)
                 EncodedSameLocals1StackItemFrameExtended(offsetDelta.toInt(), verificationType)
             }
             in 248..250 -> {
                 val offsetDelta = input.readShort()
-                EncodedChopFrame(251 - tag, offsetDelta.toInt())
+                EncodedChopFrame(tag, offsetDelta.toInt())
             }
-            251 -> {
+            StackMapFrameConstants.SAME_FRAME_EXTENDED -> {
                 val offsetDelta = input.readShort()
                 EncodedSameFrameExtended(offsetDelta.toInt())
             }
             in 252..254 -> {
-                val k = tag - 251
+                val k = tag - StackMapFrameConstants.SAME_FRAME_EXTENDED
                 val offsetDelta = input.readShort()
                 val verificationTypes = (1..k).map { parseVerificationType(input) }
-                EncodedAppendFrame(k, offsetDelta.toInt(), verificationTypes)
+                EncodedAppendFrame(tag, offsetDelta.toInt(), verificationTypes)
             }
-            255 -> {
+            StackMapFrameConstants.FULL_FRAME -> {
                 val offsetDelta = input.readShort()
                 val numberOfLocals = input.readShort()
                 val encodedLocals = (1..numberOfLocals).map { parseVerificationType(input) }
@@ -114,7 +113,7 @@ class CodeAttributeAttributeParser(
 
     private fun parseVerificationType(input: DataInput): EncodedVerificationType {
         val tag = input.readByte()
-        return when(tag.toInt()) {
+        return when (tag.toInt()) {
             VerificationTypeConstants.TOP_CODE -> VerificationType.TOP
             VerificationTypeConstants.INTEGER_CODE -> VerificationType.INTEGER
             VerificationTypeConstants.FLOAT_CODE -> VerificationType.FLOAT
@@ -123,12 +122,12 @@ class CodeAttributeAttributeParser(
             VerificationTypeConstants.NULL_CODE -> VerificationType.NULL
             VerificationTypeConstants.UNINITIALIZED_THIS_CODE -> VerificationType.UNITIALIZED_THIS
             VerificationTypeConstants.OBJECT_CODE -> {
-                val classIndex = input.readShort()
-                EncodedObjectVerificationType(classIndex.toInt())
+                val classIndex = input.readUnsignedShort()
+                EncodedObjectVerificationType(classIndex)
             }
             VerificationTypeConstants.UNINITIALIZED_VARIABLE_CODE -> {
-                val offset = input.readShort()
-                EncodedUnitializedVerificationType(offset.toInt())
+                val offset = input.readUnsignedShort()
+                EncodedUnitializedVerificationType(offset)
             }
             else -> throw IllegalArgumentException("Should not happen")
         }

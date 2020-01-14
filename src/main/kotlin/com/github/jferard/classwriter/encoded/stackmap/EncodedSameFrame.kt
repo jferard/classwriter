@@ -18,7 +18,6 @@
  */
 package com.github.jferard.classwriter.encoded.stackmap
 
-import com.github.jferard.classwriter.Writable
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrame
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
@@ -26,15 +25,15 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
- * ```same_frame {
- * u1 frame_type = SAME; / * 0-63 * /
+ * ```
+ * same_frame {
+ *     u1 frame_type = SAME; / * 0-63 * /
  * }
-` * <pre>
-</pre></pre> */
-class EncodedSameFrame(private val offsetDelta: Int) : EncodedStackMapFrame {
-    override fun write(
-            writableFactory: StackMapFrameEncodedWriter) {
-        return writableFactory.sameFrame(offsetDelta)
+ * ```
+ * */
+class EncodedSameFrame(private val frameType: Int) : EncodedStackMapFrame {
+    override fun write(encodedWriter: StackMapFrameEncodedWriter) {
+        return encodedWriter.sameFrame(frameType)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): StackMapFrame {
