@@ -24,14 +24,15 @@ import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.writer.encoded.AnnotationsAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
 
 class EncodedParameterAnnotationsAttribute(private val attributeNameIndex: Int, private val
 parameterAnnotations: List<List<EncodedAnnotation>>) :
-        EncodedCFMAttribute<ParameterAnnotationsAttribute, EncodedParameterAnnotationsAttribute, AnnotationsEncodedWriter> {
-    override fun write(encodedWriter: AnnotationsEncodedWriter) {
+        EncodedCFMAttribute<ParameterAnnotationsAttribute, EncodedParameterAnnotationsAttribute, AnnotationsAttributeEncodedWriter> {
+    override fun write(encodedWriter: AnnotationsAttributeEncodedWriter) {
         parameterAnnotations.forEach {
-            encodedWriter.annotationAttribute(attributeNameIndex, it)
+            encodedWriter.annotationsAttribute(attributeNameIndex, it)
         }
     }
 

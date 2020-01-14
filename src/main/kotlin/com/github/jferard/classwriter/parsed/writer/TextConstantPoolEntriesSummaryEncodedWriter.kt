@@ -70,7 +70,7 @@ class TextConstantPoolEntriesSummaryEncodedWriter(private val output: Writer, pr
     }
 
     override fun integerEntry(value: Int) {
-        TODO("not implemented")
+        output.write(value.toString())
     }
 
     override fun methodHandleEntry(kind: Int, index: Int) {

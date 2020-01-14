@@ -18,34 +18,58 @@
  */
 package com.github.jferard.classwriter.parsed.writer
 
+import com.github.jferard.classwriter.bytecode.writer.TextAnnotationEncodedWriter
+import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
-import com.github.jferard.classwriter.writer.encoded.CommonAttributeEncodedWriter
+import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedInnerClass
-import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.internal.access.ClassAccess
+import com.github.jferard.classwriter.writer.encoded.*
 import java.io.Writer
 
 /**
  * Decoder for EncodedAttribute (EncodedCodeAttribute, EncodedStackMapTableAttribute, ...)
  */
 class TextClassFileAttributeEncodedWriter(private val output: Writer,
+                                          private val entries: List<EncodedConstantPoolEntry>,
+                                          private val summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter,
+                                          private val cfmAttributeEncodedWriter: TextCFMAttributeEncodedWriter,
+                                          private val annotationEncodedWriter: AnnotationEncodedWriter,
                                           private val parsedBootstrapMethodsAttributeWritableFactory: ParsedBootstrapMethodsAttributeEncodedWriter) :
-        ClassFileAttributeEncodedWriter,
+        ClassFileAttributeEncodedWriter, AnnotationsAttributeEncodedWriter,
         CommonAttributeEncodedWriter {
     override fun innerClass(innerClassIndex: Int, outerClassNameIndex: Int,
-                            innerClassNameIndex: Int,
+                            innerNameIndex: Int,
                             innerAccessFlags: Int) {
-        throw IllegalStateException()
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "inner class", innerClassIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "outer class", outerClassNameIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "inner name", innerNameIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeAccessFlags(output, ClassAccess.entries,
+                innerAccessFlags)
     }
 
     override fun innerClassesAttribute(attributeNameIndex: Int,
                                        encodedInnerClasses: List<EncodedInnerClass>) {
-        throw IllegalStateException()
+        output.write("/** Inner classes */\n")
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", attributeNameIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU4(output, "attribute len",
+                encodedInnerClasses.map(Encoded<*, *, *>::size).sum())
+        encodedInnerClasses.forEach { it.write(this) }
     }
 
     override fun sourceFileAttribute(attributeNameIndex: Int,
                                      sourceFileNameIndex: Int) {
-        throw IllegalStateException()
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", attributeNameIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU4(output, "attribute len", 2)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "source file name",
+                sourceFileNameIndex, entries, summaryEncodedWriter)
     }
 
     override fun bootstrapMethodsAttribute(nameIndex: Int,
@@ -57,18 +81,44 @@ class TextClassFileAttributeEncodedWriter(private val output: Writer,
     override fun classFileAttributes(
             encodedAttributes: List<EncodedClassFileAttribute<*, *, ClassFileAttributeEncodedWriter>>) {
         output.write("/* ATTRIBUTES */")
+        encodedAttributes.subList(0, 5).forEach { it.write(this) }
+    }
+
+    override fun sourceDebugExtension(attributeNameIndex: Int, debugExtension: ByteArray) {
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", attributeNameIndex,
+                entries, summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU4(output, "attribute len", debugExtension.size)
+        output.write(String(debugExtension, Charsets.UTF_8))
+    }
+
+    override fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int) {
+        cfmAttributeEncodedWriter.signatureAttribute(attributeNameIndex, signatureIndex)
     }
 
     companion object {
-        fun create(output: Writer): TextClassFileAttributeEncodedWriter {
+        fun create(output: Writer,
+                   entries: List<EncodedConstantPoolEntry>,
+                   summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter): TextClassFileAttributeEncodedWriter {
             return TextClassFileAttributeEncodedWriter(
-                    output,
+                    output, entries, summaryEncodedWriter,
+                    TextCFMAttributeEncodedWriter(output, entries, summaryEncodedWriter),
+                    TextAnnotationEncodedWriter(output, entries, summaryEncodedWriter),
                     ParsedBootstrapMethodsAttributeEncodedWriter(output))
         }
     }
 
     override fun syntheticAttribute(attributeNameIndex: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        cfmAttributeEncodedWriter.syntheticAttribute(attributeNameIndex)
+    }
+
+    override fun annotationsAttribute(annotationsNameIndex: Int,
+                                     encodedAnnotations: List<EncodedAnnotation>) {
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", annotationsNameIndex,
+                entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU2(output, "attribute length", encodedAnnotations.map(
+                Encoded<*, *, *>::size).sum())
+        encodedAnnotations.forEach { it.write(annotationEncodedWriter) }
     }
 
 }

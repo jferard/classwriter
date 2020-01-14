@@ -20,7 +20,6 @@ package com.github.jferard.classwriter.encoded.attribute
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
-import com.github.jferard.classwriter.internal.attribute.SourceFileAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.tool.decoder.SourceDebugExtensionAttribute
@@ -29,18 +28,18 @@ import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWr
 /**
  * 4.7.10. The SourceFile Attribute (ClassFile structure)
  * ```
- * SourceFile_attribute {
- *     u2 attribute_name_index;
- *     u4 attribute_length;
- *     u2 sourcefile_index;
+ * SourceDebugExtension_attribute {
+ *      u2 attribute_name_index;
+ *      u4 attribute_length;
+ *      u1 debug_extension[attribute_length];
  * }
- * ``` *
+ * ```
  */
 class EncodedSourceDebugExtensionAttribute(private val attributeNameIndex: Int,
                                            private val debugExtension: ByteArray) :
         EncodedClassFileAttribute<SourceDebugExtensionAttribute, EncodedSourceDebugExtensionAttribute, ClassFileAttributeEncodedWriter> {
     override fun write(encodedWriter: ClassFileAttributeEncodedWriter) {
-        TODO("not implemented")
+        encodedWriter.sourceDebugExtension(attributeNameIndex, debugExtension)
     }
 
     override val size: Int =
@@ -50,7 +49,8 @@ class EncodedSourceDebugExtensionAttribute(private val attributeNameIndex: Int,
         TODO("not implemented")
     }
 
-    override fun decode(context: GlobalContext, codeContext: MethodContext): SourceDebugExtensionAttribute {
+    override fun decode(context: GlobalContext,
+                        codeContext: MethodContext): SourceDebugExtensionAttribute {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

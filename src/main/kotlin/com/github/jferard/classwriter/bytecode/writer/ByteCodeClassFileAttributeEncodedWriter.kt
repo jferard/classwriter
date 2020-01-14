@@ -58,6 +58,14 @@ class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput) :
         }
     }
 
+    override fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun sourceDebugExtension(attributeNameIndex: Int, debugExtension: ByteArray) {
+        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun innerClass(innerClassIndex: Int, outerClassNameIndex: Int,
                             innerClassNameIndex: Int,
                             innerAccessFlags: Int) {

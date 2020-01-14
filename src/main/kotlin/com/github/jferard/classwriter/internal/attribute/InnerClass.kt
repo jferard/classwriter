@@ -33,7 +33,7 @@ class InnerClass(private val innerClassRef: PlainClassRef, private val outerClas
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInnerClass {
         val innerClassIndex: Int = context.addToPool(innerClassRef.toEntry())
-        val innerClassNameIndex: Int = if (innerClassRef.isAnonymous) {
+        val innerNameIndex: Int = if (innerClassRef.isAnonymous) {
             0
         } else {
             context.addToPool(Utf8Entry(
@@ -44,8 +44,8 @@ class InnerClass(private val innerClassRef: PlainClassRef, private val outerClas
         } else {
             context.addToPool(outerClassRef.toEntry())
         }
-        assert(innerClassNameIndex != 0 || outerClassIndex == 0)
-        return EncodedInnerClass(innerClassIndex, outerClassIndex, innerClassNameIndex,
+        assert(innerNameIndex != 0 || outerClassIndex == 0)
+        return EncodedInnerClass(innerClassIndex, outerClassIndex, innerNameIndex,
                 innerAccessFlags)
     }
 

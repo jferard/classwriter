@@ -89,7 +89,8 @@ class TextClassEncodedWriter(private val output: Writer,
                     TextFieldEncodedWriter.create(output, entries),
                     TextMethodEncodedWriter.create(output, entries,
                             constantPoolEntriesSummaryEncodedWriter),
-                    TextClassFileAttributeEncodedWriter.create(output))
+                    TextClassFileAttributeEncodedWriter.create(output, entries,
+                            constantPoolEntriesSummaryEncodedWriter))
         }
     }
 }

@@ -22,8 +22,7 @@ import com.github.jferard.classwriter.api.EncodedWriter
 import com.github.jferard.classwriter.encoded.EncodedMethod
 import com.github.jferard.classwriter.encoded.attribute.EncodedMethodAttribute
 
-interface MethodEncodedWriter :
-        EncodedWriter {
+interface MethodEncodedWriter : EncodedWriter {
     fun method(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
                encodedAttributes: List<EncodedMethodAttribute<*, *, MethodAttributeEncodedWriter>>)
 

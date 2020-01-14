@@ -28,7 +28,7 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedInnerClass
  * Convert Code, Exceptions, RuntimeVisibleParameterAnnotations,
  * RuntimeInvisibleParameterAnnotations,AnnotationDefault, MethodParameters.
  */
-interface ClassFileAttributeEncodedWriter :
+interface ClassFileAttributeEncodedWriter : SignatureAttributeEncodedWriter,
         EncodedWriter {
     fun sourceFileAttribute(attributeNameIndex: Int, sourceFileNameIndex: Int)
     fun innerClass(innerClassIndex: Int, outerClassNameIndex: Int, innerClassNameIndex: Int,
@@ -42,4 +42,7 @@ interface ClassFileAttributeEncodedWriter :
 
     fun classFileAttributes(
             encodedAttributes: List<EncodedClassFileAttribute<*,*, ClassFileAttributeEncodedWriter>>)
+
+    fun sourceDebugExtension
+            (attributeNameIndex: Int, debugExtension: ByteArray)
 }

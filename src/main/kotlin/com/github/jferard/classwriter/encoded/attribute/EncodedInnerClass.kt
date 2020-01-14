@@ -27,20 +27,21 @@ import com.github.jferard.classwriter.internal.context.MethodContext
 
 /** 4.7.6. The InnerClasses Attribute
  * ```
- * {   u2 inner_class_info_index;
- * u2 outer_class_info_index;
- * u2 inner_name_index;
- * u2 inner_class_access_flags;
- * } classes
- * ``` *
+ * {
+ *      u2 inner_class_info_index;
+ *      u2 outer_class_info_index;
+ *      u2 inner_name_index;
+ *      u2 inner_class_access_flags;
+ * }
+ * ```
  */
 class EncodedInnerClass(private val innerClassIndex: Int, private val outerClassIndex: Int,
-                        private val innerClassNameIndex: Int,
+                        private val innerNameIndex: Int,
                         private val innerAccessFlags: Int) :
         Encoded<InnerClass, EncodedInnerClass, ClassFileAttributeEncodedWriter> {
     override fun write(
             encodedWriter: ClassFileAttributeEncodedWriter) {
-        return encodedWriter.innerClass(innerClassIndex, outerClassIndex, innerClassNameIndex,
+        return encodedWriter.innerClass(innerClassIndex, outerClassIndex, innerNameIndex,
                 innerAccessFlags)
     }
 

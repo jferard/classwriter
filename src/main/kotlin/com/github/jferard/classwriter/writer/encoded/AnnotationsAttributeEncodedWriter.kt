@@ -16,21 +16,12 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.github.jferard.classwriter.writer.encoded
 
 import com.github.jferard.classwriter.api.EncodedWriter
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
-import com.github.jferard.classwriter.encoded.attribute.EncodedElementValue
-import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
 
-
-interface AnnotationEncodedWriter : EncodedWriter {
-    fun annotation(descriptorIndex: Int, encodedElementValuePairs: List<EncodedElementValuePair>)
-
-    fun elementValuePair(elementNameIndex: Int,
-                         encodedElementValue: EncodedElementValue)
-
-    fun constantElementValue(tag: Int, elementValueIndex: Int)
-    fun enumConstElementValue(typeNameIndex: Int, constNameIndex: Int)
-    fun arrayValue(values: List<EncodedElementValue>)
+interface AnnotationsAttributeEncodedWriter : EncodedWriter {
+    fun annotationsAttribute(annotationsNameIndex: Int, encodedAnnotations: List<EncodedAnnotation>)
 }

@@ -61,8 +61,8 @@ class ByteCodeMethodAttributeEncodedWriter(
         encodedAttributes.forEach { it.write(codeAttributeWriter) }
     }
 
-    override fun annotationAttribute(annotationsNameIndex: Int,
-                                     encodedAnnotations: List<EncodedAnnotation>) {
+    override fun annotationsAttribute(annotationsNameIndex: Int,
+                                      encodedAnnotations: List<EncodedAnnotation>) {
         val length = encodedAnnotations.map(EncodedAnnotation::size).sum()
         output.writeShort(annotationsNameIndex)
         output.writeInt(length)

@@ -30,7 +30,7 @@ import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
  */
 interface MethodAttributeEncodedWriter :
         EncodedWriter, SyntheticAttributeEncodedWriter, DeprecatedAttributeEncodedWriter,
-        SignatureAttributeEncodedWriter, AnnotationsEncodedWriter {
+        SignatureAttributeEncodedWriter, AnnotationsAttributeEncodedWriter {
     fun codeAttribute(attributeNameIndex: Int, maxStack: Int, maxLocals: Int,
                       encodedCode: EncodedInstruction,
                       encodedExceptions: List<EncodedExceptionInCode>,

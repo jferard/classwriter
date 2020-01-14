@@ -19,15 +19,14 @@
 package com.github.jferard.classwriter.parsed.writer
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.bytecode.writer.TextAnnotationEncodedWriter
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedExceptionInCode
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.*
 import java.io.Writer
 
 class TextMethodAttributeEncodedWriter(private val output: Writer,
@@ -35,6 +34,7 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
                                        private val summaryEncodedWriter: ConstantPoolEntriesEncodedWriter,
                                        private val instructionEncodedWriter: TextInstructionEncodedWriter,
                                        private val cfmAttributeEncodedWriter: TextCFMAttributeEncodedWriter,
+                                       private val annotationEncodedWriter: AnnotationEncodedWriter,
                                        private val codeAttributeAttributeEncodedWriter: CodeAttributeAttributeEncodedWriter) :
         MethodAttributeEncodedWriter {
     override fun codeAttribute(attributeNameIndex: Int, maxStack: Int, maxLocals: Int,
@@ -68,8 +68,12 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
         cfmAttributeEncodedWriter.signatureAttribute(attributeNameIndex, signatureIndex)
     }
 
-    override fun annotationAttribute(annotationsNameIndex: Int,
-                                     encodedAnnotations: List<EncodedAnnotation>) {
+    override fun annotationsAttribute(annotationsNameIndex: Int,
+                                      encodedAnnotations: List<EncodedAnnotation>) {
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", annotationsNameIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU2(output, "attribute length", encodedAnnotations.map(Encoded<*,*,*>::size).sum())
+        encodedAnnotations.forEach { it.write(annotationEncodedWriter) }
     }
 
     override fun exceptionInCode(startPc: Int, endPc: Int, handlerPc: Int,
@@ -90,6 +94,7 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
                     summaryEncodedWriter,
                     TextInstructionEncodedWriter(output, entries, summaryEncodedWriter),
                     TextCFMAttributeEncodedWriter.create(output, entries, summaryEncodedWriter),
+                    TextAnnotationEncodedWriter(output, entries, summaryEncodedWriter),
                     TextCodeAttributeAttributeEncodedWriter.create(output, entries,
                             summaryEncodedWriter)
             )

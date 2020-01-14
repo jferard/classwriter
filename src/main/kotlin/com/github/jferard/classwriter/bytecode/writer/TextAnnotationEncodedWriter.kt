@@ -18,42 +18,56 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValue
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
+import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.parsed.writer.TextConstantPoolEntriesSummaryEncodedWriter
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper.hex
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
-import java.io.DataOutput
+import java.io.Writer
 
-class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
+class TextAnnotationEncodedWriter(private val output: Writer,
+                                  private val entries: List<EncodedConstantPoolEntry>,
+                                  private val summaryEncodedWriter: TextConstantPoolEntriesSummaryEncodedWriter) :
         AnnotationEncodedWriter {
     override fun annotation(descriptorIndex: Int,
                             encodedElementValuePairs: List<EncodedElementValuePair>) {
-        output.writeShort(descriptorIndex)
-        for (encodedElementValuePair in encodedElementValuePairs) {
-            encodedElementValuePair.write(this)
-        }
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "type", descriptorIndex, entries,
+                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU2(output, "num_element_value_pairs",
+                encodedElementValuePairs.size)
+        encodedElementValuePairs.forEach { it.write(this) }
     }
 
     override fun elementValuePair(elementNameIndex: Int,
                                   encodedElementValue: EncodedElementValue) {
-        output.writeShort(elementNameIndex)
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "name", elementNameIndex, entries,
+                summaryEncodedWriter)
         encodedElementValue.write(this)
     }
 
     override fun constantElementValue(tag: Int,
                                       elementValueIndex: Int) {
-        output.writeByte(tag)
-        output.writeShort(elementValueIndex)
+
+        output.write("%s, // tag: %s\n".format(
+                hex(tag), tag.toChar()))
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "name", elementValueIndex, entries,
+                summaryEncodedWriter)
     }
 
     override fun enumConstElementValue(typeNameIndex: Int,
                                        constNameIndex: Int) {
-        output.writeByte('e'.toInt())
-        output.writeShort(typeNameIndex)
-        output.writeShort(constNameIndex)
+        output.write('e'.toInt())
+        output.write(typeNameIndex)
+        output.write(constNameIndex)
     }
 
     override fun arrayValue(values: List<EncodedElementValue>) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.write("%s, // tag: [\n".format(hex('['.toInt())))
+        TextEncodedWriterHelper.writeU2(output, "num_values", values.size)
+        for (encodedElementValuePair in values) {
+            encodedElementValuePair.write(this)
+        }
     }
 }

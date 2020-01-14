@@ -23,7 +23,8 @@ import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.AnnotationsAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.AnnotationsAttributeEncodedWriter
 
 
 /**
@@ -40,12 +41,12 @@ import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
 class EncodedAnnotationsAttribute(
         private val annotationsNameIndex: Int,
         private val encodedAnnotations: List<EncodedAnnotation>) :
-        EncodedCFMAttribute<AnnotationsAttribute, EncodedAnnotationsAttribute, AnnotationsEncodedWriter>,
-        EncodedCodeAttributeAttribute<AnnotationsAttribute, EncodedAnnotationsAttribute, AnnotationsEncodedWriter> {
+        EncodedCFMAttribute<AnnotationsAttribute, EncodedAnnotationsAttribute, AnnotationsAttributeEncodedWriter>,
+        EncodedCodeAttributeAttribute<AnnotationsAttribute, EncodedAnnotationsAttribute, AnnotationsAttributeEncodedWriter> {
 
     override fun write(
-            encodedWriter: AnnotationsEncodedWriter) {
-        return encodedWriter.annotationAttribute(annotationsNameIndex, encodedAnnotations)
+            encodedWriter: AnnotationsAttributeEncodedWriter) {
+        return encodedWriter.annotationsAttribute(annotationsNameIndex, encodedAnnotations)
     }
 
     override val size: Int

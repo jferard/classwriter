@@ -27,9 +27,9 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 
-class EncodedArrayValue(values: List<EncodedElementValue>) : EncodedElementValue {
+class EncodedArrayValue(private val values: List<EncodedElementValue>) : EncodedElementValue {
     override fun write(encodedWriter: AnnotationEncodedWriter) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        encodedWriter.arrayValue(values)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): ElementValue {
