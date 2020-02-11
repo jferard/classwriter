@@ -24,11 +24,13 @@ import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
 class MethodParser(private val methodAttributeParser: MethodAttributeParser) :
         Parser<EncodedMethod> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedMethod {
+        Logger.getLogger("cw").warning("parse method")
         val accessFlags = input.readUnsignedShort()
         val nameIndex = input.readUnsignedShort()
         val descriptorIndex = input.readUnsignedShort()

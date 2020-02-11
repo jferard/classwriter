@@ -35,6 +35,7 @@ class ByteCodeStackMapFrameEncodedWriter(
     }
 
     override fun sameFrame(frameType: Int) {
+        assert(frameType < 64)
         output.writeByte(StackMapFrameConstants.SAME_FRAME_BASE + frameType)
     }
 
@@ -58,7 +59,8 @@ class ByteCodeStackMapFrameEncodedWriter(
 
     override fun sameLocals1StackItemFrame(frameType: Int,
                                            encodedFirstStackItemVerificationType: EncodedVerificationType) {
-        output.writeByte(StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_BASE + frameType)
+        assert(frameType in 65..127)
+        output.writeByte(frameType)
         encodedFirstStackItemVerificationType.write(verificationTypeFactory)
     }
 

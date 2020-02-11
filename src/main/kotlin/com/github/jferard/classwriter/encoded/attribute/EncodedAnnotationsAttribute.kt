@@ -49,8 +49,7 @@ class EncodedAnnotationsAttribute(
         return encodedWriter.annotationsAttribute(annotationsNameIndex, encodedAnnotations)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
+    override val size: Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
                 Sized.listSize(encodedAnnotations)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {

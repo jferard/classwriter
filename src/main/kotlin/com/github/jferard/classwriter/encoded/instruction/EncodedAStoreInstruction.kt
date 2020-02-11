@@ -30,10 +30,10 @@ import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWri
  * aaload: load onto the stack a reference from an array.
  * Stack: (arrayref, index) -> (value).
  */
-class EncodedAStoreInstruction(private val opcode: Int, private val referenceIndex: Int) :
+class EncodedAStoreInstruction(private val referenceIndex: Int) :
         EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.aStoreInstruction(opcode, referenceIndex)
+        return encodedWriter.aStoreInstruction(referenceIndex)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {

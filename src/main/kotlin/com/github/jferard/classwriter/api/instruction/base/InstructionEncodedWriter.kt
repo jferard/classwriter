@@ -28,7 +28,7 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
 interface InstructionEncodedWriter : EncodedWriter {
     /** Load reference from local variable */
     fun aLoadNInstruction(opcode: Int)
-    fun aStoreInstruction(opcode: Int, referenceIndex: Int)
+    fun aStoreInstruction(referenceIndex: Int)
     fun gotoWInstruction(branch: Int)
     fun returnInstruction(opcode: Int)
     fun blockInstruction(

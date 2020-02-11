@@ -214,17 +214,25 @@ internal class ClassFileBuilderTest {
 
     companion object {
         private fun testHelper(file: File) {
-            println(file)
+            println("*************************")
+            println("READ $file")
+            println("*************************")
             val bytes = java.nio.file.Files.readAllBytes(file.toPath())
             val stream1 = ByteArrayInputStream(bytes)
             println(ConstantPoolHelper.viewClass(stream1))
             val stream = ByteArrayInputStream(bytes)
             val encodedClass = ConstantPoolHelper.parseClassByteCode(stream)
             val fname2 = file.absolutePath + ".bkp"
+            println("*************************")
+            println("WRITE $fname2")
+            println("*************************")
             val out = DataOutputStream(FileOutputStream(fname2))
             val writer = ByteCodeClassEncodedWriter.create(out)
             encodedClass.write(writer)
             // Assertions.assertTrue(Files.equal(file, File(fname2)))
+            println("*************************")
+            println("VERIFY $fname2")
+            println("*************************")
             val bytes2 = java.nio.file.Files.readAllBytes(File(fname2).toPath())
             val stream3 = ByteArrayInputStream(bytes2)
             println(ConstantPoolHelper.viewClass(stream3))

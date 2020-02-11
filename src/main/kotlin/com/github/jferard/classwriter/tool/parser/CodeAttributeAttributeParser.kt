@@ -77,7 +77,8 @@ class CodeAttributeAttributeParser(
     private fun parseStackMapTableEntry(input: DataInput): EncodedStackMapFrame {
         return when (val tag = input.readUnsignedByte()) {
             in 0..63 -> EncodedSameFrame(tag)
-            in 64..127 -> EncodedSameLocals1StackItemFrame(tag, parseVerificationType(input))
+            in 64..127 -> EncodedSameLocals1StackItemFrame(
+                    tag, parseVerificationType(input))
             in 128..246 -> throw IllegalArgumentException("Future use")
             StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_EXTENDED -> {
                 val offsetDelta = input.readShort()

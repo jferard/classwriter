@@ -37,18 +37,39 @@ class ByteCodeMethodAttributeEncodedWriter(
         private val codeAttributeWriter: CodeAttributeAttributeEncodedWriter) :
         MethodAttributeEncodedWriter {
 
+    /**
+     * 4.7.3. The Code Attribute
+     *```
+     * Code_attribute {
+     *     u2 attribute_name_index;
+     *     u4 attribute_length;
+     *     u2 max_stack;
+     *     u2 max_locals;
+     *     u4 code_length;
+     *     u1 code[code_length];
+     *     u2 exception_table_length;
+     *     {   u2 start_pc;
+     *         u2 end_pc;
+     *         u2 handler_pc;
+     *         u2 catch_type;
+     *     } exception_table[exception_table_length];
+     *     u2 attributes_count;
+     *     attribute_info attributes[attributes_count];
+     * }
+     *```
+     */
     override fun codeAttribute(attributeNameIndex: Int, maxStack: Int, maxLocals: Int,
                                encodedCode: EncodedInstruction,
                                encodedExceptions: List<EncodedExceptionInCode>,
                                encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>>) {
-        val length: Int = 2 * BytecodeHelper.SHORT_SIZE + // max
+        val length: Int = 2 * BytecodeHelper.SHORT_SIZE + // max stack + locals
                 BytecodeHelper.INT_SIZE + // code length
-                encodedCode.size +
+                encodedCode.size + // code
                 BytecodeHelper.SHORT_SIZE + // except length
                 Sized.listSize(encodedExceptions) +
                 BytecodeHelper.SHORT_SIZE + // attr count
                 Sized.listSize(encodedAttributes)
-        print("write code: $attributeNameIndex")
+        println("write code: $attributeNameIndex, full len=$length, code size = ${encodedCode.size}, exc:${Sized.listSize(encodedExceptions)}; attr!${Sized.listSize(encodedAttributes)}")
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(maxStack)
@@ -91,6 +112,7 @@ class ByteCodeMethodAttributeEncodedWriter(
         val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
             BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
         }.sum()
+        output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeByte(parameterAnnotations.size)
         parameterAnnotations.forEach(this::paramAnnotations)

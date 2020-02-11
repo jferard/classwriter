@@ -331,7 +331,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
                 branch))
     }
 
-    override fun aStoreInstruction(opcode: Int, referenceIndex: Int) {
+    override fun aStoreInstruction(referenceIndex: Int) {
         output.write("OpCodes.ASTORE, ")
         TextEncodedWriterHelper.writeByteEntryIndex(output, "reference", referenceIndex, entries,
                 summaryEncodedWriter)

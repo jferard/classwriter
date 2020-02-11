@@ -18,6 +18,8 @@
  */
 package com.github.jferard.classwriter.tool.parser
 
+import com.github.jferard.classwriter.Sized
+import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTypeTable
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTypeTableAttribute
@@ -26,16 +28,26 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 
+/**
+ * ```
+ * attribute_info {
+ *     u2 attribute_name_index;
+ *     u4 attribute_length;
+ *     u1 info[attribute_length];
+ * }
+ * ```
+ */
 class EncodeLocalVariableTypeTableAttribute(private val attributeNameIndex: Int,
                                             private val encodedLocalVariableTables: List<EncodedLocalVariableTypeTable>) :
         EncodedCodeAttributeAttribute<LocalVariableTypeTableAttribute, EncodedLocalVariableTypeTableAttribute, CodeAttributeAttributeEncodedWriter> {
     override fun write(
             encodedWriter: CodeAttributeAttributeEncodedWriter) {
-        throw IllegalStateException()
+        TODO()
     }
 
-    override val size: Int
-        get() = 0
+    override val size: Int =
+            BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE + Sized.listSize(
+                    encodedLocalVariableTables)
 
     override fun decode(context: GlobalContext,
                         codeContext: MethodContext): LocalVariableTypeTableAttribute {

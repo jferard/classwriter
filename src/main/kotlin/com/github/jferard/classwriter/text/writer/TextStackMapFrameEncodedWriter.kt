@@ -40,7 +40,7 @@ class TextStackMapFrameEncodedWriter(
                                            encodedFirstStackItemVerificationType: EncodedVerificationType) {
         output.write("  /* same_locals_1_stack_item_frame */\n")
         output.write("%s, // frame_type: %s, offset_delta: %s\n".format(
-                hex(frameType), frameType, frameType - 64))
+                hex(frameType), frameType, frameType - StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_BASE))
         encodedFirstStackItemVerificationType.write(verificationTypeWriter)
     }
 

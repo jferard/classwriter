@@ -41,7 +41,14 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
 
     override fun blockInstruction(
             encodedInstructions: List<EncodedInstruction>) {
-        encodedInstructions.forEach { println(it); it.write(this) }
+        var i=0
+        encodedInstructions.forEach {
+            println("write: $it, ${it.size}");
+            i += it.size
+            println("i=$i")
+            it.write(this)
+
+        }
     }
 
     override fun mock() {
@@ -179,7 +186,7 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
 
     override fun iStoreInstruction(index: Int) {
         output.writeByte(OpCodes.ISTORE)
-        output.writeShort(index)
+        output.writeByte(index)
     }
 
     override fun iStoreNInstruction(opcode: Int) {
@@ -194,8 +201,8 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
         output.writeByte(opcode)
     }
 
-    override fun aStoreInstruction(opcode: Int, referenceIndex: Int) {
-        output.writeByte(opcode)
+    override fun aStoreInstruction(referenceIndex: Int) {
+        output.writeByte(OpCodes.ASTORE)
         output.writeShort(referenceIndex)
     }
 

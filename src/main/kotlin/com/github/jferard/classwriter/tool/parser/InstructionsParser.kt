@@ -28,12 +28,15 @@ import java.io.DataInput
 class InstructionsParser : Parser<EncodedInstruction> {
     override fun parse(input: DataInput): EncodedInstruction {
         val codeLength = input.readInt().toLong()
+        println("parse code len: $codeLength")
         val ret: MutableList<EncodedInstruction> = mutableListOf()
-        var i = 1
-        while (i <= codeLength) {
+        var i = 0
+        while (i < codeLength) {
             val element = parseInstruction(input)
+            println("parsed: $element, ${element.size}")
             ret.add(element)
             i += element.size
+            println("i: $i")
         }
         return EncodedBlockInstruction(ret.toList())
     }
@@ -43,11 +46,9 @@ class InstructionsParser : Parser<EncodedInstruction> {
         return when (opcode) {
             OpCodes.ARETURN -> EncodedInstructionConstants.ARETURN_INSTRUCTION
             OpCodes.ATHROW -> EncodedInstructionConstants.ATHROW_INSTRUCTION
-            OpCodes.ALOAD -> EncodedALoadInstruction(
-                    input.readUnsignedByte())
+            OpCodes.ALOAD -> EncodedALoadInstruction(input.readUnsignedByte())
             OpCodes.ALOAD_0, OpCodes.ALOAD_1, OpCodes.ALOAD_2, OpCodes.ALOAD_3 -> EncodedInstructionConstants.ALOAD_INSTRUCTIONS[opcode - OpCodes.ALOAD_0]
-            OpCodes.ASTORE, OpCodes.ASTORE_1, OpCodes.ASTORE_2, OpCodes.ASTORE_3 -> EncodedAStoreInstruction(
-                    opcode, input.readUnsignedByte())
+            OpCodes.ASTORE -> EncodedAStoreInstruction(input.readUnsignedByte())
             OpCodes.ASTORE_0, OpCodes.ASTORE_1, OpCodes.ASTORE_2, OpCodes.ASTORE_3 -> EncodedInstructionConstants.ASTORE_INSTRUCTIONS[opcode - OpCodes.ASTORE_0]
             OpCodes.ACONST_NULL -> EncodedInstructionConstants.ACONST_NULL_INSTRUCTION
             OpCodes.BIPUSH -> BiPushInstruction(input.readUnsignedByte())

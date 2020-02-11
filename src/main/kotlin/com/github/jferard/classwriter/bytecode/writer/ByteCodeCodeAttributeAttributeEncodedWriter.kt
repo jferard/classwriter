@@ -37,7 +37,8 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
 
     override fun stackMapTableAttribute(attributeNameIndex: Int,
                                         encodedStackMapFrames: List<EncodedStackMapFrame>) {
-        val length = Sized.listSize(encodedStackMapFrames)
+        println("sma $encodedStackMapFrames")
+        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedStackMapFrames)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(encodedStackMapFrames.size)

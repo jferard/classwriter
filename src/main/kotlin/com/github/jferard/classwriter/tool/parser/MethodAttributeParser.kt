@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.parser
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.encoded.attribute.*
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.AnnotationsAttribute
@@ -80,6 +81,7 @@ class MethodAttributeParser(
         val maxLocals = input.readUnsignedShort()
         val encodedCode = instructionsParser.parse(input)
         val exceptionTableLength = input.readUnsignedShort()
+        println("length: $length, exceptionTableLength $exceptionTableLength")
         val encodedExceptions: List<EncodedExceptionInCode> = (1..exceptionTableLength).map {
             parseEncodedExceptionInCode(input)
         }
@@ -88,7 +90,7 @@ class MethodAttributeParser(
                 CodeAttributeAttributeEncodedWriter>> = (1..attributesCount).map {
             codeAttributeAttributeParser.parse(input)
         }
-        println("code $length, $maxStack, $maxLocals, ${encodedCode.size}, $exceptionTableLength, $attributesCount, ${encodedAttributes}")
+        println("full len=$length, code size = ${encodedCode.size}, exc:${Sized.listSize(encodedExceptions)}, attr:${Sized.listSize(encodedAttributes)}")
         return EncodedCodeAttribute(attributeNameIndex, maxStack, maxLocals,
                 encodedCode, encodedExceptions, encodedAttributes)
     }
