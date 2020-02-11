@@ -22,9 +22,8 @@ import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.internal.instruction.ExceptionInCode
+import com.github.jferard.classwriter.api.instruction.ExceptionInCode
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 
 /**
  * 4.7.3. The Code Attribute > exception_table[]

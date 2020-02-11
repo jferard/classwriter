@@ -22,11 +22,9 @@ import com.github.jferard.classwriter.encoded.EncodedCode
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.internal.instruction.Instruction
-import com.github.jferard.classwriter.internal.instruction.base.BaseInstruction
+import com.github.jferard.classwriter.api.instruction.base.BaseInstruction
 import com.github.jferard.classwriter.pool.Encodable
 import com.github.jferard.classwriter.pool.EncodableWriter
-import java.util.stream.Collectors
 
 class Code(private val instructions: List<BaseInstruction>) :
         Encodable<Code, EncodedCode, EncodableWriter> {

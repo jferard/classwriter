@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.Writable
 import com.github.jferard.classwriter.api.EncodedWriter
 import com.github.jferard.classwriter.internal.context.GlobalContext
@@ -26,18 +27,16 @@ import com.github.jferard.classwriter.internal.context.MethodContext
 /**
  * @param <F> the factory that produces the writable
 </F> */
-interface Encoded<out E, F, in W> where F : Encoded<E, F, W>, W: EncodedWriter {
+interface Encoded<out E, F, in W> : Sized where F : Encoded<E, F, W>, W: EncodedWriter {
     /**
      * Writes this
      * @param encodedWriter the writer
      */
     fun write(encodedWriter: W)
 
+    /**
+     * Return the decoded version of this
+     */
     fun decode(context: GlobalContext,
                codeContext: MethodContext): E
-
-    /**
-     * the encoded size of the object
-     */
-    val size: Int
 }

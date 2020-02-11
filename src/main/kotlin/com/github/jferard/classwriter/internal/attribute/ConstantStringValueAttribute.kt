@@ -19,10 +19,10 @@
 package com.github.jferard.classwriter.internal.attribute
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedConstantValueAttribute
+import com.github.jferard.classwriter.encoded.pool.EncodedUtf8Entry
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.pool.StringEntry
-import com.github.jferard.classwriter.pool.Utf8Entry
 import com.github.jferard.classwriter.writer.encodable.FieldAttributeEncodableWriter
 
 
@@ -33,8 +33,8 @@ class ConstantStringValueAttribute internal constructor(private val value: Strin
         ConstantFieldAttribute<ConstantStringValueAttribute> {
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedConstantValueAttribute {
-        val attributeNameIndex: Int = context
-                .addEncodedToPool(Utf8Entry(
+        val attributeNameIndex: Int = context // TODO: addToPool(...) ??
+                .addEncodedToPool(EncodedUtf8Entry(
                         ConstantValueAttributeFactory.CONSTANT_VALUE_NAME))
         val valueIndex: Int =
                 context.addToPool(StringEntry(value))

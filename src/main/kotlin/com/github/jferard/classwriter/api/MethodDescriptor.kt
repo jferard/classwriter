@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.api
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.internal.descriptor.MethodDescriptorBuilder
 import com.github.jferard.classwriter.pool.ConstantPoolEntry
 import com.github.jferard.classwriter.pool.Utf8Entry
@@ -49,11 +50,9 @@ class MethodDescriptor(val retType: ValueType?,
      * information can also be derived from the descriptor of the selected method. The redundancy
      * is historical.
      */
-    val argsSize: Int
-        get() = argTypes.map { obj: ValueType -> obj.size }.sum()
+    val argsSize: Int = Sized.listSize(argTypes)
 
-    val argsCount: Int
-        get() = argTypes.size
+    val argsCount: Int = argTypes.size
 
     override fun toString(): String {
         val sb = StringBuilder()

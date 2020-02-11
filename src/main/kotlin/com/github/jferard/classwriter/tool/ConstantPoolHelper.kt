@@ -18,12 +18,13 @@
  */
 package com.github.jferard.classwriter.tool
 
+import com.github.jferard.classwriter.encoded.EncodedClassFile
 import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.parsed.writer.*
-import com.github.jferard.classwriter.tool.decoder.ClassFileParser
-import com.github.jferard.classwriter.tool.decoder.ConstantPoolParser
-import com.github.jferard.classwriter.tool.decoder.HeaderParser
-import com.github.jferard.classwriter.tool.decoder.InterfacesParser
+import com.github.jferard.classwriter.text.writer.*
+import com.github.jferard.classwriter.tool.parser.ClassFileParser
+import com.github.jferard.classwriter.tool.parser.ConstantPoolParser
+import com.github.jferard.classwriter.tool.parser.HeaderParser
+import com.github.jferard.classwriter.tool.parser.InterfacesParser
 import java.io.*
 
 object ConstantPoolHelper {
@@ -42,8 +43,20 @@ object ConstantPoolHelper {
     @kotlin.jvm.JvmStatic
     @Throws(IOException::class)
     fun viewClass(inputStream: InputStream): String {
-        val input: DataInput = DataInputStream(inputStream)
+        val encodedClassFile =
+                parseClassByteCode(inputStream)
         val w: Writer = StringWriter()
+        val entries = encodedClassFile.entries
+        val writer = TextClassEncodedWriter.create(w, entries)
+        encodedClassFile.write(writer)
+        return w.toString()
+    }
+
+    @kotlin.jvm.JvmStatic
+    @Throws(IOException::class)
+    fun parseClassByteCode(
+            inputStream: InputStream): EncodedClassFile {
+        val input: DataInput = DataInputStream(inputStream)
         val headerParser = HeaderParser()
         val constantPoolParser = ConstantPoolParser()
         val interfacesParser = InterfacesParser()
@@ -51,9 +64,6 @@ object ConstantPoolHelper {
                 constantPoolParser, interfacesParser)
         val encodedClassFile =
                 decoder.parse(input)
-        val entries = encodedClassFile.entries
-        val writer = TextClassEncodedWriter.create(w, entries)
-        encodedClassFile.write(writer)
-        return w.toString()
+        return encodedClassFile
     }
 }

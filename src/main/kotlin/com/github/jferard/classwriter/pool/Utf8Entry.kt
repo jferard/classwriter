@@ -19,22 +19,19 @@
 package com.github.jferard.classwriter.pool
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.encoded.pool.EncodedUtf8Entry
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
-import java.nio.charset.StandardCharsets
 
-class Utf8Entry(private val text: String) : ConstantPoolEntry, EncodedConstantPoolEntry {
+class Utf8Entry(private val text: String) : ConstantPoolEntry {
     override fun addToPool(pool: GlobalContext): Int {
-        return pool.addEncodedToPool(this)
+        return pool.addEncodedToPool(EncodedUtf8Entry(text))
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -56,32 +53,10 @@ class Utf8Entry(private val text: String) : ConstantPoolEntry, EncodedConstantPo
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedConstantPoolEntry {
-        return this
+        return EncodedUtf8Entry(text)
     }
 
     override fun toString(): String {
         return "Utf8Entry['$text']"
     }
-
-    override fun write(
-            encodedWriter: ConstantPoolEntriesEncodedWriter) {
-        return encodedWriter.utf8Entry(text)
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): ConstantPoolEntry {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
-                text.toByteArray(StandardCharsets.UTF_8).size
-
-    override fun utf8Text(): String {
-        return text
-    }
-
-    override fun toObject(): Any {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

@@ -27,10 +27,12 @@ import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
  * 4.7.16. The RuntimeVisibleAnnotations Attribute
- * ```{   u2            element_name_index;
- * element_value value;
+ * ```
+ * {
+ *     u2            element_name_index;
+ *     element_value value;
  * } element_value_pairs
-* ``` *
+ * ```
  */
 class EncodedElementValuePair(private val elementNameIndex: Int,
                               private val encodedElementValue: EncodedElementValue) :

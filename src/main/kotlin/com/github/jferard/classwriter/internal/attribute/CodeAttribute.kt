@@ -18,14 +18,14 @@
  */
 package com.github.jferard.classwriter.internal.attribute
 
+import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedExceptionInCode
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.internal.instruction.Instruction
-import com.github.jferard.classwriter.tool.decoder.EncodedInstructions
 import com.github.jferard.classwriter.writer.encodable.CodeAttributeEncodableWriter
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 
@@ -46,13 +46,13 @@ class CodeAttribute(
         }
         code.preprocess(context, codeContext)
         val codeLength: Int = codeContext.curOffset
-        val encodedCode =  code.encode(context, MethodContext.create(0))
+        val encodedCode = code.encode(context, MethodContext.create(0))
         val encodedExceptionsInCode: List<EncodedExceptionInCode> =
                 codeContext.getExceptions().map { it.encode(context, MethodContext.create(0)) }
         val encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>> =
                 attributes.map { it.encode(context, MethodContext.create(0)) }
         val attributesLength =
-                encodedAttributes.map(EncodedCodeAttributeAttribute<*, *, *>::size).sum()
+                Sized.listSize(encodedAttributes)
         return EncodedCodeAttribute(attributeNameIndex, codeContext.maxStack,
                 codeContext.maxLocals, encodedCode, encodedExceptionsInCode,
                 encodedAttributes)

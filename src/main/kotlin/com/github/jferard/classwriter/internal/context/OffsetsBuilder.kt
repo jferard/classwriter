@@ -21,7 +21,7 @@ package com.github.jferard.classwriter.internal.context
 import com.github.jferard.classwriter.api.Label
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrame
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameData
-import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.Instruction
 import java.util.*
 import kotlin.collections.HashMap
 

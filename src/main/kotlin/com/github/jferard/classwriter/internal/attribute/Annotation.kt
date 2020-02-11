@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.internal.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.api.FieldDescriptor
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
@@ -31,7 +32,7 @@ import com.github.jferard.classwriter.writer.encodable.AnnotationEncodableWriter
  */
 class Annotation(private val descriptor: FieldDescriptor,
                  private val elementValuePairs: List<ElementValuePair>) :
-        Encodable<Annotation, EncodedAnnotation, AnnotationEncodableWriter> {
+        Encodable<Annotation, EncodedAnnotation, AnnotationEncodableWriter>, Sized {
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedAnnotation {
         val descriptorIndex: Int = context.addToPool(descriptor.toPoolEntry())
@@ -43,7 +44,7 @@ class Annotation(private val descriptor: FieldDescriptor,
                 encodedElementValuePairs)
     }
 
-    val size: Int = 1
+    override val size: Int = 1
     override fun write(encodableWriter: AnnotationEncodableWriter) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

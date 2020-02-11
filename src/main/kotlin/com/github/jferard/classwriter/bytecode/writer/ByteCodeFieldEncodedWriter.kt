@@ -19,10 +19,10 @@
 package com.github.jferard.classwriter.bytecode.writer
 
 
-import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
 import com.github.jferard.classwriter.encoded.EncodedField
 import com.github.jferard.classwriter.encoded.attribute.EncodedFieldAttribute
+import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
 import java.io.DataOutput
 
 class ByteCodeFieldEncodedWriter(
@@ -42,5 +42,12 @@ class ByteCodeFieldEncodedWriter(
             encodedFields: List<EncodedField>) {
         output.writeShort(encodedFields.size)
         encodedFields.forEach { it.write(this) }
+    }
+
+    companion object {
+        fun create(output: DataOutput): ByteCodeFieldEncodedWriter {
+            return ByteCodeFieldEncodedWriter(output, ByteCodeFieldAttributeEncodedWriter(
+                    output))
+        }
     }
 }

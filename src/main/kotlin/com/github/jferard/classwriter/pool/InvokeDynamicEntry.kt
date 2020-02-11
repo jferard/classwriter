@@ -36,12 +36,10 @@ class InvokeDynamicEntry(private val bootstrapMethod: BootstrapMethod, private v
     override fun addToPool(pool: GlobalContext): Int {
         val encodedInvokeDynamicEntry = encode(pool,
                 MethodContext.create(0))
-        return pool!!.addEncodedToPool(encodedInvokeDynamicEntry)
+        return pool.addEncodedToPool(encodedInvokeDynamicEntry)
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -63,7 +61,7 @@ class InvokeDynamicEntry(private val bootstrapMethod: BootstrapMethod, private v
 
     override fun encode(pool: GlobalContext,
                         codeContext: MethodContext): EncodedInvokeDynamicEntry {
-        val bootstrapIndex = pool!!.addBootstrapMethod(bootstrapMethod)
+        val bootstrapIndex = pool.addBootstrapMethod(bootstrapMethod)
         val nameAndTypeIndex = pool.addToPool(NameAndTypeEntry(name, descriptor))
         return EncodedInvokeDynamicEntry(bootstrapIndex, nameAndTypeIndex)
     }

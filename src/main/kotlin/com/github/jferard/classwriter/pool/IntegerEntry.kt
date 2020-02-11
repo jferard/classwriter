@@ -20,20 +20,18 @@ package com.github.jferard.classwriter.pool
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.encoded.pool.EncodedIntegerEntry
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 
-class IntegerEntry(private val value: Int) : ConstantPoolEntry, EncodedConstantPoolEntry {
+class IntegerEntry(private val value: Int) : ConstantPoolEntry {
     override fun addToPool(constantPool: GlobalContext): Int {
-        return constantPool.addEncodedToPool(this)
+        return constantPool.addEncodedToPool(EncodedIntegerEntry(this.value))
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -55,27 +53,7 @@ class IntegerEntry(private val value: Int) : ConstantPoolEntry, EncodedConstantP
 
     override fun encode(pool: GlobalContext,
                         codeContext: MethodContext): EncodedConstantPoolEntry {
-        return this
-    }
-
-    override fun write(
-            encodedWriter: ConstantPoolEntriesEncodedWriter) {
-        return encodedWriter.integerEntry(value)
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): ConstantPoolEntry {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + BytecodeHelper.INT_SIZE
-
-    override fun utf8Text(): String {
-        throw IllegalArgumentException()
-    }
-
-    override fun toObject(): Any {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        return EncodedIntegerEntry(value)
     }
 
     override fun toString(): String {

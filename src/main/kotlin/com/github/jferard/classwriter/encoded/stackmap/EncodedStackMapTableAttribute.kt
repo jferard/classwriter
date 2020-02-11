@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded.stackmap
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.internal.attribute.StackMapTableAttribute
@@ -52,5 +53,5 @@ class EncodedStackMapTableAttribute(private val attributeNameIndex: Int,
 
     override val size: Int
         get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                encodedStackMapFrames.map(EncodedStackMapFrame::size).sum()
+                Sized.listSize(encodedStackMapFrames)
 }

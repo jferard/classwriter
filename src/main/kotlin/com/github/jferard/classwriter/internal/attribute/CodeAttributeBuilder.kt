@@ -20,7 +20,7 @@ package com.github.jferard.classwriter.internal.attribute
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.Instruction
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 
 /**

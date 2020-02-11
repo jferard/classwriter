@@ -32,9 +32,7 @@ class MethodTypeEntry(
         throw IllegalStateException()
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

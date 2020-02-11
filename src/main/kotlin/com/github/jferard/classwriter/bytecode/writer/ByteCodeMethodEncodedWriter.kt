@@ -18,10 +18,10 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import com.github.jferard.classwriter.encoded.EncodedMethod
 import com.github.jferard.classwriter.encoded.attribute.EncodedMethodAttribute
+import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import java.io.DataOutput
 
 class ByteCodeMethodEncodedWriter(
@@ -47,8 +47,10 @@ class ByteCodeMethodEncodedWriter(
     }
 
     companion object {
-        fun create(output: DataOutput): MethodEncodedWriter {
-            TODO("do it")
+        fun create(
+                output: DataOutput): ByteCodeMethodEncodedWriter {
+            return ByteCodeMethodEncodedWriter(output,
+                    ByteCodeMethodAttributeEncodedWriter.create(output))
         }
     }
 }

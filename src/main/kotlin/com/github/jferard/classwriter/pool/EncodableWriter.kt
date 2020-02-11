@@ -21,4 +21,5 @@ package com.github.jferard.classwriter.pool
 
 interface EncodableWriter {
     fun deprecated()
+    fun binaryOp(opcode: Int)
 }

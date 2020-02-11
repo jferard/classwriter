@@ -22,7 +22,7 @@ import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.tool.decoder.SourceDebugExtensionAttribute
+import com.github.jferard.classwriter.tool.parser.SourceDebugExtensionAttribute
 import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
 
 /**

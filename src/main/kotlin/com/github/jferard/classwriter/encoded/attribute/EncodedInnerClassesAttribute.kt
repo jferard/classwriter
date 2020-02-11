@@ -18,13 +18,13 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.InnerClassesAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
-import java.util.*
 
 /**
  * 4.7.6. The InnerClasses Attribute
@@ -51,7 +51,7 @@ class EncodedInnerClassesAttribute(private val attributeNameIndex: Int,
 
     override val size: Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                    encodedInnerClasses.map(EncodedInnerClass::size).sum()
+                    Sized.listSize(encodedInnerClasses)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         TODO("not implemented")

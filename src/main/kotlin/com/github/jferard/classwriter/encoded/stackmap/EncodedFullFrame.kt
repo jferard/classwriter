@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded.stackmap
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrame
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
@@ -50,8 +51,7 @@ class EncodedFullFrame(private val offsetDelta: Int,
 
     override val size: Int
         get() = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE +
-                encodedLocals.map { obj: EncodedVerificationType -> obj.size }.sum() +
-                BytecodeHelper.SHORT_SIZE +
-                encodedStackItems.map { obj: EncodedVerificationType -> obj.size }.sum()
+                Sized.listSize(encodedLocals) + BytecodeHelper.SHORT_SIZE +
+                Sized.listSize(encodedStackItems)
 
 }

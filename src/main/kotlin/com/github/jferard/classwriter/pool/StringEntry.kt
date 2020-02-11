@@ -27,12 +27,10 @@ import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
 
 class StringEntry(private val text: String) : ConstantPoolEntry {
     override fun addToPool(pool: GlobalContext): Int {
-        return pool!!.addEncodedToPool(encode(pool, MethodContext.create(0)))
+        return pool.addEncodedToPool(encode(pool, MethodContext.create(0)))
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

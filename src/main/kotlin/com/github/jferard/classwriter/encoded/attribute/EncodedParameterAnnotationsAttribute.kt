@@ -19,21 +19,31 @@
 
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.writer.encoded.AnnotationsAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.AnnotationsEncodedWriter
 
+/**
+ * ```
+ * RuntimeVisibleParameterAnnotations_attribute {
+ *    u2 attribute_name_index;
+ *    u4 attribute_length;
+ *    u1 num_parameters;
+ *    {   u2         num_annotations;
+ *        annotation annotations[num_annotations];
+ *    } parameter_annotations[num_parameters];
+ * }
+ * ```
+ */
 class EncodedParameterAnnotationsAttribute(private val attributeNameIndex: Int, private val
 parameterAnnotations: List<List<EncodedAnnotation>>) :
         EncodedCFMAttribute<ParameterAnnotationsAttribute, EncodedParameterAnnotationsAttribute, AnnotationsAttributeEncodedWriter> {
+
     override fun write(encodedWriter: AnnotationsAttributeEncodedWriter) {
-        parameterAnnotations.forEach {
-            encodedWriter.annotationsAttribute(attributeNameIndex, it)
-        }
+        encodedWriter.parameterAnnotationsAttribute(attributeNameIndex, parameterAnnotations)
     }
 
     override fun decode(context: GlobalContext,
@@ -44,7 +54,7 @@ parameterAnnotations: List<List<EncodedAnnotation>>) :
     override val size: Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.BYTE_SIZE +
                     parameterAnnotations.map {
-                        BytecodeHelper.SHORT_SIZE + it.map(EncodedAnnotation::size).sum()
+                        BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
                     }.sum()
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {

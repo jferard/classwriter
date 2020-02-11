@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribute
 import com.github.jferard.classwriter.internal.attribute.ClassFileAttribute
@@ -34,7 +35,7 @@ class EncodedClassFileAttributes(
     }
 
     override val size: Int = BytecodeHelper.SHORT_SIZE +
-            encodedAttributes.map(EncodedClassFileAttribute<*, *, *>::size).sum()
+            Sized.listSize(encodedAttributes)
 
     override fun toString(): String {
         return String.format("Attributes %s", encodedAttributes)

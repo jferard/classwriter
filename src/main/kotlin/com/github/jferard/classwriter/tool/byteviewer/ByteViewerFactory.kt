@@ -18,7 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
-import com.github.jferard.classwriter.tool.decoder.*
+import com.github.jferard.classwriter.tool.parser.*
 import com.github.jferard.classwriter.tool.viewer.*
 
 class ByteViewerFactory(private val entryViewerFactory: EntryViewerFactory,

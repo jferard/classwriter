@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.pool
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.context.GlobalContext
@@ -60,11 +61,9 @@ class ConstantPool : Encodable<ConstantPool, ConstantPool, ConstantPoolEncodable
     /**
      * @return the size of the pool
      */
-    override val size: Int = indexByEntry.keys.map(ConstantPoolEntry::size).sum()
+    override val size: Int = Sized.listSize(indexByEntry.keys)
 
-    fun count(): Int {
-        return indexByEncoded.size
-    }
+    fun count(): Int = indexByEncoded.size
 
     override fun write(encodedWriter: ConstantPoolEncodedWriter) {
         return encodedWriter.constantPool(entries, null)

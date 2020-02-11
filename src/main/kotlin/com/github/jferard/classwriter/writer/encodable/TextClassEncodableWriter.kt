@@ -22,7 +22,7 @@ import com.github.jferard.classwriter.Field
 import com.github.jferard.classwriter.api.*
 import com.github.jferard.classwriter.encoded.EncodedClassFile
 import com.github.jferard.classwriter.internal.attribute.ClassFileAttribute
-import com.github.jferard.classwriter.parsed.writer.*
+import com.github.jferard.classwriter.text.writer.*
 import java.io.IOException
 import java.io.Writer
 
@@ -90,6 +90,10 @@ class TextClassEncodableWriter(private val output: Writer,
 
     override fun deprecated() {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun binaryOp(opcode: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun bootstrapMethod(methodHandle: MethodHandle, arguments: List<Any>) {

@@ -18,7 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
-import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.text.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 import com.github.jferard.classwriter.tool.viewer.EntryViewerFactory
 import java.io.IOException

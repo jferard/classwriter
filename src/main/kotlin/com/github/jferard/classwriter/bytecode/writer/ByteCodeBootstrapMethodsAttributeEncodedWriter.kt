@@ -18,6 +18,8 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
+import com.github.jferard.classwriter.Sized
+import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.writer.encoded.BootstrapMethodsAttributeEncodedWriter
 import java.io.DataOutput
@@ -26,7 +28,7 @@ class ByteCodeBootstrapMethodsAttributeEncodedWriter(private val output: DataOut
         BootstrapMethodsAttributeEncodedWriter {
     override fun bootstrapMethodsAttribute(nameIndex: Int,
                                            encodedBootstrapMethods: List<EncodedBootstrapMethod>) {
-        val length = encodedBootstrapMethods.map(EncodedBootstrapMethod::size).sum()
+        val length = Sized.listSize(encodedBootstrapMethods)
         output.writeShort(nameIndex)
         output.writeInt(length)
         output.writeShort(encodedBootstrapMethods.size)

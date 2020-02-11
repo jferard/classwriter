@@ -75,4 +75,13 @@ class ByteCodeStackMapFrameEncodedWriter(
         output.writeShort(offsetDelta)
     }
 
+    companion object {
+        fun create(output: DataOutput): ByteCodeStackMapFrameEncodedWriter {
+            return ByteCodeStackMapFrameEncodedWriter(
+                    output,
+                    ByteCodeVerificationTypeEncodedWriter(
+                            output))
+        }
+
+    }
 }

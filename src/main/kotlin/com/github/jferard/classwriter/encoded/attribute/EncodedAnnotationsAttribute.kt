@@ -18,12 +18,12 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.AnnotationsAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.AnnotationsAttributeEncodedWriter
 
 
@@ -51,7 +51,7 @@ class EncodedAnnotationsAttribute(
 
     override val size: Int
         get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                encodedAnnotations.map(EncodedAnnotation::size).sum()
+                Sized.listSize(encodedAnnotations)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         TODO("implement")

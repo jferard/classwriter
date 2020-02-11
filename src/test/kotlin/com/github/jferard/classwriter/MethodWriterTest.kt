@@ -23,7 +23,7 @@ import com.github.jferard.classwriter.api.MethodDescriptor.Companion.builder
 import com.github.jferard.classwriter.api.MethodRef
 import com.github.jferard.classwriter.api.PlainClassRef
 import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.internal.instruction.RawCodeBuilder
+import com.github.jferard.classwriter.api.instruction.RawCodeBuilder
 import com.github.jferard.classwriter.pool.StringEntry
 import com.github.jferard.classwriter.tool.FieldTypeHelper.get
 import jdk.internal.org.objectweb.asm.Opcodes
@@ -60,7 +60,7 @@ internal class MethodWriterTest {
                 OpCodes.GETSTATIC.toByte(), 0x00,
                 0x0B,  // kotlin.lang.System.out (kotlin.lang.PrintStream)
                 OpCodes.LDC.toByte(), 0x05,  // "Hello, World!"
-                Opcodes.INVOKEVIRTUAL.toByte(), 0x00,
+                OpCodes.INVOKEVIRTUAL.toByte(), 0x00,
                 0x11,  // kotlin.io.PrintStream.println ((Ljava/lang/String;)V)
                 OpCodes.RETURN.toByte(),  // end of code
                 0x00, 0x00,  // exceptions len

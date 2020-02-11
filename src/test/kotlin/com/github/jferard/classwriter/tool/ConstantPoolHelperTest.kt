@@ -24,7 +24,7 @@ import com.github.jferard.classwriter.api.MethodRef
 import com.github.jferard.classwriter.api.PlainClassRef
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.internal.instruction.RawCodeBuilder
+import com.github.jferard.classwriter.api.instruction.RawCodeBuilder
 import com.github.jferard.classwriter.pool.Utf8Entry
 import com.github.jferard.classwriter.tool.ConstantPoolHelper.viewClass
 import com.github.jferard.classwriter.tool.ConstantPoolHelper.viewPool

@@ -24,7 +24,7 @@ import com.github.jferard.classwriter.api.MethodDescriptor.Companion.builder
 import com.github.jferard.classwriter.api.MethodRef
 import com.github.jferard.classwriter.api.PlainClassRef
 import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.internal.instruction.RawCodeBuilder
+import com.github.jferard.classwriter.api.instruction.RawCodeBuilder
 import com.github.jferard.classwriter.pool.ConstantTags
 import com.github.jferard.classwriter.pool.StringEntry
 import com.github.jferard.classwriter.tool.FieldTypeHelper.get

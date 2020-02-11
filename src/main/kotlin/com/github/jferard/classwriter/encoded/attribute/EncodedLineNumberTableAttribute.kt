@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.attribute.LineNumberTableAttribute
 import com.github.jferard.classwriter.internal.attribute.PositionAndLineNumber
@@ -49,7 +50,7 @@ class EncodedLineNumberTableAttribute(private val nameIndex: Int,
 
     override val size: Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                    positionAndLineNumbers.map(PositionAndLineNumber::size).sum()
+                    Sized.listSize(positionAndLineNumbers)
 
     override fun decode(context: GlobalContext,
                         codeContext: MethodContext): LineNumberTableAttribute {

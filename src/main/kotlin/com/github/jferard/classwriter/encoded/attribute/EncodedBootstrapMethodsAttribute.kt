@@ -18,12 +18,13 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
-import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.BootstrapMethodsAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
+import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
 
 /**
  * 4.7.23. The BootstrapMethods Attribute
@@ -48,8 +49,7 @@ class EncodedBootstrapMethodsAttribute(private val nameIndex: Int,
     override val size: Int
         get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + length
 
-    private val length: Int
-        get() = encodedBootstrapMethods.map(EncodedBootstrapMethod::size).sum()
+    private val length: Int = Sized.listSize(encodedBootstrapMethods)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         return encodedBootstrapMethods

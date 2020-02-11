@@ -21,9 +21,8 @@ package com.github.jferard.classwriter.api
 import com.github.jferard.classwriter.TypedIdentifier
 import com.github.jferard.classwriter.internal.attribute.Annotation
 import com.github.jferard.classwriter.internal.attribute.CodeAttribute
-import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.Instruction
 import java.util.*
-import java.util.stream.Collectors
 
 /**
  * 4.6. Methods

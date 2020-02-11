@@ -25,9 +25,9 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.FrameContext
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrame
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameData
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.internal.instruction.ExceptionInCode
-import com.github.jferard.classwriter.internal.instruction.ExceptionInCodeBuilder
-import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.ExceptionInCode
+import com.github.jferard.classwriter.api.instruction.ExceptionInCodeBuilder
+import com.github.jferard.classwriter.api.instruction.Instruction
 import java.util.*
 import kotlin.collections.ArrayList
 

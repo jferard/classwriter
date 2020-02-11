@@ -18,7 +18,7 @@
  */
 package com.github.jferard.classwriter.pool
 
-import com.github.jferard.classwriter.parsed.Decoded
+import com.github.jferard.classwriter.text.Decoded
 import java.io.IOException
 import java.io.Writer
 

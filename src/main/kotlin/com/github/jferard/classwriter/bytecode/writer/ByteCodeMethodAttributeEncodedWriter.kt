@@ -18,23 +18,21 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
+import com.github.jferard.classwriter.Sized
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedExceptionInCode
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
-import com.github.jferard.classwriter.internal.instruction.base.InstructionEncodedWriter
-import com.github.jferard.classwriter.tool.decoder.EncodedInstructions
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
-import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import java.io.DataOutput
 
 class ByteCodeMethodAttributeEncodedWriter(
         private val output: DataOutput,
         private val instructionWriter: InstructionEncodedWriter,
-        private val methodWriter: MethodEncodedWriter,
         private val annotationWriter: AnnotationEncodedWriter,
         private val codeAttributeWriter: CodeAttributeAttributeEncodedWriter) :
         MethodAttributeEncodedWriter {
@@ -43,12 +41,14 @@ class ByteCodeMethodAttributeEncodedWriter(
                                encodedCode: EncodedInstruction,
                                encodedExceptions: List<EncodedExceptionInCode>,
                                encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>>) {
-        val length: Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE +
-                encodedCode.size + BytecodeHelper.SHORT_SIZE +
-                encodedExceptions.map(EncodedExceptionInCode::size).sum() +
-                BytecodeHelper.SHORT_SIZE +
-                encodedAttributes.map(EncodedCodeAttributeAttribute<*, *, *>::size).sum()
-
+        val length: Int = 2 * BytecodeHelper.SHORT_SIZE + // max
+                BytecodeHelper.INT_SIZE + // code length
+                encodedCode.size +
+                BytecodeHelper.SHORT_SIZE + // except length
+                Sized.listSize(encodedExceptions) +
+                BytecodeHelper.SHORT_SIZE + // attr count
+                Sized.listSize(encodedAttributes)
+        print("write code: $attributeNameIndex")
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(maxStack)
@@ -56,18 +56,51 @@ class ByteCodeMethodAttributeEncodedWriter(
         output.writeInt(encodedCode.size)
         encodedCode.write(instructionWriter)
         output.writeShort(encodedExceptions.size)
-        encodedAttributes.forEach { it.write(codeAttributeWriter) }
+        encodedExceptions.forEach { it.write(this) }
         output.writeShort(encodedAttributes.size)
         encodedAttributes.forEach { it.write(codeAttributeWriter) }
     }
 
     override fun annotationsAttribute(annotationsNameIndex: Int,
                                       encodedAnnotations: List<EncodedAnnotation>) {
-        val length = encodedAnnotations.map(EncodedAnnotation::size).sum()
+        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations)
+        println("write meth annot: $annotationsNameIndex, $encodedAnnotations")
         output.writeShort(annotationsNameIndex)
         output.writeInt(length)
-        for (writableAnnotation in encodedAnnotations) {
-            writableAnnotation.write(annotationWriter)
+        output.writeShort(encodedAnnotations.size)
+        encodedAnnotations.forEach {
+            it.write(annotationWriter)
+        }
+    }
+
+    /**
+     * ```
+     * RuntimeVisibleParameterAnnotations_attribute {
+     *    u2 attribute_name_index;
+     *    u4 attribute_length;
+     *    u1 num_parameters;
+     *    {   u2         num_annotations;
+     *        annotation annotations[num_annotations];
+     *    } parameter_annotations[num_parameters];
+     * }
+     * ```
+     */
+    // TODO: remove duplicate code
+    override fun parameterAnnotationsAttribute(attributeNameIndex: Int,
+                                               parameterAnnotations: List<List<EncodedAnnotation>>) {
+        val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
+            BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+        }.sum()
+        output.writeInt(length)
+        output.writeByte(parameterAnnotations.size)
+        parameterAnnotations.forEach(this::paramAnnotations)
+    }
+
+    private fun paramAnnotations(
+            encodedAnnotations: List<EncodedAnnotation>) {
+        output.writeShort(encodedAnnotations.size)
+        encodedAnnotations.forEach {
+            it.write(this.annotationWriter)
         }
     }
 
@@ -93,14 +126,9 @@ class ByteCodeMethodAttributeEncodedWriter(
 
     companion object {
         fun create(output: DataOutput): MethodAttributeEncodedWriter {
-            return ByteCodeMethodAttributeEncodedWriter(
-                    output,
-                    ByteCodeInstructionEncodedWriter(
-                            output),
-                    ByteCodeMethodEncodedWriter.create(
-                            output),
-                    ByteCodeClassAnnotationEncodedWriter(
-                            output),
+            return ByteCodeMethodAttributeEncodedWriter(output,
+                    ByteCodeInstructionEncodedWriter(output),
+                    ByteCodeClassAnnotationEncodedWriter(output),
                     ByteCodeCodeAttributeAttributeEncodedWriter.create(output))
         }
     }

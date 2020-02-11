@@ -34,9 +34,7 @@ class ClassEntry(private val classRef: ClassRef) : ConstantPoolEntry {
         return pool.addEncodedToPool(encodedClassEntry)
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int  = BytecodeHelper.BYTE_SIZE
 
     override fun encode(pool: GlobalContext,
                         codeContext: MethodContext): EncodedClassEntry {

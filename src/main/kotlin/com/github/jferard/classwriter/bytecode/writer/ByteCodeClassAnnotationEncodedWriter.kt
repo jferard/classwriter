@@ -18,7 +18,6 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValue
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
@@ -26,22 +25,44 @@ import java.io.DataOutput
 
 class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
         AnnotationEncodedWriter {
+    /**
+     * ```
+     * annotation {
+     *    u2 type_index;
+     *    u2 num_element_value_pairs;
+     *    {   u2            element_name_index;
+     *        element_value value;
+     *    } element_value_pairs[num_element_value_pairs];
+     * }
+     * ```
+     */
     override fun annotation(descriptorIndex: Int,
                             encodedElementValuePairs: List<EncodedElementValuePair>) {
         output.writeShort(descriptorIndex)
-        for (encodedElementValuePair in encodedElementValuePairs) {
-            encodedElementValuePair.write(this)
+        output.writeShort(encodedElementValuePairs.size)
+        println("write annot $descriptorIndex, $encodedElementValuePairs")
+        encodedElementValuePairs.forEach {
+            it.write(this)
         }
     }
 
+    /**
+     * ```
+     * {   u2            element_name_index;
+     *     element_value value;
+     * }
+     * ```
+     */
     override fun elementValuePair(elementNameIndex: Int,
                                   encodedElementValue: EncodedElementValue) {
+        println("write evp $elementNameIndex $encodedElementValue")
         output.writeShort(elementNameIndex)
         encodedElementValue.write(this)
     }
 
     override fun constantElementValue(tag: Int,
                                       elementValueIndex: Int) {
+        println("tag ${tag.toChar()}")
         output.writeByte(tag)
         output.writeShort(elementValueIndex)
     }
@@ -54,6 +75,9 @@ class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
     }
 
     override fun arrayValue(values: List<EncodedElementValue>) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        println("array")
+        output.writeByte('['.toInt())
+        output.writeShort(values.size)
+        values.forEach { it.write(this) }
     }
 }

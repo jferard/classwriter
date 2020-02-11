@@ -18,12 +18,12 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.attribute.CodeAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.tool.decoder.EncodedInstructions
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 
@@ -64,9 +64,9 @@ class EncodedCodeAttribute(private val attributeNameIndex: Int, private val maxS
         get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + MAX_STACK_FIELD_SIZE +
                 MAX_LOCALS_FIELD_SIZE + CODE_LENGTH_FIELD_SIZE + encodedCode.size +
                 EXCEPTION_TABLE_LENGTH_FIELD_SIZE +
-                encodedExceptions.map(EncodedExceptionInCode::size).sum() +
+                Sized.listSize(encodedExceptions) +
                 ATTRIBUTES_COUNT_FIELD_SIZE +
-                encodedAttributes.map(EncodedCodeAttributeAttribute<*, *, *>::size).sum()
+                Sized.listSize(encodedAttributes)
 
     companion object {
         private const val MAX_STACK_FIELD_SIZE = BytecodeHelper.SHORT_SIZE

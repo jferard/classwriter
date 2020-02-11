@@ -18,11 +18,12 @@
  */
 package com.github.jferard.classwriter.encoded
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.api.Method
-import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
+import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 
 class EncodedMethods(private val encodedMethods: List<EncodedMethod>) :
         Encoded<List<Method>, EncodedMethods, MethodEncodedWriter> {
@@ -30,8 +31,7 @@ class EncodedMethods(private val encodedMethods: List<EncodedMethod>) :
         return encodedWriter.methods(encodedMethods)
     }
 
-    override val size: Int =
-            BytecodeHelper.SHORT_SIZE + encodedMethods.map(EncodedMethod::size).sum()
+    override val size: Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedMethods)
 
     override fun toString(): String {
         return String.format("Methods %s", encodedMethods)

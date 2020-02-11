@@ -19,7 +19,7 @@
 package com.github.jferard.classwriter.tool.byteviewer
 
 import com.github.jferard.classwriter.internal.access.ClassAccess
-import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.text.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.AccessThisSuperViewer
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolViewer
 import java.io.IOException

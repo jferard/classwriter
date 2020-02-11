@@ -18,7 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.viewer
 
-import com.github.jferard.classwriter.tool.decoder.*
+import com.github.jferard.classwriter.tool.parser.*
 
 interface ViewerFactory {
     fun header(magic: Int, minorVersion: Int, majorVersion: Int): HeaderViewer

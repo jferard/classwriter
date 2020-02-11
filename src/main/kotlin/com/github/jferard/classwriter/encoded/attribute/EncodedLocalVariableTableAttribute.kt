@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.attribute.LocalVariableTableAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
@@ -49,8 +50,8 @@ class EncodedLocalVariableTableAttribute(private val attributeNameIndex: Int,
     }
 
     override val size: Int =
-            BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + encodedLocalVariables.map(
-                    EncodedLocalVariableTable::size).sum()
+            BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE + Sized.listSize(
+                    encodedLocalVariables)
 
     override fun decode(context: GlobalContext,
                         codeContext: MethodContext): LocalVariableTableAttribute {

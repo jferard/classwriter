@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.Field
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import com.github.jferard.classwriter.api.FieldDescriptor
@@ -50,9 +51,8 @@ class EncodedField(private val accessFlags: Int, private val nameIndex: Int,
                 .field(accessFlags, nameIndex, descriptorIndex, encodedAttributes)
     }
 
-    override val size: Int
-        get() = 4 * BytecodeHelper.SHORT_SIZE +
-                encodedAttributes.map(EncodedFieldAttribute<*, *, *>::size).sum()
+    override val size: Int = 4 * BytecodeHelper.SHORT_SIZE +
+                Sized.listSize(encodedAttributes)
 
     override fun toString(): String {
         return "Field[access=$accessFlags, name index=$nameIndex, descriptor index=$descriptorIndex, attributes=$encodedAttributes]"

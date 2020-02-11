@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.internal.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotationsAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
@@ -41,7 +42,7 @@ class AnnotationsAttribute(private val annotationsName: String,
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedAnnotationsAttribute {
         val annotationsNameIndex: Int = context.addUtf8ToPool(annotationsName)
-        val length = annotations.map(Annotation::size).sum()
+        val length = Sized.listSize(annotations)
         return EncodedAnnotationsAttribute(annotationsNameIndex,
                 annotations.map { a: Annotation -> a.encode(context, codeContext) })
     }

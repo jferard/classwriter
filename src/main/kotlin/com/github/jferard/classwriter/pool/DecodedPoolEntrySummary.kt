@@ -18,6 +18,6 @@
  */
 package com.github.jferard.classwriter.pool
 
-import com.github.jferard.classwriter.parsed.Decoded
+import com.github.jferard.classwriter.text.Decoded
 
 interface DecodedPoolEntrySummary : Decoded

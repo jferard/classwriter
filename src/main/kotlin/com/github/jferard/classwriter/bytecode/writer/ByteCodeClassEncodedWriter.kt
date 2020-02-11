@@ -18,13 +18,9 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.api.*
-import com.github.jferard.classwriter.encoded.EncodedClassFile
-import com.github.jferard.classwriter.encoded.EncodedClassFileAttributes
-import com.github.jferard.classwriter.encoded.EncodedFields
-import com.github.jferard.classwriter.encoded.EncodedMethods
+import com.github.jferard.classwriter.api.Header
+import com.github.jferard.classwriter.encoded.*
 import com.github.jferard.classwriter.pool.ConstantPool
-import com.github.jferard.classwriter.encoded.EncodedInterfaces
 import com.github.jferard.classwriter.writer.encoded.*
 import java.io.DataOutput
 
@@ -74,19 +70,11 @@ class ByteCodeClassEncodedWriter(
         fun create(output: DataOutput): ByteCodeClassEncodedWriter {
             return ByteCodeClassEncodedWriter(
                     output,
-                    ByteCodeFieldEncodedWriter(
-                            output,
-                            ByteCodeFieldAttributeEncodedWriter(
-                                    output)),
-                    ByteCodeMethodEncodedWriter(
-                            output,
-                            ByteCodeMethodAttributeEncodedWriter.create(
-                                    output)),
-                    ByteCodeClassFileAttributeEncodedWriter(
-                            output),
-                    ByteCodeConstantPoolEncodedWriter.create(
-                            output))
+                    ByteCodeFieldEncodedWriter.create(output),
+                    ByteCodeMethodEncodedWriter.create(output),
+                    ByteCodeClassFileAttributeEncodedWriter(output,
+                            ByteCodeClassAnnotationEncodedWriter(output)),
+                    ByteCodeConstantPoolEncodedWriter.create(output))
         }
     }
-
 }

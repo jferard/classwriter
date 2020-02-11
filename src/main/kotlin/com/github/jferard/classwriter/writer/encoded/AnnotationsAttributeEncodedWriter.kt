@@ -24,4 +24,6 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 
 interface AnnotationsAttributeEncodedWriter : EncodedWriter {
     fun annotationsAttribute(annotationsNameIndex: Int, encodedAnnotations: List<EncodedAnnotation>)
+    fun parameterAnnotationsAttribute(attributeNameIndex: Int,
+                                      parameterAnnotations: List<List<EncodedAnnotation>>)
 }

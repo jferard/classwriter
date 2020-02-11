@@ -19,21 +19,19 @@
 package com.github.jferard.classwriter.pool
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.encoded.pool.EncodedFloatEntry
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
 
-class FloatEntry(private val value: Float) : ConstantPoolEntry, EncodedConstantPoolEntry {
+class FloatEntry(private val value: Float) : ConstantPoolEntry {
     override fun addToPool(constantPool: GlobalContext): Int {
-        return constantPool.addEncodedToPool(this)
+        return constantPool.addEncodedToPool(EncodedFloatEntry(this.value))
     }
 
-    override fun size(): Int {
-        return BytecodeHelper.BYTE_SIZE
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -55,27 +53,6 @@ class FloatEntry(private val value: Float) : ConstantPoolEntry, EncodedConstantP
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedConstantPoolEntry {
-        return this
+        return EncodedFloatEntry(value)
     }
-
-    override fun write(
-            writableFactory: ConstantPoolEntriesEncodedWriter) {
-        return writableFactory.floatEntry(value)
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): ConstantPoolEntry {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + BytecodeHelper.FLOAT_SIZE
-
-    override fun utf8Text(): String {
-        throw IllegalArgumentException()
-    }
-
-    override fun toObject(): Any {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

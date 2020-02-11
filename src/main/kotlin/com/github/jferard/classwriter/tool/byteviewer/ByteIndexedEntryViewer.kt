@@ -18,7 +18,7 @@
  */
 package com.github.jferard.classwriter.tool.byteviewer
 
-import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.text.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 
 internal class ByteIndexedEntryViewer(private val code: String, private val index: Int) :

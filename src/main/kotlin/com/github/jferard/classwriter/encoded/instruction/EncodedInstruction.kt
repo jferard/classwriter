@@ -19,7 +19,7 @@
 package com.github.jferard.classwriter.encoded.instruction
 
 import com.github.jferard.classwriter.encoded.Encoded
-import com.github.jferard.classwriter.internal.instruction.Instruction
-import com.github.jferard.classwriter.internal.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 
 interface EncodedInstruction : Encoded<Instruction, EncodedInstruction, InstructionEncodedWriter>

@@ -18,13 +18,13 @@
  */
 package com.github.jferard.classwriter.api
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 
 /**
  * 4.3.2. Field Descriptors
  */
-interface ValueType {
-    val size: Int
+interface ValueType : Sized {
     val verificationType: VerificationType
 
     companion object {

@@ -19,7 +19,7 @@
 package com.github.jferard.classwriter.tool.byteviewer
 
 import com.github.jferard.classwriter.Writable
-import com.github.jferard.classwriter.parsed.writer.TextEncodedWriterHelper
+import com.github.jferard.classwriter.text.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 import java.io.ByteArrayOutputStream
 import java.io.DataOutput

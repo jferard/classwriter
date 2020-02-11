@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.Field
 import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
@@ -37,7 +38,7 @@ class EncodedFields(private val encodedFields: List<EncodedField>) :
     }
 
     override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + encodedFields.map(EncodedField::size).sum()
+        get() = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedFields)
 
     override fun toString(): String {
         return "Fields[\n${encodedFields.joinToString("\n")}\n]"

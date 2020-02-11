@@ -32,8 +32,7 @@ class EncodedLocalVariableTable(private val startPc: Int, private val length: In
         Encoded<LocalVariableTable, EncodedLocalVariableTable, CodeAttributeAttributeEncodedWriter> {
     override fun write(
             encodedWriter: CodeAttributeAttributeEncodedWriter) {
-        return encodedWriter
-                .localVariableTable(startPc, length, nameIndex, descriptorIndex,
+        return encodedWriter.localVariableTable(startPc, length, nameIndex, descriptorIndex,
                         index)
     }
 

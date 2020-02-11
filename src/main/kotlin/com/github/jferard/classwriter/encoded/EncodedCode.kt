@@ -22,7 +22,7 @@ import com.github.jferard.classwriter.Code
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.internal.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 
 class EncodedCode(private val instructions: List<EncodedInstruction>) :
         Encoded<Code, EncodedCode, InstructionEncodedWriter> {

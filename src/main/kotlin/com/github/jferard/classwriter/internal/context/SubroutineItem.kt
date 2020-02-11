@@ -19,7 +19,7 @@
 package com.github.jferard.classwriter.internal.context
 
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameData
-import com.github.jferard.classwriter.internal.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.Instruction
 
 class SubroutineItem(override var offset: Int,
                      private val instruction: Instruction,

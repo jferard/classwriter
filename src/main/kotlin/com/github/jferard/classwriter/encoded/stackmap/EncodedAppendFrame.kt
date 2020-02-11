@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.encoded.stackmap
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrame
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
@@ -46,6 +47,6 @@ class EncodedAppendFrame(private val frameType: Int, private val offsetDelta: In
     }
 
     override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
-            encodedNewTypes.map(EncodedVerificationType::size).sum()
+            Sized.listSize(encodedNewTypes)
 
 }

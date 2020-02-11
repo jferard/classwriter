@@ -18,12 +18,13 @@
  */
 package com.github.jferard.classwriter.encoded.attribute
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.internal.attribute.Annotation
-import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
+import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 
 /**
  * 4.7.16. The RuntimeVisibleAnnotations Attribute
@@ -44,8 +45,8 @@ class EncodedAnnotation(private val typeIndex: Int,
         return encodedWriter.annotation(typeIndex, encodedElementValuePairs)
     }
 
-    override val size: Int = 2 * BytecodeHelper.SHORT_SIZE + encodedElementValuePairs.map(
-            EncodedElementValuePair::size).sum()
+    override val size: Int =
+            2 * BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedElementValuePairs)
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Annotation {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

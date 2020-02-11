@@ -22,7 +22,7 @@ import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.internal.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import java.io.DataOutput
 
 class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : InstructionEncodedWriter {
@@ -41,7 +41,7 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
 
     override fun blockInstruction(
             encodedInstructions: List<EncodedInstruction>) {
-        encodedInstructions.forEach { it.write(this) }
+        encodedInstructions.forEach { println(it); it.write(this) }
     }
 
     override fun mock() {
@@ -94,7 +94,8 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun invokeStaticInstruction(methodIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.write(OpCodes.INVOKESTATIC)
+        output.writeShort(methodIndex)
     }
 
     override fun aLoadInstruction(referenceIndex: Int) {
@@ -106,39 +107,83 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun iLoadNInstruction(opcode: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
+    }
+
+    override fun lLoadInstruction(referenceIndex: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun lLoadNInstruction(opcode: Int) {
+        TODO("Not yet implemented")
     }
 
     override fun putFieldInstruction(fieldIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.PUTFIELD)
+        output.writeShort(fieldIndex)
     }
 
     override fun checkCastInstruction(referenceIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.CHECKCAST)
+        output.writeShort(referenceIndex)
     }
 
     override fun getFieldInstruction(fieldIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.GETFIELD)
+        output.writeShort(fieldIndex)
     }
 
     override fun aStoreNInstruction(opcode: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
     }
 
     override fun ifInstruction(opcode: Int, branch: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
+        output.writeShort(branch)
     }
 
     override fun popInstruction() {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun nopInstruction() {
+        output.writeByte(OpCodes.NOP)
+    }
+
+    override fun xaLoadInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun xaStoreInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun binaryOp(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun ifACmpInstruction(opcode: Int, branch: Int) {
+        output.writeByte(opcode)
+        output.writeShort(branch)
+    }
+
+    override fun ifICmpInstruction(opcode: Int, branch: Int) {
+        output.writeByte(opcode)
+        output.writeShort(branch)
+    }
+
+    override fun instanceOfInstruction(typeIndex: Int) {
+        output.writeByte(OpCodes.INSTANCEOF)
+        output.writeShort(typeIndex)
+    }
+
     override fun iStoreInstruction(index: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.ISTORE)
+        output.writeShort(index)
     }
 
     override fun iStoreNInstruction(opcode: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
     }
 
     override fun ifNonNullInstruction(branch: Int) {
@@ -146,11 +191,12 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun iConstNInstruction(opcode: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
     }
 
     override fun aStoreInstruction(opcode: Int, referenceIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(opcode)
+        output.writeShort(referenceIndex)
     }
 
     override fun biPushInstruction(b: Int) {
@@ -297,22 +343,27 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun newInstruction(classIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.NEW)
+        output.writeShort(classIndex)
     }
 
     override fun invokeSpecialInstruction(classIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.INVOKESTATIC)
+        output.writeShort(classIndex)
     }
 
     override fun putStaticInstruction(fieldIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.PUTSTATIC)
+        output.writeShort(fieldIndex)
     }
 
     override fun getStaticInstruction(fieldIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.GETSTATIC)
+        output.writeShort(fieldIndex)
     }
 
     override fun invokeVirtualInstruction(methodIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.INVOKEVIRTUAL)
+        output.writeShort(methodIndex)
     }
 }

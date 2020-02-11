@@ -27,7 +27,9 @@ class ByteCodeFieldAttributeEncodedWriter(private val output: DataOutput) :
         FieldAttributeEncodedWriter {
     override fun constantValueAttribute(attributeNameIndex: Int,
                                         valueIndex: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        output.writeShort(attributeNameIndex)
+        output.writeInt(2)
+        output.writeShort(valueIndex)
     }
 
     override fun deprecatedAttribute(attributeNameIndex: Int) {

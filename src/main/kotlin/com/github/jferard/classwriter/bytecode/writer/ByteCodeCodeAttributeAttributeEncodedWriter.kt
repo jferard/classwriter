@@ -18,13 +18,15 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTable
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTypeTable
 import com.github.jferard.classwriter.encoded.stackmap.EncodedStackMapFrame
 import com.github.jferard.classwriter.internal.attribute.PositionAndLineNumber
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import java.io.DataOutput
 
 class ByteCodeCodeAttributeAttributeEncodedWriter(
@@ -35,7 +37,7 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
 
     override fun stackMapTableAttribute(attributeNameIndex: Int,
                                         encodedStackMapFrames: List<EncodedStackMapFrame>) {
-        val length = encodedStackMapFrames.map(EncodedStackMapFrame::size).sum()
+        val length = Sized.listSize(encodedStackMapFrames)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(encodedStackMapFrames.size)
@@ -45,7 +47,7 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
     override fun lineNumberTableAttribute(nameIndex: Int,
                                           positionAndLineNumbers: List<PositionAndLineNumber>) {
         val attributeLength: Int = BytecodeHelper.SHORT_SIZE +
-                positionAndLineNumbers.map(PositionAndLineNumber::size).sum()
+                Sized.listSize(positionAndLineNumbers)
         output.writeShort(nameIndex)
         output.writeInt(attributeLength)
         output.writeShort(positionAndLineNumbers.size)
@@ -59,9 +61,10 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
 
     override fun localVariableTableAttribute(attributeNameIndex: Int,
                                              encodedLocalVariables: List<EncodedLocalVariableTable>) {
-        val length = encodedLocalVariables.map(EncodedLocalVariableTable::size).sum()
+        val length = Sized.listSize(encodedLocalVariables)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
+        output.writeShort(encodedLocalVariables.size)
         encodedLocalVariables.forEach { it.write(this) }
     }
 
@@ -86,21 +89,17 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
 
     override fun variableTypeTableAttribute(attributeNameIndex: Int,
                                             encodedLocalVariableTypes: List<EncodedLocalVariableTypeTable>) {
-        val length = encodedLocalVariableTypes.map(EncodedLocalVariableTypeTable::size).sum()
+        val length = Sized.listSize(encodedLocalVariableTypes)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
+        output.writeShort(encodedLocalVariableTypes.size)
         encodedLocalVariableTypes.forEach { it.write(this) }
     }
 
     companion object {
         fun create(output: DataOutput): CodeAttributeAttributeEncodedWriter {
             return ByteCodeCodeAttributeAttributeEncodedWriter(
-                    output,
-                    ByteCodeStackMapFrameEncodedWriter(
-                            output,
-                            ByteCodeVerificationTypeEncodedWriter(
-                                    output)))
+                    output, ByteCodeStackMapFrameEncodedWriter.create(output))
         }
-
     }
 }

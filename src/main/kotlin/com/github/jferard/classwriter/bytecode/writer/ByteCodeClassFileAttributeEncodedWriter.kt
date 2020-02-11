@@ -18,18 +18,25 @@
  */
 package com.github.jferard.classwriter.bytecode.writer
 
-import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
+import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedInnerClass
+import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
+import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
 import java.io.DataOutput
 
-class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput) :
+class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput,
+                                              private val annotationWriter: AnnotationEncodedWriter) :
         ClassFileAttributeEncodedWriter {
+
+
     override fun innerClassesAttribute(attributeNameIndex: Int,
                                        encodedInnerClasses: List<EncodedInnerClass>) {
-        val length = encodedInnerClasses.map { obj: EncodedInnerClass -> obj.size }.sum()
+        val length = Sized.listSize(encodedInnerClasses)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         encodedInnerClasses.forEach { writableInnerClass ->
@@ -40,8 +47,7 @@ class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput) :
     override fun sourceFileAttribute(attributeNameIndex: Int,
                                      sourceFileNameIndex: Int) {
         output.writeShort(attributeNameIndex)
-        output.writeInt(
-                BytecodeHelper.SHORT_SIZE)
+        output.writeInt(BytecodeHelper.SHORT_SIZE)
         output.writeShort(sourceFileNameIndex)
     }
 
@@ -51,7 +57,7 @@ class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput) :
     }
 
     override fun classFileAttributes(
-            encodedAttributes: List<EncodedClassFileAttribute<*,*, ClassFileAttributeEncodedWriter>>) {
+            encodedAttributes: List<EncodedClassFileAttribute<*, *, ClassFileAttributeEncodedWriter>>) {
         output.writeShort(encodedAttributes.size)
         for (byteCode in encodedAttributes) {
             byteCode.write(this)
@@ -62,8 +68,56 @@ class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput) :
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun annotationsAttribute(annotationsNameIndex: Int,
+                                      encodedAnnotations: List<EncodedAnnotation>) {
+        println("write class annot: $annotationsNameIndex")
+        output.writeShort(annotationsNameIndex)
+        output.writeInt(BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations))
+        output.writeShort(encodedAnnotations.size)
+        encodedAnnotations.forEach { it.write(this.annotationWriter) }
+    }
+
+    /**
+     * ```
+     * RuntimeVisibleParameterAnnotations_attribute {
+     *    u2 attribute_name_index;
+     *    u4 attribute_length;
+     *    u1 num_parameters;
+     *    {   u2         num_annotations;
+     *        annotation annotations[num_annotations];
+     *    } parameter_annotations[num_parameters];
+     * }
+     * ```
+     */
+    override fun parameterAnnotationsAttribute(attributeNameIndex: Int,
+                                               parameterAnnotations: List<List<EncodedAnnotation>>) {
+        val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
+            BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+        }.sum()
+        output.writeShort(attributeNameIndex)
+        output.writeInt(length)
+        output.writeByte(parameterAnnotations.size)
+        parameterAnnotations.forEach {
+            output.writeShort(it.size)
+            it.forEach {
+                it.write(this.annotationWriter)
+            }
+        }
+    }
+
+    /**
+     * ```
+     * SourceDebugExtension_attribute {
+     *   u2 attribute_name_index;
+     *   u4 attribute_length;
+     *   u1 debug_extension[attribute_length];
+     * }
+     * ```
+     */
     override fun sourceDebugExtension(attributeNameIndex: Int, debugExtension: ByteArray) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeShort(attributeNameIndex)
+        output.writeInt(debugExtension.size)
+        output.write(debugExtension)
     }
 
     override fun innerClass(innerClassIndex: Int, outerClassNameIndex: Int,

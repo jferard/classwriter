@@ -23,28 +23,40 @@ import com.github.jferard.classwriter.api.FieldRef.Companion.create
 import com.github.jferard.classwriter.api.MethodDescriptor.Companion.builder
 import com.github.jferard.classwriter.api.MethodRef
 import com.github.jferard.classwriter.api.PlainClassRef
+import com.github.jferard.classwriter.api.instruction.RawCodeBuilder
+import com.github.jferard.classwriter.bytecode.writer.ByteCodeClassEncodedWriter
 import com.github.jferard.classwriter.internal.access.ClassAccess
-import com.github.jferard.classwriter.internal.instruction.RawCodeBuilder
 import com.github.jferard.classwriter.pool.ConstantTags
 import com.github.jferard.classwriter.pool.StringEntry
 import com.github.jferard.classwriter.tool.ConstantPoolHelper
 import com.github.jferard.classwriter.tool.FieldTypeHelper.get
+import com.google.common.io.Files
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import java.io.*
 
 internal class ClassFileBuilderTest {
     /** javap -v -p -s -sysinfo -constants target/classes/com/github/jferard/classwriter/api/ClassFile.class */
-    @Test
+    //@Test
     @Throws(IOException::class)
     fun test0() {
         val fname =
                 "target/classes/com/github/jferard/classwriter/api/ClassFile.class"
-        println("Parsing $fname")
-        val stream = DataInputStream(FileInputStream(fname))
-        println(ConstantPoolHelper.viewClass(stream))
+        println("// Parsing $fname")
+        val stream = FileInputStream(fname)
+        val classRep = ConstantPoolHelper.viewClass(stream)
+        println(classRep)
+
     }
 
     @Test
+    @Throws(IOException::class)
+    fun test1() {
+        File("target/classes/com/github/jferard/classwriter").walk()
+                .filter { it.extension == "class" }.forEach { testHelper(it) }
+    }
+
+    //@Test
     @Throws(IOException::class)
     fun testMinimalClass() {
         val helloWorld =
@@ -79,7 +91,7 @@ internal class ClassFileBuilderTest {
         }
     }
 
-    @Test
+    //@Test
     @Throws(IOException::class)
     fun testHelloWorld() {
         val classBuilder =
@@ -88,17 +100,17 @@ internal class ClassFileBuilderTest {
         val mainCode =
                 RawCodeBuilder.instance()
                         .getstatic(
-                                create("kotlin.lang.System", "out", PrintStream::class.java))
+                                create("java.lang.System", "out", PrintStream::class.java))
                         .ldc(StringEntry("Hello, World!"))
                         .invokevirtual(
                                 MethodRef(
-                                        PlainClassRef("kotlin.io.PrintStream"), "println",
+                                        PlainClassRef("java.io.PrintStream"), "println",
                                         builder().params(
                                                 get(
                                                         String::class.java))
                                                 .build())).return_().build()
 //        val mainBuilder = ByteCodeMethodWriter.main(mainCode)
-                        //        classBuilder.method(mainBuilder)
+        //        classBuilder.method(mainBuilder)
         //        Writable helloWorld = classBuilder.encode();
         val expectedBytecode =
                 byteArrayOf(0xCA.toByte(), 0xFE.toByte(), 0xBA.toByte(),
@@ -198,5 +210,24 @@ internal class ClassFileBuilderTest {
         TestHelper.assertWritableEquals(expectedBytecode, helloWorld);
         System.out.println(ConstantPoolHelper.viewClass(helloWorld));
         */
+    }
+
+    companion object {
+        private fun testHelper(file: File) {
+            println(file)
+            val bytes = java.nio.file.Files.readAllBytes(file.toPath())
+            val stream1 = ByteArrayInputStream(bytes)
+            println(ConstantPoolHelper.viewClass(stream1))
+            val stream = ByteArrayInputStream(bytes)
+            val encodedClass = ConstantPoolHelper.parseClassByteCode(stream)
+            val fname2 = file.absolutePath + ".bkp"
+            val out = DataOutputStream(FileOutputStream(fname2))
+            val writer = ByteCodeClassEncodedWriter.create(out)
+            encodedClass.write(writer)
+            // Assertions.assertTrue(Files.equal(file, File(fname2)))
+            val bytes2 = java.nio.file.Files.readAllBytes(File(fname2).toPath())
+            val stream3 = ByteArrayInputStream(bytes2)
+            println(ConstantPoolHelper.viewClass(stream3))
+        }
     }
 }

@@ -18,6 +18,7 @@
  */
 package com.github.jferard.classwriter.pool
 
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
@@ -27,7 +28,8 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
  * Entries of the constant pool
  * 4.4.1 -> 4.4.10
  */
-interface ConstantPoolEntry : Encodable<ConstantPoolEntry, EncodedConstantPoolEntry, ClassEncodableWriter> {
+interface ConstantPoolEntry : Encodable<ConstantPoolEntry, EncodedConstantPoolEntry, ClassEncodableWriter>,
+        Sized {
     /**
      * Add this entry to the pool
      * @param constantPool the pool
@@ -41,8 +43,6 @@ interface ConstantPoolEntry : Encodable<ConstantPoolEntry, EncodedConstantPoolEn
      * or double contributes two units to the depth and a value of any other type contributes one
      * unit.
      */
-    fun size(): Int
-
     override fun equals(other: Any?): Boolean
     override fun hashCode(): Int
     fun toVerificationType(): VerificationType
