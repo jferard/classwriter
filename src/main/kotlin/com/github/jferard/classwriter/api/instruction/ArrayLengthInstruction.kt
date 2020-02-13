@@ -16,29 +16,29 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.encoded.instruction
 
-import com.github.jferard.classwriter.bytecode.BytecodeHelper
+package com.github.jferard.classwriter.api.instruction
+
+import com.github.jferard.classwriter.api.instruction.base.BaseInstruction
+import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
+import com.github.jferard.classwriter.encoded.instruction.EncodedInstructionConstants
+import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.api.instruction.Instruction
-import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.pool.EncodableWriter
 
-
-/** ```
- * ldc
- * index
- * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
-        EncodedInstruction {
-    override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+class ArrayLengthInstruction : BaseInstruction {
+    override fun preprocess(context: GlobalContext, codeContext: MethodContext) {
+        codeContext.offsetDelta(1)
+        codeContext.stackPop()
+        codeContext.stackPush(VerificationType.INTEGER)
     }
 
-    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    override fun write(encodableWriter: EncodableWriter) {
+        TODO("Not yet implemented")
     }
 
-    override val size = (1 + stackSize) * BytecodeHelper.BYTE_SIZE
-
+    override fun encode(context: GlobalContext, codeContext: MethodContext): EncodedInstruction {
+        return EncodedInstructionConstants.ARRAYLENGTH_INSTRUCTION
+    }
 }

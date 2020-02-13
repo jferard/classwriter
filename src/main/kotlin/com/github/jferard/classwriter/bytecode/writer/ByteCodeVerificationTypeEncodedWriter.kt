@@ -30,7 +30,7 @@ class ByteCodeVerificationTypeEncodedWriter(private val output: DataOutput) :
 
     override fun objectVerificationType(classIndex: Int) {
         output.writeByte(VerificationTypeConstants.OBJECT_CODE)
-        output.writeByte(classIndex)
+        output.writeShort(classIndex)
     }
 
     override fun nullVerificationType() {

@@ -22,8 +22,10 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedElementValue
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
+class ByteCodeClassAnnotationEncodedWriter(private val logger: Logger,
+                                           private val output: DataOutput) :
         AnnotationEncodedWriter {
     /**
      * ```
@@ -38,9 +40,9 @@ class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
      */
     override fun annotation(descriptorIndex: Int,
                             encodedElementValuePairs: List<EncodedElementValuePair>) {
+        logger.finer("Write annotation ($descriptorIndex, $encodedElementValuePairs)")
         output.writeShort(descriptorIndex)
         output.writeShort(encodedElementValuePairs.size)
-        println("write annot $descriptorIndex, $encodedElementValuePairs")
         encodedElementValuePairs.forEach {
             it.write(this)
         }
@@ -55,14 +57,14 @@ class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
      */
     override fun elementValuePair(elementNameIndex: Int,
                                   encodedElementValue: EncodedElementValue) {
-        println("write evp $elementNameIndex $encodedElementValue")
+        logger.finer("Write Element Value pair: $elementNameIndex -> $encodedElementValue")
         output.writeShort(elementNameIndex)
         encodedElementValue.write(this)
     }
 
     override fun constantElementValue(tag: Int,
                                       elementValueIndex: Int) {
-        println("tag ${tag.toChar()}")
+        logger.finer("Write element: ${tag.toChar()} -> $elementValueIndex")
         output.writeByte(tag)
         output.writeShort(elementValueIndex)
     }
@@ -75,7 +77,7 @@ class ByteCodeClassAnnotationEncodedWriter(private val output: DataOutput) :
     }
 
     override fun arrayValue(values: List<EncodedElementValue>) {
-        println("array")
+        logger.finer("Write array value")
         output.writeByte('['.toInt())
         output.writeShort(values.size)
         values.forEach { it.write(this) }

@@ -20,7 +20,6 @@ package com.github.jferard.classwriter.encoded.instruction
 
 import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.api.instruction.base.*
-import com.github.jferard.classwriter.api.instruction.base.EncodedXAStoreInstruction
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 
 internal object EncodedInstructionConstants {
@@ -167,51 +166,21 @@ internal object EncodedInstructionConstants {
             OpCodes.LCONST_1, VerificationType.LONG)
 
     // conversion
-    val D2F_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.D2F,
-                    VerificationType.DOUBLE, VerificationType.FLOAT)
-    val D2I_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.D2I,
-                    VerificationType.DOUBLE, VerificationType.INTEGER)
-    val D2L_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.D2L,
-                    VerificationType.DOUBLE, VerificationType.LONG)
-    val F2D_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.F2D,
-                    VerificationType.FLOAT, VerificationType.DOUBLE)
-    val F2I_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.F2I,
-                    VerificationType.FLOAT, VerificationType.INTEGER)
-    val F2L_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.F2L,
-                    VerificationType.FLOAT, VerificationType.LONG)
-    val I2D_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2D,
-                    VerificationType.INTEGER, VerificationType.DOUBLE)
-    val I2F_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2F,
-                    VerificationType.INTEGER, VerificationType.FLOAT)
-    val I2L_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2L,
-                    VerificationType.INTEGER, VerificationType.LONG)
-    val I2B_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2B,
-                    VerificationType.INTEGER, VerificationType.INTEGER)
-    val I2C_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2C,
-                    VerificationType.INTEGER, VerificationType.INTEGER)
-    val I2S_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.I2S,
-                    VerificationType.INTEGER, VerificationType.INTEGER)
-    val L2D_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.L2D,
-                    VerificationType.LONG, VerificationType.DOUBLE)
-    val L2F_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.L2F,
-                    VerificationType.LONG, VerificationType.FLOAT)
-    val L2I_INSTRUCTION: EncodedInstruction =
-            ConvertInstruction(OpCodes.L2I,
-                    VerificationType.LONG, VerificationType.INTEGER)
+    val D2F_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.D2F)
+    val D2I_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.D2I)
+    val D2L_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.D2L)
+    val F2D_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.F2D)
+    val F2I_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.F2I)
+    val F2L_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.F2L)
+    val I2D_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2D)
+    val I2F_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2F)
+    val I2L_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2L)
+    val I2B_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2B)
+    val I2C_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2C)
+    val I2S_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.I2S)
+    val L2D_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.L2D)
+    val L2F_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.L2F)
+    val L2I_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.L2I)
 
     // misc
     val BREAKPOINT_INSTRUCTION: EncodedInstruction = NoArgInstruction.noLocalsNoSTack(
@@ -252,9 +221,7 @@ internal object EncodedInstructionConstants {
             NoArgInstruction.pop(OpCodes.POP2, -2)
     val SWAP_INSTRUCTION: EncodedInstruction =
             NoArgInstruction.noLocalsNoSTack(OpCodes.SWAP)
-    val ARRAYLENGTH_INSTRUCTION: EncodedInstruction =
-            NoArgInstruction.noLocals(OpCodes.ARRAYLENGTH,
-                    1, listOf(VerificationType.INTEGER))
+    val ARRAYLENGTH_INSTRUCTION: EncodedInstruction = EncodedArrayLengthInstruction()
     val ATHROW_INSTRUCTION: EncodedInstruction = EncodedAThrowInstruction()
     val ICONST_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf(
             EncodedIConstNInstruction(

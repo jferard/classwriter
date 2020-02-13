@@ -31,7 +31,7 @@ class LocalVariableTypeTableAttribute(
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedLocalVariableTypeTableAttribute {
         val attributeNameIndex: Int = context
-                .addUtf8ToPool(LOCAL_VARIABLE_TABLE)
+                .addUtf8ToPool(LOCAL_VARIABLE_TYPE_TABLE)
         val encodedLocalVariableTypes: List<EncodedLocalVariableTypeTable> =
                 localVariableTypes.map { lv: LocalVariableTypeTable ->
                     lv.encode(context, codeContext)
@@ -40,7 +40,7 @@ class LocalVariableTypeTableAttribute(
     }
 
     companion object {
-        private const val LOCAL_VARIABLE_TABLE: String = "LocalVariableTableType"
+        const val LOCAL_VARIABLE_TYPE_TABLE: String = "LocalVariableTypeTable"
     }
 
     override fun write(encodableWriter: CodeAttributeAttributeEncodableWriter) {

@@ -21,12 +21,13 @@ package com.github.jferard.classwriter.tool.parser
 import com.github.jferard.classwriter.encoded.EncodedClassFile
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
  * Parse a class file
  */
-class ClassFileParser(private val headerParser: HeaderParser,
+class ClassFileParser(private val logger: Logger, private val headerParser: HeaderParser,
                       private val constantPoolParser: ConstantPoolParser,
                       private val interfacesParser: InterfacesParser) :
         Parser<EncodedClassFile> {
@@ -38,10 +39,10 @@ class ClassFileParser(private val headerParser: HeaderParser,
                 constantPoolParser.parse(input)
         val entries =
                 constantPool.entries
-        val fieldsParser: FieldsParser = FieldsParser.create(entries)
-        val methodsParser: MethodsParser = MethodsParser.create(entries)
+        val fieldsParser: FieldsParser = FieldsParser.create(logger, entries)
+        val methodsParser: MethodsParser = MethodsParser.create(logger, entries)
         val classAttributesParser: ClassAttributesParser =
-                ClassAttributesParser.create(entries)
+                ClassAttributesParser.create(logger, entries)
         val accessFlags = input.readShort().toInt()
         val thisIndex = input.readShort().toInt()
         val superIndex = input.readShort().toInt()

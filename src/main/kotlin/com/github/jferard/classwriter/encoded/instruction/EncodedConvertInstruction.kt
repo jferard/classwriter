@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.api.instruction.base
+package com.github.jferard.classwriter.encoded.instruction
 
-import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 
@@ -26,34 +25,22 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.api.instruction.Instruction
-import com.github.jferard.classwriter.encoded.instruction.EncodedConvertInstruction
-import com.github.jferard.classwriter.encoded.instruction.EncodedInstructionConstants
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import com.github.jferard.classwriter.pool.EncodableWriter
-import java.lang.IllegalArgumentException
 
 /**
  * d2f: convert a double to a float.
  * Stack: (value) -> (result).
  */
-class ConvertInstruction(private val opcode: Int, private val fromType: VerificationType,
-                         private val toType: VerificationType) : BaseInstruction {
-    override fun preprocess(context: GlobalContext,
-                            codeContext: MethodContext) {
-        codeContext.offsetDelta(1)
-        val valueType: VerificationType = codeContext.stackPop()
-        codeContext.assertTypeAssignable(fromType, valueType)
-        codeContext.stackPush(toType)
+class EncodedConvertInstruction(private val opcode: Int): EncodedInstruction {
+    override fun write(encodedWriter: InstructionEncodedWriter) {
+        return encodedWriter.convertInstruction(opcode)
     }
 
-    override fun write(encodableWriter: EncodableWriter) {
+    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun encode(context: GlobalContext,
-                        codeContext: MethodContext): EncodedInstruction {
-        return when(opcode) {
-            OpCodes.I2C -> EncodedInstructionConstants.I2C_INSTRUCTION
-            else -> throw IllegalArgumentException("$opcode")
-        }
-    }
+    override val size: Int = BytecodeHelper.BYTE_SIZE
+
 }

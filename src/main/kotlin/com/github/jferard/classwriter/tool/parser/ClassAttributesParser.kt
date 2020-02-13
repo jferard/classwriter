@@ -25,6 +25,7 @@ import com.github.jferard.classwriter.internal.attribute.InnerClassesAttribute
 import com.github.jferard.classwriter.internal.attribute.SourceFileAttribute
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
@@ -34,12 +35,13 @@ import java.io.IOException
  * ```
  * Table 4.7-C. Predefined class file attributes (by location)
  */
-class ClassAttributesParser(
+class ClassAttributesParser(private val logger: Logger,
         private val cfmParser: CFMAttributesParser,
         private val entries: List<EncodedConstantPoolEntry>) :
         Parser<EncodedClassFileAttributes> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedClassFileAttributes {
+        logger.finer("Parse class attributes")
         val classAttributesCount = input.readShort().toInt()
         val encodedClassFileAttributes = (1..classAttributesCount).map {
             parseClassAttribute(input)
@@ -52,6 +54,7 @@ class ClassAttributesParser(
             input: DataInput): EncodedClassFileAttribute<*, *, *> {
         val attributeNameIndex = input.readUnsignedShort()
         val attributeName = entries[attributeNameIndex - 1].utf8Text()
+        logger.finer("Parse class attribute $attributeName")
         return when (attributeName) {
             InnerClassesAttribute.INNER_CLASSES_NAME -> parseInnerClassesAttribute(
                     attributeNameIndex, input)
@@ -93,9 +96,9 @@ class ClassAttributesParser(
     }
 
     companion object {
-        fun create(
+        fun create(logger: Logger,
                 entries: List<EncodedConstantPoolEntry>): ClassAttributesParser {
-            return ClassAttributesParser(CFMAttributesParser.create(entries), entries)
+            return ClassAttributesParser(logger, CFMAttributesParser.create(logger, entries), entries)
         }
     }
 

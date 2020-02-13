@@ -23,12 +23,14 @@ import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.ConstantValueAttributeFactory
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
-class FieldAttributesParser(private val cfmParser: CFMAttributesParser,
+class FieldAttributesParser(private val logger: Logger, private val cfmParser: CFMAttributesParser,
                             private val entries: List<EncodedConstantPoolEntry>) :
         Parser<EncodedFieldAttribute<*, *, *>> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedFieldAttribute<*, *, *> {
+        logger.finer("Parse field attribute")
         val index = input.readUnsignedShort()
         val constantPoolEntry = entries[index - 1]
         return when (constantPoolEntry.utf8Text()) {
@@ -42,8 +44,8 @@ class FieldAttributesParser(private val cfmParser: CFMAttributesParser,
     }
 
     companion object {
-        fun create(entries: List<EncodedConstantPoolEntry>) : FieldAttributesParser {
-            return FieldAttributesParser(CFMAttributesParser.create(entries), entries)
+        fun create(logger: Logger, entries: List<EncodedConstantPoolEntry>) : FieldAttributesParser {
+            return FieldAttributesParser(logger, CFMAttributesParser.create(logger, entries), entries)
         }
     }
 }

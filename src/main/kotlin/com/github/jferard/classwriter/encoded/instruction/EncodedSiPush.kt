@@ -16,29 +16,23 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.tool.parser
 
-import com.github.jferard.classwriter.api.Header
-import com.github.jferard.classwriter.encoded.EncodedClassFile
-import java.io.DataInput
-import java.io.IOException
-import java.util.logging.Logger
+package com.github.jferard.classwriter.encoded.instruction
 
-/**
- * 4.1. The ClassFile Structure
- * u4             magic;
- * u2             minor_version;
- * u2             major_version;
- */
-class HeaderParser(private val logger: Logger) :
-        Parser<Header> {
-    @Throws(IOException::class)
-    override fun parse(input: DataInput): Header {
-        logger.finer("Parse header")
-        val magic = input.readInt()
-        check(magic == EncodedClassFile.MAGIC_NUMBER)
-        val minorVersion = input.readShort().toInt()
-        val majorVersion = input.readShort().toInt()
-        return Header(minorVersion, majorVersion)
+import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.internal.context.GlobalContext
+import com.github.jferard.classwriter.internal.context.MethodContext
+
+class EncodedSiPush(private val value: Int) : EncodedInstruction {
+    override fun write(encodedWriter: InstructionEncodedWriter) {
+        encodedWriter.siPush(value)
     }
+
+    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
+        TODO("Not yet implemented")
+    }
+
+    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 }

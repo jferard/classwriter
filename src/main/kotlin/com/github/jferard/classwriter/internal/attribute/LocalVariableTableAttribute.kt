@@ -40,7 +40,7 @@ class LocalVariableTableAttribute(
     }
 
     companion object {
-        private const val LOCAL_VARIABLE_TABLE: String = "LocalVariableTable"
+        const val LOCAL_VARIABLE_TABLE: String = "LocalVariableTable"
     }
 
     override fun write(encodableWriter: CodeAttributeAttributeEncodableWriter) {

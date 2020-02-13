@@ -19,13 +19,15 @@
 package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.OpCodes
+import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : InstructionEncodedWriter {
+class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val output: DataOutput) : InstructionEncodedWriter {
     override fun aLoadNInstruction(opcode: Int) {
         output.writeByte(opcode)
     }
@@ -43,11 +45,9 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
             encodedInstructions: List<EncodedInstruction>) {
         var i=0
         encodedInstructions.forEach {
-            println("write: $it, ${it.size}");
+            logger.finer("Write instruction: $it ($i/${Sized.listSize(encodedInstructions)})");
             i += it.size
-            println("i=$i")
             it.write(this)
-
         }
     }
 
@@ -106,11 +106,13 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun aLoadInstruction(referenceIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.ALOAD)
+        output.writeByte(referenceIndex)
     }
 
     override fun iLoadInstruction(referenceIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.ILOAD)
+        output.writeByte(referenceIndex)
     }
 
     override fun iLoadNInstruction(opcode: Int) {
@@ -150,7 +152,7 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
     }
 
     override fun popInstruction() {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeByte(OpCodes.POP)
     }
 
     override fun nopInstruction() {
@@ -179,6 +181,15 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
         output.writeShort(branch)
     }
 
+    override fun arrayLength() {
+        output.writeByte(OpCodes.ARRAYLENGTH)
+    }
+
+    override fun siPush(value: Int) {
+        output.writeByte(OpCodes.SIPUSH)
+        output.writeShort(value)
+    }
+
     override fun instanceOfInstruction(typeIndex: Int) {
         output.writeByte(OpCodes.INSTANCEOF)
         output.writeShort(typeIndex)
@@ -203,12 +214,12 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
 
     override fun aStoreInstruction(referenceIndex: Int) {
         output.writeByte(OpCodes.ASTORE)
-        output.writeShort(referenceIndex)
+        output.writeByte(referenceIndex)
     }
 
     override fun biPushInstruction(b: Int) {
         output.writeByte(OpCodes.BIPUSH)
-        output.writeByte(b.toInt())
+        output.writeByte(b)
     }
 
     override fun constInstruction(opcode: Int) {
@@ -312,10 +323,10 @@ class ByteCodeInstructionEncodedWriter(private val output: DataOutput) : Instruc
         */
     }
 
-    override fun iincInstruction(index: Int, c: Int) {
+    override fun iincInstruction(index: Int, const: Int) {
         output.writeByte(OpCodes.IINC)
         output.writeByte(index)
-        output.writeByte(c)
+        output.writeByte(const)
     }
 
     override fun loadInstruction(opcode: Int, index: Int) {

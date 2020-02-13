@@ -18,37 +18,33 @@
  */
 package com.github.jferard.classwriter.tool.parser
 
-import com.github.jferard.classwriter.encoded.EncodedField
 import com.github.jferard.classwriter.encoded.EncodedFields
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
  * u2             fields_count;
  * field_info     fields[fields_count];
  */
-class FieldsParser(var fieldParser: FieldParser) :
+class FieldsParser(private val logger: Logger, private val fieldParser: FieldParser) :
         Parser<EncodedFields> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedFields {
+        logger.finer("Parse fields")
         val fieldsCount = input.readShort().toInt()
-        val encodedFields = (0 until fieldsCount).map {
-            decodeField(input)
+        val encodedFields = (1..fieldsCount).map {
+            fieldParser.parse(input)
         }
         return EncodedFields(encodedFields)
     }
 
-    @Throws(IOException::class)
-    private fun decodeField(input: DataInput): EncodedField {
-        return fieldParser.parse(input)
-    }
-
     companion object {
-        fun create(
+        fun create(logger: Logger,
                 entries: List<EncodedConstantPoolEntry>): FieldsParser {
-            return FieldsParser(FieldParser.create(entries))
+            return FieldsParser(logger, FieldParser.create(logger, entries))
         }
     }
 

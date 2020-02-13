@@ -26,11 +26,14 @@ import com.github.jferard.classwriter.internal.attribute.DeprecatedAttribute
 import com.github.jferard.classwriter.internal.attribute.SyntheticAttribute
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
-class CFMAttributesParser(private val annotationParser: AnnotationParser,
+class CFMAttributesParser(private val logger: Logger,
+                          private val annotationParser: AnnotationParser,
                           private val entries: List<EncodedConstantPoolEntry>) {
     @Throws(IOException::class)
     fun parse(index: Int, input: DataInput): EncodedCFMAttribute<*, *, *> {
+        logger.finer("Parse class/field/method attribute")
         val constantPoolEntry = entries[index - 1]
         return when (constantPoolEntry.utf8Text()) {
             SyntheticAttribute.SYNTHETIC_NAME -> {
@@ -65,8 +68,8 @@ class CFMAttributesParser(private val annotationParser: AnnotationParser,
     }
 
     companion object {
-        fun create(entries: List<EncodedConstantPoolEntry>): CFMAttributesParser {
-            return CFMAttributesParser(AnnotationParser(), entries)
+        fun create(logger: Logger, entries: List<EncodedConstantPoolEntry>): CFMAttributesParser {
+            return CFMAttributesParser(logger, AnnotationParser(logger), entries)
         }
     }
 }

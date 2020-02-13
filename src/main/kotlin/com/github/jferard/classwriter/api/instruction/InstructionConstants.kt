@@ -300,9 +300,7 @@ internal object InstructionConstants {
             NoArgInstruction.pop(OpCodes.POP2, -2)
     val SWAP_INSTRUCTION: BaseInstruction =
             NoArgInstruction.noLocalsNoSTack(OpCodes.SWAP)
-    val ARRAYLENGTH_INSTRUCTION: BaseInstruction =
-            NoArgInstruction.noLocals(OpCodes.ARRAYLENGTH,
-                    1, listOf(VerificationType.INTEGER))
+    val ARRAYLENGTH_INSTRUCTION: BaseInstruction = ArrayLengthInstruction()
     val ATHROW_INSTRUCTION: BaseInstruction = AThrowInstruction()
     val ICONST_INSTRUCTIONS: Array<BaseInstruction> = arrayOf<BaseInstruction>(
             ConstInstruction(OpCodes.ICONST_M1,

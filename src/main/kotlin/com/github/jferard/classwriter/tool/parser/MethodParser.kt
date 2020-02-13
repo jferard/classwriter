@@ -26,11 +26,11 @@ import java.io.DataInput
 import java.io.IOException
 import java.util.logging.Logger
 
-class MethodParser(private val methodAttributeParser: MethodAttributeParser) :
+class MethodParser(private val logger: Logger, private val methodAttributeParser: MethodAttributeParser) :
         Parser<EncodedMethod> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedMethod {
-        Logger.getLogger("cw").warning("parse method")
+        logger.finer("Parse method")
         val accessFlags = input.readUnsignedShort()
         val nameIndex = input.readUnsignedShort()
         val descriptorIndex = input.readUnsignedShort()
@@ -44,11 +44,11 @@ class MethodParser(private val methodAttributeParser: MethodAttributeParser) :
     }
 
     companion object {
-        fun create(
+        fun create(logger: Logger,
                 entries: List<EncodedConstantPoolEntry>): MethodParser {
-            return MethodParser(
-                    MethodAttributeParser(CodeAttributeAttributeParser(entries),
-                            InstructionsParser(), AnnotationParser(), entries))
+            return MethodParser(logger,
+                    MethodAttributeParser(logger, CodeAttributeAttributeParser(logger, entries),
+                            InstructionsParser(logger), AnnotationParser(logger), entries))
         }
     }
 

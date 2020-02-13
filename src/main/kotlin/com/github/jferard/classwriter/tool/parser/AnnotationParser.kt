@@ -21,10 +21,12 @@ package com.github.jferard.classwriter.tool.parser
 
 import com.github.jferard.classwriter.encoded.attribute.*
 import java.io.DataInput
+import java.util.logging.Logger
 
-class AnnotationParser {
+class AnnotationParser(private val logger: Logger) {
     /** 4.7.16. The RuntimeVisibleAnnotations Attribute */
     fun parseAnnotation(input: DataInput): EncodedAnnotation {
+        logger.finer("Parse annotation")
         val typeIndex = input.readUnsignedShort()
         val numElements = input.readShort()
         val encodedElementValuePairs = (1..numElements).map {
@@ -40,7 +42,7 @@ class AnnotationParser {
      */
     private fun parseValue(input: DataInput): EncodedElementValue {
         val tag = input.readUnsignedByte()
-        println("parse value ${tag.toChar()}")
+        logger.finest("Parse element value ${tag.toChar()}")
         return when (tag.toChar()) {
             'B', 'C', 'D', 'F', 'I', 'J', 'S', 'Z', 's' -> {
                 val constValueIndex = input.readShort()

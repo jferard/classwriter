@@ -22,16 +22,18 @@ import com.github.jferard.classwriter.encoded.EncodedMethods
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
  * u2             methods_count;
  * method_info    methods[methods_count];
  */
-class MethodsParser(private val methodParser: MethodParser) :
+class MethodsParser(private val logger: Logger, private val methodParser: MethodParser) :
         Parser<EncodedMethods> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedMethods {
+        logger.finer("Parse methods")
         val methodsCount = input.readShort().toInt()
         val encodedMethods = (0 until methodsCount).map {
             methodParser.parse(input)
@@ -40,9 +42,9 @@ class MethodsParser(private val methodParser: MethodParser) :
     }
 
     companion object {
-        fun create(
+        fun create(logger: Logger,
                 entries: List<EncodedConstantPoolEntry>): MethodsParser {
-            return MethodsParser(MethodParser.create(entries))
+            return MethodsParser(logger, MethodParser.create(logger, entries))
         }
     }
 

@@ -38,7 +38,7 @@ class LineNumberTableAttribute internal constructor(
     }
 
     companion object {
-        private const val LINE_NUMBER_TABLE_NAME: String = "LineNumberTable"
+        const val LINE_NUMBER_TABLE_NAME: String = "LineNumberTable"
     }
 
     override fun write(encodableWriter: CodeAttributeAttributeEncodableWriter) {

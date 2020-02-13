@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.bytecode
+package com.github.jferard.classwriter.encoded.stackmap
 
-import com.github.jferard.classwriter.encoded.stackmap.EncodedByteVerificationType
+import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.stackmap.EncodedVerificationType
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodableWriter
@@ -29,31 +29,26 @@ import com.github.jferard.classwriter.internal.context.MethodContext
 /**
  * top, integer, float, null, uninitialized_this, long, double
  */
-class ByteVerificationType(private val code: Int, private val parent: VerificationType?) :
-        VerificationType {
-    override fun encode(context: GlobalContext,
-                        codeContext: MethodContext): EncodedVerificationType {
-        return EncodedByteVerificationType(code)
-    }
-
-    override val isLong: Boolean = false
-
-    override fun isAssignable(expectedType: VerificationType): Boolean {
-        return this == expectedType ||
-                parent != null && parent.isAssignable(expectedType)
-    }
-
-    override fun write(encodableWriter: VerificationTypeEncodableWriter) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
+class EncodedByteVerificationType(private val code: Int) :
+        EncodedVerificationType {
     override fun equals(o: Any?): Boolean {
         if (o === this) {
             return true
         }
-        if (o !is ByteVerificationType) {
+        if (o !is EncodedByteVerificationType) {
             return false
         }
         return code == o.code
     }
+
+    override fun write(encodedWriter: VerificationTypeEncodedWriter) {
+        return encodedWriter.byteVerificationType(code)
+    }
+
+    override fun decode(context: GlobalContext, codeContext: MethodContext): VerificationType {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override val size: Int = BytecodeHelper.BYTE_SIZE
+
 }

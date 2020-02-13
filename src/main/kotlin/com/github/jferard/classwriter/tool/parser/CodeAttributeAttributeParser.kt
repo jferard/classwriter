@@ -24,29 +24,33 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTabl
 import com.github.jferard.classwriter.encoded.attribute.EncodedLocalVariableTypeTable
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.encoded.stackmap.*
-import com.github.jferard.classwriter.internal.attribute.PositionAndLineNumber
-import com.github.jferard.classwriter.internal.attribute.StackMapTableAttribute
+import com.github.jferard.classwriter.internal.attribute.*
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeConstants
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import java.io.DataInput
 import java.io.IOException
 import java.util.*
+import java.util.logging.Logger
 
-class CodeAttributeAttributeParser(
-        val entries: List<EncodedConstantPoolEntry>) :
+class CodeAttributeAttributeParser(private val logger: Logger,
+                                   private val entries: List<EncodedConstantPoolEntry>) :
         Parser<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>> {
     @Throws(IOException::class)
     override fun parse(
             input: DataInput): EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter> {
         val attributeNameIndex = input.readUnsignedShort()
         val attributeName = entries[attributeNameIndex - 1].utf8Text()
+        logger.finer("Parse code attribute attribute: $attributeName")
         return when (attributeName) {
             StackMapTableAttribute.STACK_MAP_TABLE_NAME -> parseStackMapTableAttribute(
                     attributeNameIndex, input)
-            "LineNumberTable" -> decodeLineNumberTable(attributeNameIndex, input)
-            "LocalVariableTable" -> decodeLocalVariableTable(attributeNameIndex, input)
-            "LocalVariableTypeTable" -> decodeLocalVariableTypeTable(attributeNameIndex,
+            LineNumberTableAttribute.LINE_NUMBER_TABLE_NAME -> decodeLineNumberTable(
+                    attributeNameIndex, input)
+            LocalVariableTableAttribute.LOCAL_VARIABLE_TABLE -> decodeLocalVariableTable(
+                    attributeNameIndex, input)
+            LocalVariableTypeTableAttribute.LOCAL_VARIABLE_TYPE_TABLE -> decodeLocalVariableTypeTable(
+                    attributeNameIndex,
                     input)
             else -> throw IllegalArgumentException(attributeName)
         }
@@ -56,7 +60,8 @@ class CodeAttributeAttributeParser(
     private fun parseStackMapTableAttribute(attributeNameIndex: Int,
                                             input: DataInput): EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter> {
         val length = input.readInt()
-        val numberOfEntries = input.readShort()
+        val numberOfEntries = input.readUnsignedShort()
+        logger.finest("StackmapTableAttr $numberOfEntries -> $length")
         val encodedStackMapFrames = (1..numberOfEntries).map { parseStackMapTableEntry(input) }
         return EncodedStackMapTableAttribute(attributeNameIndex, encodedStackMapFrames)
     }
@@ -75,10 +80,11 @@ class CodeAttributeAttributeParser(
      * ```
      */
     private fun parseStackMapTableEntry(input: DataInput): EncodedStackMapFrame {
-        return when (val tag = input.readUnsignedByte()) {
+        val tag = input.readUnsignedByte()
+        logger.finest("Tag: $tag")
+        return when (tag) {
             in 0..63 -> EncodedSameFrame(tag)
-            in 64..127 -> EncodedSameLocals1StackItemFrame(
-                    tag, parseVerificationType(input))
+            in 64..127 -> EncodedSameLocals1StackItemFrame(tag, parseVerificationType(input))
             in 128..246 -> throw IllegalArgumentException("Future use")
             StackMapFrameConstants.SAME_LOCALS_1_STACK_ITEM_EXTENDED -> {
                 val offsetDelta = input.readShort()
@@ -95,7 +101,8 @@ class CodeAttributeAttributeParser(
             }
             in 252..254 -> {
                 val k = tag - StackMapFrameConstants.SAME_FRAME_EXTENDED
-                val offsetDelta = input.readShort()
+                val offsetDelta = input.readUnsignedShort()
+                logger.finest("parse : $tag, $k, $offsetDelta")
                 val verificationTypes = (1..k).map { parseVerificationType(input) }
                 EncodedAppendFrame(tag, offsetDelta.toInt(), verificationTypes)
             }
@@ -113,14 +120,15 @@ class CodeAttributeAttributeParser(
 
     private fun parseVerificationType(input: DataInput): EncodedVerificationType {
         val tag = input.readByte()
+        logger.finest("verif $tag")
         return when (tag.toInt()) {
-            VerificationTypeConstants.TOP_CODE -> VerificationType.TOP
-            VerificationTypeConstants.INTEGER_CODE -> VerificationType.INTEGER
-            VerificationTypeConstants.FLOAT_CODE -> VerificationType.FLOAT
-            VerificationTypeConstants.LONG_CODE -> VerificationType.LONG
-            VerificationTypeConstants.DOUBLE_CODE -> VerificationType.DOUBLE
-            VerificationTypeConstants.NULL_CODE -> VerificationType.NULL
-            VerificationTypeConstants.UNINITIALIZED_THIS_CODE -> VerificationType.UNITIALIZED_THIS
+            VerificationTypeConstants.TOP_CODE -> EncodedVerificationType.TOP
+            VerificationTypeConstants.INTEGER_CODE -> EncodedVerificationType.INTEGER
+            VerificationTypeConstants.FLOAT_CODE -> EncodedVerificationType.FLOAT
+            VerificationTypeConstants.LONG_CODE -> EncodedVerificationType.LONG
+            VerificationTypeConstants.DOUBLE_CODE -> EncodedVerificationType.DOUBLE
+            VerificationTypeConstants.NULL_CODE -> EncodedVerificationType.NULL
+            VerificationTypeConstants.UNINITIALIZED_THIS_CODE -> EncodedVerificationType.UNITIALIZED_THIS
             VerificationTypeConstants.OBJECT_CODE -> {
                 val classIndex = input.readUnsignedShort()
                 EncodedObjectVerificationType(classIndex)

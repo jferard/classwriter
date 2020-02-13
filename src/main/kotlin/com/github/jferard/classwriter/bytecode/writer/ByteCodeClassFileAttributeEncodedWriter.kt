@@ -20,7 +20,6 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribute
@@ -28,17 +27,20 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedInnerClass
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput,
+class ByteCodeClassFileAttributeEncodedWriter(private val logger: Logger,
+                                              private val output: DataOutput,
                                               private val annotationWriter: AnnotationEncodedWriter) :
         ClassFileAttributeEncodedWriter {
 
 
     override fun innerClassesAttribute(attributeNameIndex: Int,
                                        encodedInnerClasses: List<EncodedInnerClass>) {
-        val length = Sized.listSize(encodedInnerClasses)
+        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedInnerClasses)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
+        output.writeShort(encodedInnerClasses.size)
         encodedInnerClasses.forEach { writableInnerClass ->
             writableInnerClass.write(this)
         }
@@ -70,7 +72,7 @@ class ByteCodeClassFileAttributeEncodedWriter(private val output: DataOutput,
 
     override fun annotationsAttribute(annotationsNameIndex: Int,
                                       encodedAnnotations: List<EncodedAnnotation>) {
-        println("write class annot: $annotationsNameIndex")
+        logger.finer("Write class annotations: $encodedAnnotations")
         output.writeShort(annotationsNameIndex)
         output.writeInt(BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations))
         output.writeShort(encodedAnnotations.size)

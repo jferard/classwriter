@@ -23,6 +23,7 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedMethodAttribute
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
 class ByteCodeMethodEncodedWriter(
         private val output: DataOutput,
@@ -47,10 +48,10 @@ class ByteCodeMethodEncodedWriter(
     }
 
     companion object {
-        fun create(
+        fun create(logger: Logger,
                 output: DataOutput): ByteCodeMethodEncodedWriter {
             return ByteCodeMethodEncodedWriter(output,
-                    ByteCodeMethodAttributeEncodedWriter.create(output))
+                    ByteCodeMethodAttributeEncodedWriter.create(logger, output))
         }
     }
 }

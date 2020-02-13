@@ -28,8 +28,9 @@ import com.github.jferard.classwriter.internal.attribute.PositionAndLineNumber
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeCodeAttributeAttributeEncodedWriter(
+class ByteCodeCodeAttributeAttributeEncodedWriter(private val logger: Logger,
         private val output: DataOutput,
         private val stackMapTableWritableFactory: StackMapFrameEncodedWriter) :
         CodeAttributeAttributeEncodedWriter {
@@ -37,8 +38,8 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
 
     override fun stackMapTableAttribute(attributeNameIndex: Int,
                                         encodedStackMapFrames: List<EncodedStackMapFrame>) {
-        println("sma $encodedStackMapFrames")
         val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedStackMapFrames)
+        logger.finest("Write stack map attributes $encodedStackMapFrames (${encodedStackMapFrames.size} -> $length)")
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(encodedStackMapFrames.size)
@@ -98,9 +99,9 @@ class ByteCodeCodeAttributeAttributeEncodedWriter(
     }
 
     companion object {
-        fun create(output: DataOutput): CodeAttributeAttributeEncodedWriter {
-            return ByteCodeCodeAttributeAttributeEncodedWriter(
-                    output, ByteCodeStackMapFrameEncodedWriter.create(output))
+        fun create(logger: Logger, output: DataOutput): CodeAttributeAttributeEncodedWriter {
+            return ByteCodeCodeAttributeAttributeEncodedWriter(logger,
+                    output, ByteCodeStackMapFrameEncodedWriter.create(logger, output))
         }
     }
 }

@@ -18,9 +18,9 @@
  */
 package com.github.jferard.classwriter.encoded.stackmap
 
+import com.github.jferard.classwriter.bytecode.ByteVerificationType
 import com.github.jferard.classwriter.encoded.Encoded
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
+import com.github.jferard.classwriter.internal.attribute.stackmap.*
 
 /**
  * 4.7.4. The StackMapTable Attribute
@@ -39,4 +39,29 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
  * ```
  */
 interface EncodedVerificationType :
-        Encoded<VerificationType, EncodedVerificationType, VerificationTypeEncodedWriter>
+        Encoded<VerificationType, EncodedVerificationType, VerificationTypeEncodedWriter> {
+    companion object {
+        val TOP: EncodedByteVerificationType =
+                EncodedByteVerificationType(VerificationTypeConstants.TOP_CODE)
+        val ONE_WORD: EncodedMockVerificationType =
+                EncodedMockVerificationType(false)
+        val TWO_WORDS: EncodedMockVerificationType =
+                EncodedMockVerificationType(true)
+        val INTEGER: EncodedByteVerificationType =
+                EncodedByteVerificationType(VerificationTypeConstants.INTEGER_CODE)
+        val FLOAT: EncodedByteVerificationType =
+                EncodedByteVerificationType(VerificationTypeConstants.FLOAT_CODE)
+        val REFERENCE: EncodedVerificationType =
+                EncodedMockVerificationType(false)
+        val UNITIALIZED: EncodedVerificationType =
+                EncodedMockVerificationType(false)
+        val UNITIALIZED_THIS: EncodedByteVerificationType =
+                EncodedByteVerificationType(
+                        VerificationTypeConstants.UNINITIALIZED_THIS_CODE)
+        val NULL: EncodedVerificationType = NullVerificationType()
+        val LONG: EncodedByteVerificationType =
+                EncodedByteVerificationType(VerificationTypeConstants.LONG_CODE)
+        val DOUBLE: EncodedByteVerificationType =
+                EncodedByteVerificationType(VerificationTypeConstants.DOUBLE_CODE)
+    }
+}

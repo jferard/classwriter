@@ -23,8 +23,9 @@ import com.github.jferard.classwriter.encoded.stackmap.StackMapFrameConstants
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeStackMapFrameEncodedWriter(
+class ByteCodeStackMapFrameEncodedWriter(private val logger: Logger,
         private val output: DataOutput,
         private val verificationTypeFactory: VerificationTypeEncodedWriter) :
         StackMapFrameEncodedWriter {
@@ -35,8 +36,9 @@ class ByteCodeStackMapFrameEncodedWriter(
     }
 
     override fun sameFrame(frameType: Int) {
+        logger.finest("Write same frame: $frameType")
         assert(frameType < 64)
-        output.writeByte(StackMapFrameConstants.SAME_FRAME_BASE + frameType)
+        output.writeByte(frameType)
     }
 
     override fun fullFrame(offsetDelta: Int,
@@ -52,7 +54,8 @@ class ByteCodeStackMapFrameEncodedWriter(
 
     override fun appendFrame(frameType: Int, offsetDelta: Int,
                              encodedNewTypes: List<EncodedVerificationType>) {
-        output.writeByte(StackMapFrameConstants.APPEND_FRAME_BASE + frameType)
+        logger.finest("Write append frame: $frameType, $offsetDelta, $encodedNewTypes")
+        output.writeByte(frameType)
         output.writeShort(offsetDelta)
         encodedNewTypes.forEach { it.write(verificationTypeFactory) }
     }
@@ -78,8 +81,8 @@ class ByteCodeStackMapFrameEncodedWriter(
     }
 
     companion object {
-        fun create(output: DataOutput): ByteCodeStackMapFrameEncodedWriter {
-            return ByteCodeStackMapFrameEncodedWriter(
+        fun create(logger: Logger, output: DataOutput): ByteCodeStackMapFrameEncodedWriter {
+            return ByteCodeStackMapFrameEncodedWriter(logger,
                     output,
                     ByteCodeVerificationTypeEncodedWriter(
                             output))

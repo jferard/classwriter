@@ -35,8 +35,8 @@ class InnerClassesAttribute internal constructor(
         val attributeNameIndex: Int =
                 context.addUtf8ToPool(INNER_CLASSES_NAME)
         val encodedInnerClasses: List<EncodedInnerClass> =
-                innerClasses.map { ic: InnerClass ->
-                    ic.encode(context, MethodContext.create(0))
+                innerClasses.map {
+                    it.encode(context, MethodContext.create(0))
                 }
         return EncodedInnerClassesAttribute(attributeNameIndex,
                 encodedInnerClasses)

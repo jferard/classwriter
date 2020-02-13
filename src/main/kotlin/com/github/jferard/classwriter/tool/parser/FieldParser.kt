@@ -26,6 +26,7 @@ import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import java.io.DataInput
 import java.io.IOException
 import java.util.*
+import java.util.logging.Logger
 
 /** ```field_info {
  * u2             access_flags;
@@ -35,35 +36,29 @@ import java.util.*
  * attribute_info attributes[attributes_count];
  * }
  * ``` *   */
-class FieldParser(private val attributesParser: FieldAttributesParser) :
+class FieldParser(private val logger: Logger, private val attributesParser: FieldAttributesParser) :
         Parser<EncodedField> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedField {
+        logger.finer("Parse field")
         val accessFlags = input.readShort().toInt()
         val nameIndex = input.readShort().toInt()
         val descriptorIndex = input.readShort().toInt()
         val attributesCount = input.readShort().toInt()
         val attributes: MutableList<EncodedFieldAttribute<FieldAttribute<*, EncodedFieldAttribute<*, *, *>, *>, *, FieldAttributeEncodedWriter>> =
                 ArrayList()
-        println("attcount $attributesCount")
         for (i in 0 until attributesCount) {
-            println("i $i")
-            val encodedAttribute = decodeAttribute(
+            val encodedAttribute = attributesParser.parse(
                     input) as EncodedFieldAttribute<FieldAttribute<*, EncodedFieldAttribute<*, *, *>, *>, *, FieldAttributeEncodedWriter>
-            println(encodedAttribute)
+            logger.finest("Parse attribute $i/$attributesCount: $encodedAttribute")
             attributes.add(encodedAttribute)
         }
         return EncodedField(accessFlags, nameIndex, descriptorIndex, attributes)
     }
 
-    @Throws(IOException::class)
-    private fun decodeAttribute(input: DataInput): EncodedFieldAttribute<*, *, *> {
-        return attributesParser.parse(input)
-    }
-
     companion object {
-        fun create(entries: List<EncodedConstantPoolEntry>): FieldParser {
-            return FieldParser(FieldAttributesParser.create(entries))
+        fun create(logger: Logger, entries: List<EncodedConstantPoolEntry>): FieldParser {
+            return FieldParser(logger, FieldAttributesParser.create(logger, entries))
         }
     }
 

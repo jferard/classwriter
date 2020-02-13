@@ -316,6 +316,15 @@ class TextInstructionEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeU2(output, "branch", branch)
     }
 
+    override fun arrayLength() {
+        output.write("OpCodes.ARRAYLENGTH, \n")
+    }
+
+    override fun siPush(value: Int) {
+        output.write("OpCodes.SIPUSH, ")
+        TextEncodedWriterHelper.writeU2(output, "value", value)
+    }
+
     override fun instanceOfInstruction(typeIndex: Int) {
         output.write("OpCodes.INSTANCE_OF, ")
         TextEncodedWriterHelper.writeShortEntryIndex(output, "branch", typeIndex, entries,
@@ -342,7 +351,25 @@ class TextInstructionEncodedWriter(private val output: Writer,
     }
 
     override fun convertInstruction(opcode: Int) {
-        TODO("not implemented")
+        val name = when(opcode) {
+            OpCodes.D2F -> "OpCodes.D2F"
+            OpCodes.D2I -> "OpCodes.D2I"
+            OpCodes.D2L -> "OpCodes.D2L"
+            OpCodes.F2D -> "OpCodes.F2D"
+            OpCodes.F2I -> "OpCodes.F2I"
+            OpCodes.F2L -> "OpCodes.F2L"
+            OpCodes.I2D -> "OpCodes.I2D"
+            OpCodes.I2F -> "OpCodes.I2F"
+            OpCodes.I2L -> "OpCodes.I2L"
+            OpCodes.I2B -> "OpCodes.I2B"
+            OpCodes.I2C -> "OpCodes.I2C"
+            OpCodes.I2S -> "OpCodes.I2S"
+            OpCodes.L2D -> "OpCodes.L2D"
+            OpCodes.L2F -> "OpCodes.L2F"
+            OpCodes.L2I -> "OpCodes.L2I"
+            else -> throw IllegalArgumentException("Convert: $opcode")
+        }
+        output.write("$name,\n")
     }
 
     override fun dup2Instruction() {
@@ -414,7 +441,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
         TODO("not implemented")
     }
 
-    override fun iincInstruction(index: Int, c: Int) {
+    override fun iincInstruction(index: Int, const: Int) {
         TODO("not implemented")
     }
 

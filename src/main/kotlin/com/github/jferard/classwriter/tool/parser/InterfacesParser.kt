@@ -22,20 +22,22 @@ import com.github.jferard.classwriter.encoded.EncodedInterfaces
 import java.io.DataInput
 import java.io.IOException
 import java.util.*
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
  * u2             interfaces_count;
  * u2             interfaces[interfaces_count];
  */
-class InterfacesParser :
+class InterfacesParser(private val logger: Logger) :
         Parser<EncodedInterfaces> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedInterfaces {
+        logger.finer("Parse interfaces")
         val interfacesCount = input.readShort().toInt()
         val encodedInterfaces: MutableList<Int> =
                 ArrayList(interfacesCount)
-        for (i in 0 until interfacesCount) {
+        repeat((1..interfacesCount).count()) {
             encodedInterfaces.add(input.readShort().toInt())
         }
         return EncodedInterfaces(encodedInterfaces)

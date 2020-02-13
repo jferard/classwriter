@@ -16,29 +16,26 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.github.jferard.classwriter.encoded.instruction
+package com.github.jferard.classwriter.encoded.stackmap
 
-import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
+import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.api.instruction.Instruction
-import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 
-
-/** ```
- * ldc
- * index
- * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
-        EncodedInstruction {
-    override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+class EncodedMockVerificationType(private val isLong: Boolean) :
+        EncodedVerificationType {
+    override fun write(encodedWriter: VerificationTypeEncodedWriter) {
+        TODO("Not yet implemented")
     }
 
-    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+    override fun decode(context: GlobalContext, codeContext: MethodContext): VerificationType {
+        TODO("Not yet implemented")
     }
 
-    override val size = (1 + stackSize) * BytecodeHelper.BYTE_SIZE
-
+    override val size: Int = if (isLong) {
+        2 * com.github.jferard.classwriter.bytecode.BytecodeHelper.BYTE_SIZE
+    } else {
+        com.github.jferard.classwriter.bytecode.BytecodeHelper.BYTE_SIZE
+    }
 }

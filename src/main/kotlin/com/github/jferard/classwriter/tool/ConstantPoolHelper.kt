@@ -26,6 +26,8 @@ import com.github.jferard.classwriter.tool.parser.ConstantPoolParser
 import com.github.jferard.classwriter.tool.parser.HeaderParser
 import com.github.jferard.classwriter.tool.parser.InterfacesParser
 import java.io.*
+import java.util.logging.Level
+import java.util.logging.Logger
 
 object ConstantPoolHelper {
     @kotlin.jvm.JvmStatic
@@ -56,14 +58,21 @@ object ConstantPoolHelper {
     @Throws(IOException::class)
     fun parseClassByteCode(
             inputStream: InputStream): EncodedClassFile {
+        val logger = Logger.getLogger("cw")
+        logger.level = Level.FINEST
+        logger.parent.handlers.forEach { it.level = Level.FINEST }
+        logger.handlers.forEach { it.level = Level.FINEST }
+        logger.fine("Log")
         val input: DataInput = DataInputStream(inputStream)
-        val headerParser = HeaderParser()
-        val constantPoolParser = ConstantPoolParser()
-        val interfacesParser = InterfacesParser()
-        val decoder = ClassFileParser(headerParser,
+        val headerParser = HeaderParser(logger)
+        val constantPoolParser = ConstantPoolParser(logger)
+        val interfacesParser = InterfacesParser(logger)
+        val decoder = ClassFileParser(logger, headerParser,
                 constantPoolParser, interfacesParser)
         val encodedClassFile =
                 decoder.parse(input)
+        logger.parent.handlers.forEach { it.flush() }
+        logger.handlers.forEach { it.flush() }
         return encodedClassFile
     }
 }

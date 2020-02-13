@@ -29,12 +29,13 @@ import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
 import java.io.DataOutput
+import java.util.logging.Logger
 
-class ByteCodeMethodAttributeEncodedWriter(
-        private val output: DataOutput,
-        private val instructionWriter: InstructionEncodedWriter,
-        private val annotationWriter: AnnotationEncodedWriter,
-        private val codeAttributeWriter: CodeAttributeAttributeEncodedWriter) :
+class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
+                                           private val output: DataOutput,
+                                           private val instructionWriter: InstructionEncodedWriter,
+                                           private val annotationWriter: AnnotationEncodedWriter,
+                                           private val codeAttributeWriter: CodeAttributeAttributeEncodedWriter) :
         MethodAttributeEncodedWriter {
 
     /**
@@ -69,7 +70,9 @@ class ByteCodeMethodAttributeEncodedWriter(
                 Sized.listSize(encodedExceptions) +
                 BytecodeHelper.SHORT_SIZE + // attr count
                 Sized.listSize(encodedAttributes)
-        println("write code: $attributeNameIndex, full len=$length, code size = ${encodedCode.size}, exc:${Sized.listSize(encodedExceptions)}; attr!${Sized.listSize(encodedAttributes)}")
+        logger.finest(
+                "Write code attribute: full len=$length, code size = ${encodedCode.size}, exc size:${Sized.listSize(
+                        encodedExceptions)}, attr size: ${Sized.listSize(encodedAttributes)}")
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(maxStack)
@@ -85,7 +88,7 @@ class ByteCodeMethodAttributeEncodedWriter(
     override fun annotationsAttribute(annotationsNameIndex: Int,
                                       encodedAnnotations: List<EncodedAnnotation>) {
         val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations)
-        println("write meth annot: $annotationsNameIndex, $encodedAnnotations")
+        logger.finest("Write method annotation: $encodedAnnotations")
         output.writeShort(annotationsNameIndex)
         output.writeInt(length)
         output.writeShort(encodedAnnotations.size)
@@ -143,15 +146,17 @@ class ByteCodeMethodAttributeEncodedWriter(
     }
 
     override fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeShort(attributeNameIndex)
+        output.writeInt(2)
+        output.writeShort(signatureIndex)
     }
 
     companion object {
-        fun create(output: DataOutput): MethodAttributeEncodedWriter {
-            return ByteCodeMethodAttributeEncodedWriter(output,
-                    ByteCodeInstructionEncodedWriter(output),
-                    ByteCodeClassAnnotationEncodedWriter(output),
-                    ByteCodeCodeAttributeAttributeEncodedWriter.create(output))
+        fun create(logger: Logger, output: DataOutput): MethodAttributeEncodedWriter {
+            return ByteCodeMethodAttributeEncodedWriter(logger, output,
+                    ByteCodeInstructionEncodedWriter(logger, output),
+                    ByteCodeClassAnnotationEncodedWriter(logger, output),
+                    ByteCodeCodeAttributeAttributeEncodedWriter.create(logger, output))
         }
     }
 }

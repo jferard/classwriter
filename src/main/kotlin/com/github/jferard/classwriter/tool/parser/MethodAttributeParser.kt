@@ -27,18 +27,19 @@ import com.github.jferard.classwriter.internal.attribute.SignatureAttribute
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import java.io.DataInput
 import java.io.IOException
+import java.util.logging.Logger
 
-class MethodAttributeParser(
-        private val codeAttributeAttributeParser: CodeAttributeAttributeParser,
-        private val instructionsParser: InstructionsParser,
-        private val annotationParser: AnnotationParser,
-        val entries: List<EncodedConstantPoolEntry>) :
+class MethodAttributeParser(private val logger: Logger,
+                            private val codeAttributeAttributeParser: CodeAttributeAttributeParser,
+                            private val instructionsParser: InstructionsParser,
+                            private val annotationParser: AnnotationParser,
+                            private val entries: List<EncodedConstantPoolEntry>) :
         Parser<EncodedMethodAttribute<*, *, *>> {
 
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedMethodAttribute<*, *, *> {
+        logger.finer("Parse method attribute")
         val attributeNameIndex = input.readUnsignedShort()
-        println("parse meth attr: nameindex $attributeNameIndex")
         val attributeName = entries[attributeNameIndex - 1].utf8Text()
         return when (attributeName) {
             CodeAttribute.CODE_NAME -> parseCodeAttribute(attributeNameIndex, input)
@@ -54,7 +55,8 @@ class MethodAttributeParser(
         }
     }
 
-    private fun parseInvisibleParameterAnnotations(attributeNameIndex: Int, input: DataInput): EncodedMethodAttribute<*, *, *> {
+    private fun parseInvisibleParameterAnnotations(attributeNameIndex: Int,
+                                                   input: DataInput): EncodedMethodAttribute<*, *, *> {
         val length = input.readInt().toLong()
         val numParameters = input.readUnsignedByte()
         val parameterAnnotations = (1..numParameters).map {
@@ -68,7 +70,7 @@ class MethodAttributeParser(
                                           input: DataInput): EncodedMethodAttribute<*, *, *> {
         val length = input.readInt().toLong()
         val numAnnotations = input.readUnsignedShort()
-        println("read $numAnnotations annot")
+        logger.finer("Read $numAnnotations method annotation(s)")
         val annotations = (1..numAnnotations).map { annotationParser.parseAnnotation(input) }
         return EncodedAnnotationsAttribute(attributeNameIndex, annotations)
     }
@@ -81,7 +83,8 @@ class MethodAttributeParser(
         val maxLocals = input.readUnsignedShort()
         val encodedCode = instructionsParser.parse(input)
         val exceptionTableLength = input.readUnsignedShort()
-        println("length: $length, exceptionTableLength $exceptionTableLength")
+        logger.finest(
+                "Parse code attribute: length=$length, exceptionTableLength=$exceptionTableLength")
         val encodedExceptions: List<EncodedExceptionInCode> = (1..exceptionTableLength).map {
             parseEncodedExceptionInCode(input)
         }
@@ -90,7 +93,9 @@ class MethodAttributeParser(
                 CodeAttributeAttributeEncodedWriter>> = (1..attributesCount).map {
             codeAttributeAttributeParser.parse(input)
         }
-        println("full len=$length, code size = ${encodedCode.size}, exc:${Sized.listSize(encodedExceptions)}, attr:${Sized.listSize(encodedAttributes)}")
+        logger.finest(
+                "Parses code attribute: full len=$length, code size = ${encodedCode.size}, exc size:${Sized.listSize(
+                        encodedExceptions)}, attr size:${Sized.listSize(encodedAttributes)}")
         return EncodedCodeAttribute(attributeNameIndex, maxStack, maxLocals,
                 encodedCode, encodedExceptions, encodedAttributes)
     }

@@ -67,7 +67,7 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun tableSwitchInstruction(defaultOffset: Int, low: Int, high: Int,
                                jump_offsets: IntArray)
 
-    fun iincInstruction(index: Int, c: Int)
+    fun iincInstruction(index: Int, const: Int)
     fun loadInstruction(opcode: Int, index: Int)
     fun unaryInstuction(opcode: Int)
     fun wideLoadInstruction(opcode: Int, index: Int)
@@ -102,4 +102,6 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun ifACmpInstruction(opcode: Int, branch: Int)
     fun instanceOfInstruction(typeIndex: Int)
     fun ifICmpInstruction(opcode: Int, branch: Int)
+    fun arrayLength()
+    fun siPush(value: Int)
 }

@@ -24,19 +24,20 @@ import com.github.jferard.classwriter.api.instruction.base.BiPushInstruction
 import com.github.jferard.classwriter.encoded.instruction.*
 import com.github.jferard.classwriter.writer.encoded.EncodedInstanceOfInstruction
 import java.io.DataInput
+import java.util.logging.Logger
 
-class InstructionsParser : Parser<EncodedInstruction> {
+class InstructionsParser(private val logger: Logger) : Parser<EncodedInstruction> {
     override fun parse(input: DataInput): EncodedInstruction {
+        logger.finer("Parse instructions")
         val codeLength = input.readInt().toLong()
-        println("parse code len: $codeLength")
+        logger.finest("Code length: $codeLength")
         val ret: MutableList<EncodedInstruction> = mutableListOf()
         var i = 0
         while (i < codeLength) {
             val element = parseInstruction(input)
-            println("parsed: $element, ${element.size}")
+            logger.finest("Parsed: $element, ${element.size} ($i/$codeLength")
             ret.add(element)
             i += element.size
-            println("i: $i")
         }
         return EncodedBlockInstruction(ret.toList())
     }
@@ -47,8 +48,8 @@ class InstructionsParser : Parser<EncodedInstruction> {
             OpCodes.ARETURN -> EncodedInstructionConstants.ARETURN_INSTRUCTION
             OpCodes.ATHROW -> EncodedInstructionConstants.ATHROW_INSTRUCTION
             OpCodes.ALOAD -> EncodedALoadInstruction(input.readUnsignedByte())
-            OpCodes.ALOAD_0, OpCodes.ALOAD_1, OpCodes.ALOAD_2, OpCodes.ALOAD_3 -> EncodedInstructionConstants.ALOAD_INSTRUCTIONS[opcode - OpCodes.ALOAD_0]
             OpCodes.ASTORE -> EncodedAStoreInstruction(input.readUnsignedByte())
+            OpCodes.ALOAD_0, OpCodes.ALOAD_1, OpCodes.ALOAD_2, OpCodes.ALOAD_3 -> EncodedInstructionConstants.ALOAD_INSTRUCTIONS[opcode - OpCodes.ALOAD_0]
             OpCodes.ASTORE_0, OpCodes.ASTORE_1, OpCodes.ASTORE_2, OpCodes.ASTORE_3 -> EncodedInstructionConstants.ASTORE_INSTRUCTIONS[opcode - OpCodes.ASTORE_0]
             OpCodes.ACONST_NULL -> EncodedInstructionConstants.ACONST_NULL_INSTRUCTION
             OpCodes.BIPUSH -> BiPushInstruction(input.readUnsignedByte())
@@ -61,12 +62,14 @@ class InstructionsParser : Parser<EncodedInstruction> {
             OpCodes.GOTO -> EncodedGotoInstruction(
                     input.readUnsignedShort())
             OpCodes.ICONST_0, OpCodes.ICONST_1, OpCodes.ICONST_2, OpCodes.ICONST_3, OpCodes.ICONST_4, OpCodes.ICONST_5 -> EncodedInstructionConstants.ICONST_INSTRUCTIONS[opcode - OpCodes.ICONST_0]
+            OpCodes.IALOAD -> EncodedInstructionConstants.IALOAD_INSTRUCTION
             OpCodes.ILOAD -> EncodedILoadInstruction(
                     input.readUnsignedByte())
             OpCodes.ILOAD_0, OpCodes.ILOAD_1, OpCodes.ILOAD_2, OpCodes.ILOAD_3 -> EncodedInstructionConstants.ILOAD_INSTRUCTIONS[opcode - OpCodes.ILOAD_0]
             OpCodes.IFEQ, OpCodes.IFNE, OpCodes.IFLT, OpCodes.IFGE, OpCodes.IFGT, OpCodes.IFLE, OpCodes.IFNONNULL, OpCodes.IFNULL -> EncodedIfInstruction(
                     opcode, input.readUnsignedShort())
-            OpCodes.IF_ACMPEQ, OpCodes.IF_ACMPNE -> EncodedIfACmpInstruction(opcode, input.readUnsignedShort())
+            OpCodes.IF_ACMPEQ, OpCodes.IF_ACMPNE -> EncodedIfACmpInstruction(opcode,
+                    input.readUnsignedShort())
             OpCodes.INVOKEINTERFACE -> {
                 val index = input.readUnsignedShort()
                 val count = input.readUnsignedByte()
@@ -83,9 +86,10 @@ class InstructionsParser : Parser<EncodedInstruction> {
             OpCodes.ISTORE -> EncodedIStoreInstruction(
                     input.readUnsignedByte())
             OpCodes.ISTORE_0, OpCodes.ISTORE_1, OpCodes.ISTORE_2, OpCodes.ISTORE_3 -> EncodedInstructionConstants.ISTORE_INSTRUCTIONS[opcode - OpCodes.ISTORE_0]
-            OpCodes.LDC -> EncodedLdcInstruction(
-                    input.readUnsignedByte(), 1)
-            OpCodes.DUP -> EncodedInstructionConstants.DUP_INSTRUCTION
+            OpCodes.LDC -> EncodedLdcInstruction(input.readUnsignedByte(), 1)
+            OpCodes.LDC_W -> EncodedLdcInstruction(input.readUnsignedShort(), 2)
+                OpCodes.DUP
+            -> EncodedInstructionConstants.DUP_INSTRUCTION
             OpCodes.NEW -> EncodedNewInstruction(
                     input.readUnsignedShort())
             OpCodes.POP -> EncodedInstructionConstants.POP_INSTRUCTION
@@ -103,10 +107,18 @@ class InstructionsParser : Parser<EncodedInstruction> {
             OpCodes.FCONST_1 -> EncodedInstructionConstants.FCONST_1_INSTRUCTION
             OpCodes.FCONST_2 -> EncodedInstructionConstants.FCONST_2_INSTRUCTION
             OpCodes.LLOAD -> EncodedLLoadInstruction(input.readUnsignedByte())
-            OpCodes.DLOAD_2 -> EncodedInstructionConstants.DLOAD_INSTRUCTIONS[2]
-            OpCodes.DLOAD_3 -> EncodedInstructionConstants.DLOAD_INSTRUCTIONS[3]
+            OpCodes.LLOAD_0, OpCodes.LLOAD_1, OpCodes.LLOAD_2, OpCodes.LLOAD_3 -> EncodedInstructionConstants.LLOAD_INSTRUCTIONS[opcode - OpCodes.LLOAD_0]
+            OpCodes.DLOAD_0, OpCodes.DLOAD_1, OpCodes.DLOAD_2, OpCodes.DLOAD_3 -> EncodedInstructionConstants.DLOAD_INSTRUCTIONS[opcode - OpCodes.DLOAD_0]
             OpCodes.INSTANCEOF -> EncodedInstanceOfInstruction(input.readUnsignedShort())
-            OpCodes.IF_ICMPEQ,OpCodes.IF_ICMPGE, OpCodes.IF_ICMPGT,OpCodes.IF_ICMPLE, OpCodes.IF_ICMPLT, OpCodes.IF_ICMPNE -> EncodedIfICmpInstruction(opcode, input.readUnsignedShort())
+            OpCodes.IF_ICMPEQ, OpCodes.IF_ICMPGE, OpCodes.IF_ICMPGT, OpCodes.IF_ICMPLE, OpCodes.IF_ICMPLT, OpCodes.IF_ICMPNE -> EncodedIfICmpInstruction(
+                    opcode, input.readUnsignedShort())
+            OpCodes.I2C -> EncodedInstructionConstants.I2C_INSTRUCTION
+            OpCodes.L2I -> EncodedInstructionConstants.L2I_INSTRUCTION
+            OpCodes.IADD -> EncodedInstructionConstants.IADD_INSTRUCTION
+            OpCodes.ARRAYLENGTH -> EncodedInstructionConstants.ARRAYLENGTH_INSTRUCTION
+            OpCodes.SIPUSH -> EncodedSiPush(input.readShort().toInt())
+            OpCodes.IINC -> EncodedIIncInstruction(input.readUnsignedByte(),
+                    input.readByte().toInt())
             else -> throw IllegalArgumentException("Unkwown opcode: ${OpCodes.toString(opcode)}")
         }
     }

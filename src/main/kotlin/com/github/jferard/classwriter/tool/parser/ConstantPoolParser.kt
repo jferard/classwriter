@@ -24,6 +24,7 @@ import com.github.jferard.classwriter.pool.ConstantTags
 import java.io.DataInput
 import java.io.IOException
 import java.lang.Float
+import java.util.logging.Logger
 
 /**
  * 4.1. The ClassFile Structure
@@ -36,16 +37,19 @@ import java.lang.Float
  *
  * Decode the constant pool
  */
-class ConstantPoolParser :
+class ConstantPoolParser(private val logger: Logger) :
         Parser<ConstantPool> {
     @Throws(IOException::class)
     override fun parse(
             input: DataInput): ConstantPool {
+        logger.finer("Parse constant pool")
         val entryCount = input.readShort() - 1
         val constantPool =
                 ConstantPool()
-        repeat((0 until entryCount).count()) {
-            constantPool.addEncoded(this.readNextEntry(input))
+        (1..entryCount).map {
+            val encodedEntry = this.readNextEntry(input)
+            logger.finest("Read next pool entry: $encodedEntry")
+            constantPool.addEncoded(encodedEntry)
         }
         return constantPool
     }
