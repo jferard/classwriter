@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -67,7 +67,9 @@ class ByteCodeClassFileAttributeEncodedWriter(private val logger: Logger,
     }
 
     override fun signatureAttribute(attributeNameIndex: Int, signatureIndex: Int) {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
+        output.writeShort(attributeNameIndex)
+        output.writeInt(2)
+        output.writeShort(signatureIndex)
     }
 
     override fun annotationsAttribute(annotationsNameIndex: Int,

@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -17,6 +17,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.github.jferard.classwriter.api.instruction.base
+import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.encoded.instruction.EncodedLdcInstruction
@@ -61,8 +62,7 @@ class LdcInstruction(private val entry: ConstantPoolEntry) : BaseInstruction {
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInstruction {
         val index: Int = context.addToPool(entry)
-        return EncodedLdcInstruction(
-                index, entry.getSize(0))
+        return EncodedLdcInstruction(OpCodes.LDC, index)
     }
 
 }

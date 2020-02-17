@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -24,7 +24,7 @@ import com.github.jferard.classwriter.api.instruction.Instruction
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 
 
-class EncodedNewArrayInstruction(private val atype: Byte) : EncodedInstruction {
+class EncodedNewArrayInstruction(private val atype: Int) : EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
         return encodedWriter.newArrayInstruction(atype)
     }

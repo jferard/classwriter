@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -31,6 +31,10 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger,
         InstructionEncodedWriter {
 
     override fun aLoadNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun dLoadNInstruction(opcode: Int) {
         output.writeByte(opcode)
     }
 
@@ -211,6 +215,11 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger,
         output.writeByte(OpCodes.SWAP)
     }
 
+    override fun aNewArray(classIndex: Int) {
+        output.writeByte(OpCodes.ANEWARRAY)
+        output.writeShort(classIndex)
+    }
+
     override fun aConstNullInstruction() {
         output.writeByte(OpCodes.ACONST_NULL)
     }
@@ -342,7 +351,7 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger,
         match_and_offsets.forEach(output::writeInt)
     }
 
-    override fun newArrayInstruction(atype: Byte) {
+    override fun newArrayInstruction(atype: Int) {
         output.writeByte(OpCodes.NEWARRAY)
         output.writeByte(atype.toInt())
     }

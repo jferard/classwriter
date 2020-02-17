@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methodBuilders, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methodBuilders, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -34,6 +34,7 @@ import java.util.*
  * See 4.1 The ClassFile Structure
  */
 class ClassFileBuilder(thisClassRef: PlainClassRef) {
+    private lateinit var packageName: String
     private val thisClassRef: PlainClassRef
     private val superClassRef: PlainClassRef
     private val minorVersion = 0
@@ -149,7 +150,8 @@ class ClassFileBuilder(thisClassRef: PlainClassRef) {
     val constantPoolCount: Int
         get() = 0
 
-    fun package_(packageName: String): ClassFileBuilder { // this.packageName = packageName;
+    fun packageName(packageName: String): ClassFileBuilder {
+        this.packageName = packageName
         return this
     }
 

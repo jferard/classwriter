@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -31,11 +31,10 @@ class ReferenceValueType(private val classRef: ClassRef) : ValueType {
 
     override fun getSize(pos: Int): Int = 1
 
-    override fun equals(o: Any?): Boolean {
-        if (o === this) return true
-        if (o !is ReferenceValueType) return false
-        val other = o as ReferenceValueType
-        return other!!.classRef == classRef
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is ReferenceValueType) return false
+        return other.classRef == classRef
     }
 
     override fun hashCode(): Int {
@@ -43,13 +42,13 @@ class ReferenceValueType(private val classRef: ClassRef) : ValueType {
     }
 
     override val verificationType: VerificationType
-        get() = classRef!!.toVerificationType()
+        get() = classRef.toVerificationType()
 
     val isArray: Boolean
-        get() = classRef!!.isArray
+        get() = classRef.isArray
 
     fun componentType(): ValueType {
-        return classRef!!.componentType()
+        return classRef.componentType()
     }
 
 }

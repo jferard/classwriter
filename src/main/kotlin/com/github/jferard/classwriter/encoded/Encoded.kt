@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -25,8 +25,10 @@ import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 
 /**
- * @param <F> the factory that produces the writable
-</F> */
+ * @param <E> type of the element (= Self)
+ * @param <F> type of the encoded element
+ * @param <W> type of the writer of the element
+ */
 interface Encoded<out E, F, in W> : Sized where F : Encoded<E, F, W>, W: EncodedWriter {
     /**
      * Writes this

@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -20,6 +20,7 @@ package com.github.jferard.classwriter.text.writer
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
+import com.github.jferard.classwriter.writer.encoded.AnnotationsAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import java.io.Writer
 

@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -29,11 +29,11 @@ interface ValueType : Sized {
 
     companion object {
         fun fromClassRef(classRef: PlainClassRef): ReferenceValueType {
-            return classRef!!.toValueType()
+            return classRef.toValueType()
         }
 
         fun array(valueType: ValueType): ReferenceValueType {
-            return ReferenceValueType(PlainClassRef("[" + valueType.toString()))
+            return ReferenceValueType(PlainClassRef("[${valueType}"))
         }
 
         val BOOLEAN: PrimitiveValueType = PrimitiveValueType.integer("Z")

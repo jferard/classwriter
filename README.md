@@ -1,9 +1,16 @@
-ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
 
-Copyright (C) 2018 J. Férard <https://github.com/jferard>
+Copyright (C) 2018-2020 J. Férard <https://github.com/jferard>
 
-# Warning
-This project if currently on hold, since I'm totally overworked.
+# Roadmap
+I switched this project to Kotlin. Hence the doc below is out of date and should be rewritten.
+
+Here's a simple roadmap:
+
+* clean the code
+* make the code decompile (binary -> `Encoded`) and recompile (`Encoded` -> binary) every class of itself.
+* make the writer work
+* write the code with the writer.
 
 # General design
 There are families of objects:
@@ -12,25 +19,22 @@ There are families of objects:
 Regular objects are human-readable-JVM objects. There is no constant pool: names are Strings, not indices.
 They are encodable into JVM objects. Every regular object is associated to an encoded objects.
 
-    class R implements Encodable<E>
-        encode: E
+    class R : Encodable<E, F, W>
+        fun write(encodableWriter: W) { ... }
+        fun encode(context: GlobalContext, codeContext: MethodContext): F {...}
 
 ## Encoded objects
 Encoded objects are JVM objects as described in the specs. Some encoded objects do not have a regular object, for instance the `constant pool`.
-Encoded objects are convertible, to writable objects:
+Encoded objects are writable:
 
-    class E implements Encoded<Factory<O>>
-        toWritable(Factory<O>): Writable<O>
-
-## Writable objects
-A writable object can be... written to a given output in a given format.
-
-    class Writable<O>
-        write(O)
+    class S : Encoded<E, F, W>
+        fun write(encodedWriter: W)
+        fun decode(context: GlobalContext, codeContext: MethodContext): E
+        fun getSize(pos: Int): Int
 
 
 # The decompiler
-I will focus, when possible, on a "smart decompiler": display the source bytecode as a Java array with comments.
+I will focus, when possible, on a "smart decompiler": display the source bytecode as a Kotlin/Java array with comments.
 Here is an example of expected output from the constant pool:
 
     /* CONSTANT POOL */
@@ -60,7 +64,44 @@ Here is an example of expected output from the constant pool:
                     // #11~#14 -> java.io.PrintStream~println:(Ljava.lang.String;)V
 
 
-# Example
+# The compiler
+## Objects
+
+* class
+* access tags
+* encodedAnnotations
+* methods
+* fields
+* methodRefs (for code)
+
+## How is code processed?
+There is a preprocess to compute:
+* the offset each subroutine (a subroutine is a piece of code itself) for `jsr` instructions
+* the offset of each label for `goto` instructions.
+
+(Note: labels are mock instructions used by classwriter to use goto without knowing the offset at first).
+
+### The "wide" issue
+
+The `goto` instruction has a "wide" version, `goto_w`, as well as the `jsr` instruction.
+
+Algorithm:
+
+### First step
+* preprocess every instruction and add the size to the current offset
+* if it is a `goto(l)` or a `if_xxx(l)` instruction, store the offset in a `offsetsByGoto` map (label -> offset list).
+* if it is a `jsr(sr)` instruction, store the offset in a `offsetsByJsr` map (subroutine -> offset list).
+* if it is a mock `label(l)`, store the offset in a `offsetByLabel` map (label -> offset).
+* compute the sizes of the main code and of every subroutine with the "thin" versions (`goto` and `jsr` have a size of 3)
+* then store offsets in a `offsetBySubroutine` map (subroutine -> offset)
+
+### Second step
+* check every entry of `offsetByLabel`.
+* if a label `l` has an offset `o >= 2**16` (= `MAX_SHORT + 1`), for every offset `o'` in `offsetsByGoto(l)` add 2 to offsets that are > `o'` in every map (including `offsetsByGoto`).  
+
+* do the same for `offsetBySubroutine`
+
+# Examples
 ## Source file
 
     package com.github.jferard.classwriter;
@@ -143,6 +184,7 @@ Gives:
     SourceFile: "HelloWorld.java"
 
 ## ClassWriter
+(FIXME: Java code)
 
       ClassWriter classWriter = ClassWriter.builder("HelloWorld").package("com.github.jferard.classwriter")
         .access(Access.PUBLIC)
@@ -169,39 +211,3 @@ Gives:
             )
           ).build()).build();
       classWriter.write(".");
-
-# Objects
-
-* class
-* access tags
-* encodedAnnotations
-* methods
-* fields
-* methodRefs (for code)
-
-## How is code processed?
-There is a preprocess to compute:
-* the offset each subroutine (a subroutine is a piece of code itself) for `jsr` instructions
-* the offset of each label for `goto` instructions.
-
-(Note: labels are mock instructions used by classwriter to use goto without knowing the offset at first).
-
-### The "wide" issue
-
-The `goto` instruction has a "wide" version, `goto_w`, as well as the `jsr` instruction.
-
-Algorithm:
-
-#### First step
-* preprocess every instruction and add the size to the current offset
-* if it is a `goto(l)` or a `if_xxx(l)` instruction, store the offset in a `offsetsByGoto` map (label -> offset list).
-* if it is a `jsr(sr)` instruction, store the offset in a `offsetsByJsr` map (subroutine -> offset list).
-* if it is a mock `label(l)`, store the offset in a `offsetByLabel` map (label -> offset).
-* compute the sizes of the main code and of every subroutine with the "thin" versions (`goto` and `jsr` have a size of 3)
-* then store offsets in a `offsetBySubroutine` map (subroutine -> offset)
-
-#### Second step
-* check every entry of `offsetByLabel`.
-* if a label `l` has an offset `o >= 2**16` (= `MAX_SHORT + 1`), for every offset `o'` in `offsetsByGoto(l)` add 2 to offsets that are > `o'` in every map (including `offsetsByGoto`).  
-
-* do the same for `offsetBySubroutine`

@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -23,7 +23,6 @@ import com.github.jferard.classwriter.internal.descriptor.MethodDescriptorBuilde
 import com.github.jferard.classwriter.pool.ConstantPoolEntry
 import com.github.jferard.classwriter.pool.Utf8Entry
 import java.util.*
-import java.util.function.Consumer
 
 /**
  * 4.3.3. Method Descriptors
@@ -55,11 +54,10 @@ class MethodDescriptor(val retType: ValueType?,
     val argsCount: Int = argTypes.size
 
     override fun toString(): String {
-        val sb = StringBuilder()
-        argTypes.forEach(
-                Consumer { obj: ValueType -> sb.append(obj) })
-        return "(" + sb.toString() + ")" + Objects.toString(retType, "V")
-    }
+        val parameterDescriptor = argTypes.map(ValueType::toString).joinToString()
+        val returnDescriptor = Objects.toString(retType, "V")
+        return "($parameterDescriptor)$returnDescriptor"
+   }
 
     override fun toPoolEntry(): ConstantPoolEntry {
         return Utf8Entry(this.toString())

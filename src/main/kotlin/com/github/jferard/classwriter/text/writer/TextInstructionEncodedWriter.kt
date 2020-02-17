@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -32,6 +32,10 @@ class TextInstructionEncodedWriter(private val output: Writer,
         InstructionEncodedWriter {
     override fun aLoadNInstruction(opcode: Int) {
         output.write("OpCodes.ALOAD_${opcode - OpCodes.ALOAD_0},\n")
+    }
+
+    override fun dLoadNInstruction(opcode: Int) {
+        output.write("OpCodes.DLOAD_${opcode - OpCodes.DLOAD_0},\n")
     }
 
     override fun iStoreInstruction(index: Int) {
@@ -187,7 +191,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
     }
 
     override fun ldcInstruction(opcode: Int, index: Int) {
-        val name = when(opcode) {
+        val name = when (opcode) {
             OpCodes.LDC -> "LDC"
             OpCodes.LDC_W -> "LDC_W"
             OpCodes.LDC2_W -> "LDC2_W"
@@ -348,6 +352,14 @@ class TextInstructionEncodedWriter(private val output: Writer,
         output.write("OpCodes.SWAP, \n")
     }
 
+    override fun aNewArray(classIndex: Int) {
+        output.write("OpCodes.ANEWARRAY, ")
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "classIndex", classIndex, entries,
+                summaryEncodedWriter)
+
+
+    }
+
     override fun aConstNullInstruction() {
         output.write("OpCodes.ACONST_NULL, \n")
     }
@@ -458,7 +470,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
         TODO("not implemented")
     }
 
-    override fun newArrayInstruction(atype: Byte) {
+    override fun newArrayInstruction(atype: Int) {
         TODO("not implemented")
     }
 

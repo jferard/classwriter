@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -230,10 +230,10 @@ internal object EncodedInstructionConstants {
             EncodedALoadNInstruction(OpCodes.ALOAD_2),
             EncodedALoadNInstruction(OpCodes.ALOAD_3))
     val DLOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            NoArgInstruction.longLoadN(OpCodes.DLOAD_0, 0),
-            NoArgInstruction.longLoadN(OpCodes.DLOAD_1, 1),
-            NoArgInstruction.longLoadN(OpCodes.DLOAD_2, 2),
-            NoArgInstruction.longLoadN(OpCodes.DLOAD_3, 3))
+            EncodedDLoadNInstruction(OpCodes.DLOAD_0),
+            EncodedDLoadNInstruction(OpCodes.DLOAD_1),
+            EncodedDLoadNInstruction(OpCodes.DLOAD_2),
+            EncodedDLoadNInstruction(OpCodes.DLOAD_3))
     val FLOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
             EncodedFLoadNInstruction(OpCodes.FLOAD_0),
             EncodedFLoadNInstruction(OpCodes.FLOAD_1),

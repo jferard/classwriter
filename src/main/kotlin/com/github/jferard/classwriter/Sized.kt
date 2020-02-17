@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -21,11 +21,18 @@ package com.github.jferard.classwriter
 
 interface Sized {
     /**
-     * the size of the object
+     * The size of the object. Usually, but not always, the size is independent of the position.
+     * @param pos the position.
+     * @return the size of the object.
      */
     fun getSize(pos: Int): Int
 
     companion object {
+        /**
+         * @param pos the start position
+         * @param list the list
+         * @return the size of the list
+         */
         fun listSize(pos: Int,
                      list: Iterable<Sized>): Int = list.fold(pos, { p: Int, sized: Sized -> p + sized.getSize(
                 p)

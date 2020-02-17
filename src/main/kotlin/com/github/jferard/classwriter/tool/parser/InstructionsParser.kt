@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -66,6 +66,7 @@ class InstructionsParser(private val logger: Logger) : Parser<EncodedInstruction
             OpCodes.ISTORE_0, OpCodes.ISTORE_1, OpCodes.ISTORE_2, OpCodes.ISTORE_3 -> EncodedInstructionConstants.ISTORE_INSTRUCTIONS[opcode - OpCodes.ISTORE_0]
 
             OpCodes.FASTORE -> EncodedInstructionConstants.FASTORE_INSTRUCTION
+            OpCodes.AASTORE -> EncodedInstructionConstants.AASTORE_INSTRUCTION
 
             // CONST
             OpCodes.ACONST_NULL -> EncodedInstructionConstants.ACONST_NULL_INSTRUCTION
@@ -127,6 +128,7 @@ class InstructionsParser(private val logger: Logger) : Parser<EncodedInstruction
             OpCodes.L2I -> EncodedInstructionConstants.L2I_INSTRUCTION
             OpCodes.IADD -> EncodedInstructionConstants.IADD_INSTRUCTION
             OpCodes.ARRAYLENGTH -> EncodedInstructionConstants.ARRAYLENGTH_INSTRUCTION
+            OpCodes.ANEWARRAY -> EncodedANewArrayInstruction(input.readShort().toInt())
             OpCodes.SIPUSH -> EncodedSiPush(input.readShort().toInt())
             OpCodes.IINC -> EncodedIIncInstruction(input.readUnsignedByte(),
                     input.readByte().toInt())

@@ -1,5 +1,5 @@
 /*
- * ClassWriter - A minimal Java bytecode writer. Creates classes, methods, interfaces...
+ * ClassWriter - A minimal JVM bytecode writer. Creates classes, methods, interfaces...
  *     Copyright (C) 2018 J. Férard <https://github.com/jferard>
  *
  * This file is part of ClassWriter.
@@ -29,6 +29,7 @@ interface InstructionEncodedWriter : EncodedWriter {
     // LOAD
     fun aLoadInstruction(referenceIndex: Int)
     fun aLoadNInstruction(opcode: Int)
+    fun dLoadNInstruction(opcode: Int)
     fun loadInstruction(opcode: Int, index: Int)
     fun iLoadInstruction(referenceIndex: Int)
     fun iLoadNInstruction(opcode: Int)
@@ -90,7 +91,7 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun lookupSwitchInstruction(defaultOffset: Int,
                                 match_and_offsets: IntArray)
 
-    fun newArrayInstruction(atype: Byte)
+    fun newArrayInstruction(atype: Int)
     fun tableSwitchInstruction(defaultOffset: Int, low: Int, high: Int,
                                jumpOffsets: List<Int>)
 
@@ -119,4 +120,5 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun siPush(value: Int)
     fun methodBlockInstruction(encodedInstructions: List<EncodedInstruction>)
     fun swapInstruction()
+    fun aNewArray(classIndex: Int)
 }
