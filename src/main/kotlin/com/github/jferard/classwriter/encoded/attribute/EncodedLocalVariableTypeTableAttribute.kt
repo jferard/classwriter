@@ -52,8 +52,9 @@ class EncodedLocalVariableTypeTableAttribute(private val attributeNameIndex: Int
                 encodedLocalVariableTypes)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE + Sized.listSize(
+                    0,
                     encodedLocalVariableTypes)
 
     override fun decode(context: GlobalContext,

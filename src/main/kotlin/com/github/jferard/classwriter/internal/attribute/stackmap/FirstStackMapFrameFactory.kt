@@ -42,7 +42,7 @@ class FirstStackMapFrameFactory {
     private fun expandArgs(
             args: List<ValueType>): List<VerificationType> {
         return args.flatMap { a: ValueType ->
-            if (a.size == 1) listOf(VerificationType.fromValueType(a))
+            if (a.getSize(0) == 1) listOf(VerificationType.fromValueType(a))
             else listOf(VerificationType.fromValueType(a), VerificationType.TOP)
         }
     }

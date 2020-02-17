@@ -60,13 +60,13 @@ class EncodedCodeAttribute(private val attributeNameIndex: Int, private val maxS
                 encodedExceptions, encodedAttributes)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + MAX_STACK_FIELD_SIZE +
-                MAX_LOCALS_FIELD_SIZE + CODE_LENGTH_FIELD_SIZE + encodedCode.size +
-                EXCEPTION_TABLE_LENGTH_FIELD_SIZE +
-                Sized.listSize(encodedExceptions) +
-                ATTRIBUTES_COUNT_FIELD_SIZE +
-                Sized.listSize(encodedAttributes)
+    override fun getSize(pos: Int): Int =
+            BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + MAX_STACK_FIELD_SIZE +
+                    MAX_LOCALS_FIELD_SIZE + CODE_LENGTH_FIELD_SIZE + encodedCode.getSize(0) +
+                    EXCEPTION_TABLE_LENGTH_FIELD_SIZE +
+                    Sized.listSize(0, encodedExceptions) +
+                    ATTRIBUTES_COUNT_FIELD_SIZE +
+                    Sized.listSize(0, encodedAttributes)
 
     companion object {
         private const val MAX_STACK_FIELD_SIZE = BytecodeHelper.SHORT_SIZE

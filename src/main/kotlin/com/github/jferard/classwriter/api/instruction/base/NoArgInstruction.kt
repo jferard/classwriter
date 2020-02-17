@@ -18,7 +18,6 @@
  */
 package com.github.jferard.classwriter.api.instruction.base
 
-import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
@@ -46,15 +45,18 @@ class NoArgInstruction private constructor(private val opcode: Int, private val 
     }
 
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        throw IllegalStateException("${opcode}")
+        throw IllegalStateException("REMOVE NOARG: ${opcode}")
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 1
+    override fun getSize(pos: Int): Int = 1
+
+    override fun toString(): String {
+        return "NOARG $opcode"
+    }
 
     companion object {
         /**

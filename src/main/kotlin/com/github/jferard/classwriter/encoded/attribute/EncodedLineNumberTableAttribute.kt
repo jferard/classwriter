@@ -48,9 +48,9 @@ class EncodedLineNumberTableAttribute(private val nameIndex: Int,
         return encodedWriter.lineNumberTableAttribute(nameIndex, positionAndLineNumbers)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                    Sized.listSize(positionAndLineNumbers)
+                    Sized.listSize(0, positionAndLineNumbers)
 
     override fun decode(context: GlobalContext,
                         codeContext: MethodContext): LineNumberTableAttribute {

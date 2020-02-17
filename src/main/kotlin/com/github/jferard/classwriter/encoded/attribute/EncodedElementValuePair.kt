@@ -41,8 +41,8 @@ class EncodedElementValuePair(private val elementNameIndex: Int,
         return writer.elementValuePair(elementNameIndex, encodedElementValue)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + encodedElementValue.size
+    override fun getSize(
+            pos: Int): Int = BytecodeHelper.SHORT_SIZE + encodedElementValue.getSize(0)
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): ElementValuePair {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

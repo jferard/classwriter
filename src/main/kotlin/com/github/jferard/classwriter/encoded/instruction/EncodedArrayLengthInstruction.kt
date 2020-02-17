@@ -37,6 +37,6 @@ class EncodedArrayLengthInstruction : EncodedInstruction {
         return InstructionConstants.ARRAYLENGTH_INSTRUCTION
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
 }

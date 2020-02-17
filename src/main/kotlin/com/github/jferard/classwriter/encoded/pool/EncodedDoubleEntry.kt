@@ -20,12 +20,9 @@ package com.github.jferard.classwriter.encoded.pool
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.pool.ConstantPoolEntry
-import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
 
 /**
  * 4.4.5. The CONSTANT_Long_info and CONSTANT_Double_info Structures
@@ -58,7 +55,7 @@ class EncodedDoubleEntry(private val value: Double) : EncodedConstantPoolEntry {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.DOUBLE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.DOUBLE_SIZE
 
     override fun utf8Text(): String {
         throw IllegalArgumentException()

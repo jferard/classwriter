@@ -61,7 +61,7 @@ class TextClassFileAttributeEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", attributeNameIndex,
                 entries, summaryEncodedWriter)
         TextEncodedWriterHelper.writeU4(output, "attribute len",
-                Sized.listSize(encodedInnerClasses))
+                Sized.listSize(0, encodedInnerClasses))
         encodedInnerClasses.forEach { it.write(this) }
     }
 
@@ -120,7 +120,7 @@ class TextClassFileAttributeEncodedWriter(private val output: Writer,
                 entries,
                 summaryEncodedWriter)
         TextEncodedWriterHelper.writeU2(output, "attribute length",
-                Sized.listSize(encodedAnnotations))
+                Sized.listSize(0, encodedAnnotations))
         encodedAnnotations.forEach { it.write(annotationEncodedWriter) }
     }
 

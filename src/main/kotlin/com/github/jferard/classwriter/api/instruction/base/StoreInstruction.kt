@@ -51,7 +51,6 @@ class StoreInstruction(private val opcode: Int, private val index: Int) : BaseIn
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 2 * BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.BYTE_SIZE
 
 }

@@ -34,6 +34,6 @@ class EncodedIStoreInstruction(private val index: Int) : EncodedInstruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = 2* BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.BYTE_SIZE
 
 }

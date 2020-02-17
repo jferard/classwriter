@@ -34,7 +34,6 @@ class EncodedConstantElementValue(private val tag: Int, private val elementValue
         TODO("not implemented")
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE
 
 }

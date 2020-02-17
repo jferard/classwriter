@@ -33,5 +33,5 @@ class EncodedInvokeStaticInstruction(private val methodIndex: Int) : EncodedInst
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 }

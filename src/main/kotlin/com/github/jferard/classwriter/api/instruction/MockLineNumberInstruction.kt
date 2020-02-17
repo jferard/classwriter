@@ -48,7 +48,6 @@ class MockLineNumberInstruction(private val lineNumber: Int) : BaseInstruction, 
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 0
+    override fun getSize(pos: Int): Int = 0
 
 }

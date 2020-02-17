@@ -62,7 +62,7 @@ class LdcInstruction(private val entry: ConstantPoolEntry) : BaseInstruction {
                         codeContext: MethodContext): EncodedInstruction {
         val index: Int = context.addToPool(entry)
         return EncodedLdcInstruction(
-                index, entry.size)
+                index, entry.getSize(0))
     }
 
 }

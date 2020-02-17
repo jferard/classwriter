@@ -49,9 +49,9 @@ class EncodedInnerClassesAttribute(private val attributeNameIndex: Int,
                 .innerClassesAttribute(attributeNameIndex, encodedInnerClasses)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                    Sized.listSize(encodedInnerClasses)
+                    Sized.listSize(0, encodedInnerClasses)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         TODO("not implemented")

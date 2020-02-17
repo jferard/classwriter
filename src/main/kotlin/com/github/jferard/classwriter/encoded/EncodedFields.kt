@@ -37,8 +37,8 @@ class EncodedFields(private val encodedFields: List<EncodedField>) :
         return encodedWriter.fields(encodedFields)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedFields)
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(0,
+            encodedFields)
 
     override fun toString(): String {
         return "Fields[\n${encodedFields.joinToString("\n")}\n]"

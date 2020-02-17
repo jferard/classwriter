@@ -30,8 +30,7 @@ class EncodedCode(private val instructions: List<EncodedInstruction>) :
         return encodedWriter.code(instructions)
     }
 
-    override val size: Int
-        get() = 0
+    override fun getSize(pos: Int): Int = 0
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Code {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

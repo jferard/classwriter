@@ -29,8 +29,7 @@ class ReferenceValueType(private val classRef: ClassRef) : ValueType {
         return classRef.internalValueTypeName
     }
 
-    override val size: Int
-        get() = 1
+    override fun getSize(pos: Int): Int = 1
 
     override fun equals(o: Any?): Boolean {
         if (o === this) return true

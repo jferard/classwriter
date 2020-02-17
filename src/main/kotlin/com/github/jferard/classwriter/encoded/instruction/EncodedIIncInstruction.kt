@@ -34,6 +34,6 @@ class EncodedIIncInstruction(private val localIndex: Int, private val const: Int
         TODO("Not yet implemented")
     }
 
-    override val size: Int = 3 * BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = 3 * BytecodeHelper.BYTE_SIZE
 
 }

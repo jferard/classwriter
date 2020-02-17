@@ -31,7 +31,8 @@ class EncodedMethods(private val encodedMethods: List<EncodedMethod>) :
         return encodedWriter.methods(encodedMethods)
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedMethods)
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(0,
+            encodedMethods)
 
     override fun toString(): String {
         return String.format("Methods %s", encodedMethods)

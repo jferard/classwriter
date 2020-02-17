@@ -23,9 +23,12 @@ interface Sized {
     /**
      * the size of the object
      */
-    val size: Int
+    fun getSize(pos: Int): Int
 
     companion object {
-        fun listSize(list: Iterable<Sized>): Int = list.map(Sized::size).sum()
+        fun listSize(pos: Int,
+                     list: Iterable<Sized>): Int = list.fold(pos, { p: Int, sized: Sized -> p + sized.getSize(
+                p)
+        })
     }
 }

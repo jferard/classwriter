@@ -23,6 +23,7 @@ import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.encoded.instruction.EncodedMethodBlockInstruction
 import com.github.jferard.classwriter.pool.EncodableWriter
 import java.util.function.Consumer
 
@@ -46,7 +47,7 @@ class BaseBlockInstruction(
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInstruction {
-        return EncodedBlockInstruction(
+        return EncodedMethodBlockInstruction(
                 instructions.map { i: Instruction ->
                     i.encode(context, MethodContext.create(0))
                 })

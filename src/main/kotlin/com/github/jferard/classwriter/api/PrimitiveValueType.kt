@@ -23,7 +23,7 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
 /**
  * 4.3.2. Field Descriptors
  */
-class PrimitiveValueType(private val text: String, override val size: Int,
+class PrimitiveValueType(private val text: String, private val size: Int,
                          override val verificationType: VerificationType) : ValueType {
     override fun toString(): String {
         return text!!
@@ -33,11 +33,11 @@ class PrimitiveValueType(private val text: String, override val size: Int,
         if (o === this) return true
         if (o !is PrimitiveValueType) return false
         val other = o as PrimitiveValueType
-        return other!!.size == size && other.text == text
+        return other!!.getSize(0) == getSize(0) && other.text == text
     }
 
     override fun hashCode(): Int {
-        return 31 * Integer.hashCode(size) + text.hashCode()
+        return 31 * Integer.hashCode(getSize(0)) + text.hashCode()
     }
 
     val aType: Byte
@@ -64,4 +64,7 @@ class PrimitiveValueType(private val text: String, override val size: Int,
         }
     }
 
+    override fun getSize(pos: Int): Int {
+        return this.size
+    }
 }

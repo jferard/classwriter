@@ -18,11 +18,9 @@
  */
 package com.github.jferard.classwriter.writer.encoded
 
-import com.github.jferard.classwriter.Writable
 import com.github.jferard.classwriter.api.EncodedWriter
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import java.io.DataOutput
 
 interface ConstantPoolEncodedWriter : EncodedWriter {
     fun constantPool(entries: List<EncodedConstantPoolEntry>,

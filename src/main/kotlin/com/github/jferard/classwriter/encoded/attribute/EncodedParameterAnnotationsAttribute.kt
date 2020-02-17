@@ -51,10 +51,10 @@ parameterAnnotations: List<List<EncodedAnnotation>>) :
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.BYTE_SIZE +
                     parameterAnnotations.map {
-                        BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+                        BytecodeHelper.SHORT_SIZE + Sized.listSize(0, it)
                     }.sum()
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {

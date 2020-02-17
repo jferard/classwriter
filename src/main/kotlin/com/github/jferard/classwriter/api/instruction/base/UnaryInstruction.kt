@@ -48,7 +48,6 @@ class UnaryInstruction(private val opcode: Int) : BaseInstruction, EncodedInstru
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
 }

@@ -37,8 +37,8 @@ class EncodedInterfaces(private val interfacesIndices: List<Int>) :
         return encodedWriter.interfaces(interfacesIndices)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + interfacesIndices.size * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int =
+            BytecodeHelper.SHORT_SIZE + interfacesIndices.size * BytecodeHelper.SHORT_SIZE
 
     override fun toString(): String {
         return "(Super)Interfaces[indices=$interfacesIndices]"

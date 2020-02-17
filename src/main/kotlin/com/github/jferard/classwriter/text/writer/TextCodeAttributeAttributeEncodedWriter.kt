@@ -43,7 +43,7 @@ class TextCodeAttributeAttributeEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute", attributeNameIndex,
                 entries, summaryEncodedWriter)
         TextEncodedWriterHelper.writeU4(output, "len",
-                BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedStackMapFrames))
+                BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedStackMapFrames))
         TextEncodedWriterHelper.writeU2(output, "number of entries",
                 encodedStackMapFrames.size)
         encodedStackMapFrames.forEach { it.write(stackMapFrameEncodedWriter) }
@@ -73,7 +73,7 @@ class TextCodeAttributeAttributeEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute", attributeNameIndex,
                 entries, summaryEncodedWriter)
         TextEncodedWriterHelper.writeU4(output, "len",
-                BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedLocalVariables))
+                BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedLocalVariables))
         TextEncodedWriterHelper.writeU2(output, "local variable table length",
                 encodedLocalVariables.size)
         encodedLocalVariables.forEach { it.write(this) }

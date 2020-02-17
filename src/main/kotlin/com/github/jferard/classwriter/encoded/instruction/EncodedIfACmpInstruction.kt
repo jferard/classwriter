@@ -34,5 +34,5 @@ class EncodedIfACmpInstruction(private val opcode: Int, private val branch: Int)
         TODO("Not yet implemented")
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 }

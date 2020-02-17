@@ -19,14 +19,11 @@
 package com.github.jferard.classwriter.encoded.instruction
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.api.instruction.Instruction
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
-import com.github.jferard.classwriter.pool.EncodableWriter
 
 /**
  * d2f: convert a double to a float.
@@ -41,6 +38,6 @@ class EncodedConvertInstruction(private val opcode: Int): EncodedInstruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
 }

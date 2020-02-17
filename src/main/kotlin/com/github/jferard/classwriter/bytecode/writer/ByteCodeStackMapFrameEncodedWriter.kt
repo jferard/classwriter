@@ -22,11 +22,11 @@ import com.github.jferard.classwriter.encoded.stackmap.EncodedVerificationType
 import com.github.jferard.classwriter.encoded.stackmap.StackMapFrameConstants
 import com.github.jferard.classwriter.internal.attribute.stackmap.StackMapFrameEncodedWriter
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
 class ByteCodeStackMapFrameEncodedWriter(private val logger: Logger,
-        private val output: DataOutput,
+        private val output: DataOutputStream,
         private val verificationTypeFactory: VerificationTypeEncodedWriter) :
         StackMapFrameEncodedWriter {
 
@@ -81,7 +81,7 @@ class ByteCodeStackMapFrameEncodedWriter(private val logger: Logger,
     }
 
     companion object {
-        fun create(logger: Logger, output: DataOutput): ByteCodeStackMapFrameEncodedWriter {
+        fun create(logger: Logger, output: DataOutputStream): ByteCodeStackMapFrameEncodedWriter {
             return ByteCodeStackMapFrameEncodedWriter(logger,
                     output,
                     ByteCodeVerificationTypeEncodedWriter(

@@ -20,14 +20,16 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.Sized
-import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
-class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val output: DataOutput) : InstructionEncodedWriter {
+class ByteCodeInstructionEncodedWriter(private val logger: Logger,
+                                       private val output: DataOutputStream, private var start: Int) :
+        InstructionEncodedWriter {
+
     override fun aLoadNInstruction(opcode: Int) {
         output.writeByte(opcode)
     }
@@ -43,10 +45,11 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
 
     override fun blockInstruction(
             encodedInstructions: List<EncodedInstruction>) {
-        var i=0
+        start = output.size()
+        var j = 0
         encodedInstructions.forEach {
-            logger.finer("Write instruction: $it ($i/${Sized.listSize(encodedInstructions)})");
-            i += it.size
+            logger.finer("Write instruction: $it ($j/${Sized.listSize(start, encodedInstructions)})");
+            j += it.getSize(j)
             it.write(this)
         }
     }
@@ -56,7 +59,12 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
     }
 
     override fun code(encodedInstructions: List<EncodedInstruction>) {
-        encodedInstructions.forEach { it.write(this) }
+        var i: Int = output.size()
+        encodedInstructions.forEach {
+            logger.finer("Write instruction: $it ($i/${Sized.listSize(0, encodedInstructions)})");
+            i += it.getSize(0)
+            it.write(this)
+        }
     }
 
     override fun storeNInstruction(opcode: Int, localIndex: Int,
@@ -83,25 +91,17 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
         output.writeShort(c)
     }
 
-    override fun ldcInstruction(index: Int, stackSize: Int) {
-        when {
-            stackSize == 2 -> {
-                output.writeByte(OpCodes.LDC2_W)
-                output.writeShort(index)
-            }
-            index <= BytecodeHelper.BYTE_MAX -> {
-                output.writeByte(OpCodes.LDC)
-                output.writeByte(index)
-            }
-            else -> {
-                output.writeByte(OpCodes.LDC_W)
-                output.writeShort(index)
-            }
+    override fun ldcInstruction(opcode: Int, index: Int) {
+        output.writeByte(opcode)
+        when (opcode) {
+            OpCodes.LDC -> output.writeByte(index)
+            OpCodes.LDC_W, OpCodes.LDC2_W -> output.writeShort(index)
+            else -> throw IllegalArgumentException("LDC: $opcode")
         }
     }
 
     override fun invokeStaticInstruction(methodIndex: Int) {
-        output.write(OpCodes.INVOKESTATIC)
+        output.writeByte(OpCodes.INVOKESTATIC)
         output.writeShort(methodIndex)
     }
 
@@ -119,12 +119,16 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
         output.writeByte(opcode)
     }
 
+    override fun fLoadNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
     override fun lLoadInstruction(referenceIndex: Int) {
         TODO("Not yet implemented")
     }
 
     override fun lLoadNInstruction(opcode: Int) {
-        TODO("Not yet implemented")
+        output.writeByte(opcode)
     }
 
     override fun putFieldInstruction(fieldIndex: Int) {
@@ -143,6 +147,14 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
     }
 
     override fun aStoreNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun dStoreNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun fStoreNInstruction(opcode: Int) {
         output.writeByte(opcode)
     }
 
@@ -190,6 +202,19 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
         output.writeShort(value)
     }
 
+    override fun methodBlockInstruction(encodedInstructions: List<EncodedInstruction>) {
+
+
+    }
+
+    override fun swapInstruction() {
+        output.writeByte(OpCodes.SWAP)
+    }
+
+    override fun aConstNullInstruction() {
+        output.writeByte(OpCodes.ACONST_NULL)
+    }
+
     override fun instanceOfInstruction(typeIndex: Int) {
         output.writeByte(OpCodes.INSTANCEOF)
         output.writeShort(typeIndex)
@@ -209,6 +234,18 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
     }
 
     override fun iConstNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun dConstNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun fConstNInstruction(opcode: Int) {
+        output.writeByte(opcode)
+    }
+
+    override fun lConstNInstruction(opcode: Int) {
         output.writeByte(opcode)
     }
 
@@ -311,16 +348,13 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
     }
 
     override fun tableSwitchInstruction(defaultOffset: Int, low: Int, high: Int,
-                                        jump_offsets: IntArray) {
-        /*         this.instructions.add(new ByteInstruction(OpCodes.TABLESWITCH); this
-        * .baseWriter.padTo4();
-        this.baseWriter.writeInt(default_);
-        this.baseWriter.writeInt(low);
-        this.baseWriter.writeInt(high);
-        for (final int jump_offset : jump_offsets) {
-        this.baseWriter.writeInt(jump_offset);
-        }
-        */
+                                        jumpOffsets: List<Int>) {
+        output.writeByte(OpCodes.TABLESWITCH)
+        (1..((output.size() - start) % 4)).map { output.writeByte(0) }
+        output.writeInt(defaultOffset);
+        output.writeInt(low);
+        output.writeInt(high);
+        jumpOffsets.forEach { output.writeInt(it) }
     }
 
     override fun iincInstruction(index: Int, const: Int) {
@@ -332,7 +366,7 @@ class ByteCodeInstructionEncodedWriter(private val logger: Logger, private val o
     override fun loadInstruction(opcode: Int, index: Int) {
         output.writeByte(opcode)
         output.writeByte(index)
-   }
+    }
 
     override fun unaryInstuction(opcode: Int) {
         output.writeByte(opcode)

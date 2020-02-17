@@ -30,11 +30,11 @@ class MethodParser(private val logger: Logger, private val methodAttributeParser
         Parser<EncodedMethod> {
     @Throws(IOException::class)
     override fun parse(input: DataInput): EncodedMethod {
-        logger.finer("Parse method")
         val accessFlags = input.readUnsignedShort()
         val nameIndex = input.readUnsignedShort()
         val descriptorIndex = input.readUnsignedShort()
         val attributesCount = input.readUnsignedShort()
+        logger.finer("Parse method, name index=$nameIndex, attribute count=$attributesCount")
         val encodedAttributes =
                 (1..attributesCount).map {
                     methodAttributeParser.parse(

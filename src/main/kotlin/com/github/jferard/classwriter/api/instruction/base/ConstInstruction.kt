@@ -31,7 +31,7 @@ import com.github.jferard.classwriter.pool.EncodableWriter
  * Stack: () -> (null).
  */
 class ConstInstruction(private val opcode: Int, private val verificationType: VerificationType) :
-        BaseInstruction, EncodedInstruction {
+        BaseInstruction {
     override fun preprocess(context: GlobalContext,
                             codeContext: MethodContext) {
         codeContext.offsetDelta(1)
@@ -44,18 +44,6 @@ class ConstInstruction(private val opcode: Int, private val verificationType: Ve
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInstruction {
-        return this
-    }
-
-    override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.constInstruction(opcode)
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE
-
 }

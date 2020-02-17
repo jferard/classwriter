@@ -31,7 +31,7 @@ class IntegerEntry(private val value: Int) : ConstantPoolEntry {
         return constantPool.addEncodedToPool(EncodedIntegerEntry(this.value))
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

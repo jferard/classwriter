@@ -30,7 +30,7 @@ class StringEntry(private val text: String) : ConstantPoolEntry {
         return pool.addEncodedToPool(encode(pool, MethodContext.create(0)))
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

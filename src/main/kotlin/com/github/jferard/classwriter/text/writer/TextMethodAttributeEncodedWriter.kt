@@ -20,7 +20,6 @@ package com.github.jferard.classwriter.text.writer
 
 import com.github.jferard.classwriter.Sized
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.encoded.Encoded
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.encoded.attribute.EncodedCodeAttributeAttribute
 import com.github.jferard.classwriter.encoded.attribute.EncodedExceptionInCode
@@ -48,10 +47,11 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeShortEntryIndex(output, "code", attributeNameIndex, entries,
                 summaryEncodedWriter)
         TextEncodedWriterHelper.writeU4(output, "length",
-                2 * BytecodeHelper.SHORT_SIZE + encodedCode.size + Sized.listSize(encodedExceptions))
+                2 * BytecodeHelper.SHORT_SIZE + encodedCode.getSize(0) + Sized.listSize(0,
+                        encodedExceptions))
         TextEncodedWriterHelper.writeU2(output, "max_stack", maxStack)
         TextEncodedWriterHelper.writeU2(output, "max_locals", maxLocals)
-        TextEncodedWriterHelper.writeU4(output, "code length", encodedCode.size)
+        TextEncodedWriterHelper.writeU4(output, "code length", encodedCode.getSize(0))
         encodedCode.write(instructionEncodedWriter)
         encodedExceptions.forEach { it.write(this) }
         encodedAttributes.forEach { it.write(codeAttributeAttributeEncodedWriter) }
@@ -76,14 +76,14 @@ class TextMethodAttributeEncodedWriter(private val output: Writer,
                 entries,
                 summaryEncodedWriter)
         TextEncodedWriterHelper.writeU2(output, "attribute length",
-                Sized.listSize(encodedAnnotations))
+                Sized.listSize(0, encodedAnnotations))
         encodedAnnotations.forEach { it.write(annotationEncodedWriter) }
     }
 
     override fun parameterAnnotationsAttribute(attributeNameIndex: Int,
                                                parameterAnnotations: List<List<EncodedAnnotation>>) {
         val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
-            BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+            BytecodeHelper.SHORT_SIZE + Sized.listSize(0, it)
         }.sum()
         TextEncodedWriterHelper.writeShortEntryIndex(output, "attribute name", attributeNameIndex,
                 entries,

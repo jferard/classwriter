@@ -41,7 +41,7 @@ class EncodedConstantValueAttribute(private val attributeNameIndex: Int,
         return encodedWriter.constantValueAttribute(attributeNameIndex, valueIndex)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext,

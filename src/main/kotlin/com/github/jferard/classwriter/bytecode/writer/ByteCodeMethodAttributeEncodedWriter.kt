@@ -28,11 +28,11 @@ import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.CodeAttributeAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.MethodAttributeEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
 class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
-                                           private val output: DataOutput,
+                                           private val output: DataOutputStream,
                                            private val instructionWriter: InstructionEncodedWriter,
                                            private val annotationWriter: AnnotationEncodedWriter,
                                            private val codeAttributeWriter: CodeAttributeAttributeEncodedWriter) :
@@ -65,19 +65,20 @@ class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
                                encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>>) {
         val length: Int = 2 * BytecodeHelper.SHORT_SIZE + // max stack + locals
                 BytecodeHelper.INT_SIZE + // code length
-                encodedCode.size + // code
+                encodedCode.getSize(0) + // code
                 BytecodeHelper.SHORT_SIZE + // except length
-                Sized.listSize(encodedExceptions) +
+                Sized.listSize(0, encodedExceptions) +
                 BytecodeHelper.SHORT_SIZE + // attr count
-                Sized.listSize(encodedAttributes)
+                Sized.listSize(0, encodedAttributes)
         logger.finest(
-                "Write code attribute: full len=$length, code size = ${encodedCode.size}, exc size:${Sized.listSize(
-                        encodedExceptions)}, attr size: ${Sized.listSize(encodedAttributes)}")
+                "Write code attribute: full len=$length, code size = ${encodedCode.getSize(0)}, exc size:${Sized.listSize(
+                        0,
+                        encodedExceptions)}, attr size: ${Sized.listSize(0, encodedAttributes)}")
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(maxStack)
         output.writeShort(maxLocals)
-        output.writeInt(encodedCode.size)
+        output.writeInt(encodedCode.getSize(0))
         encodedCode.write(instructionWriter)
         output.writeShort(encodedExceptions.size)
         encodedExceptions.forEach { it.write(this) }
@@ -87,7 +88,7 @@ class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
 
     override fun annotationsAttribute(annotationsNameIndex: Int,
                                       encodedAnnotations: List<EncodedAnnotation>) {
-        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations)
+        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedAnnotations)
         logger.finest("Write method annotation: $encodedAnnotations")
         output.writeShort(annotationsNameIndex)
         output.writeInt(length)
@@ -113,7 +114,7 @@ class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
     override fun parameterAnnotationsAttribute(attributeNameIndex: Int,
                                                parameterAnnotations: List<List<EncodedAnnotation>>) {
         val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
-            BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+            BytecodeHelper.SHORT_SIZE + Sized.listSize(0, it)
         }.sum()
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
@@ -152,9 +153,9 @@ class ByteCodeMethodAttributeEncodedWriter(private val logger: Logger,
     }
 
     companion object {
-        fun create(logger: Logger, output: DataOutput): MethodAttributeEncodedWriter {
+        fun create(logger: Logger, output: DataOutputStream): MethodAttributeEncodedWriter {
             return ByteCodeMethodAttributeEncodedWriter(logger, output,
-                    ByteCodeInstructionEncodedWriter(logger, output),
+                    ByteCodeInstructionEncodedWriter(logger, output, 0),
                     ByteCodeClassAnnotationEncodedWriter(logger, output),
                     ByteCodeCodeAttributeAttributeEncodedWriter.create(logger, output))
         }

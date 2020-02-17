@@ -37,5 +37,5 @@ class EncodedInstructions(private val codeLength: Long,
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = codeLength.toInt()
+    override fun getSize(pos: Int): Int = codeLength.toInt()
 }

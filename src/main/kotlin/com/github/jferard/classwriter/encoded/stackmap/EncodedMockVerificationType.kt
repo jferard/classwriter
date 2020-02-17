@@ -33,7 +33,7 @@ class EncodedMockVerificationType(private val isLong: Boolean) :
         TODO("Not yet implemented")
     }
 
-    override val size: Int = if (isLong) {
+    override fun getSize(pos: Int): Int = if (isLong) {
         2 * com.github.jferard.classwriter.bytecode.BytecodeHelper.BYTE_SIZE
     } else {
         com.github.jferard.classwriter.bytecode.BytecodeHelper.BYTE_SIZE

@@ -34,7 +34,6 @@ class EncodedLookupSwitchInstruction(private val defaultOffset: Int,
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = -1000000
+    override fun getSize(pos: Int): Int = -1000000
 
 }

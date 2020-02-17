@@ -85,8 +85,8 @@ internal class ClassFileBuilderTest {
                         0x00, 0x00,  // methods_count
                         0x00, 0x00 // attributes_count
                 )
-        FileOutputStream("HelloWorld.class").use { fout ->
-            val out: DataOutput = DataOutputStream(fout)
+        FileOutputStream("HelloWorld.class").use {
+            val out: DataOutputStream = DataOutputStream(it)
         }
     }
 
@@ -203,7 +203,7 @@ internal class ClassFileBuilderTest {
                 )
         /*
         try (FileOutputStream fout = new FileOutputStream("HelloWorld.class")) {
-            DataOutput out = new DataOutputStream(fout);
+            ClassOutput out = new DataOutputStream(fout);
             helloWorld.write(out);
         }
         TestHelper.assertWritableEquals(expectedBytecode, helloWorld);
@@ -228,8 +228,11 @@ internal class ClassFileBuilderTest {
                             "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeClassEncodedWriter.class",
                             "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeCodeAttributeAttributeEncodedWriter\$Companion.class",
                             "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeMethodEncodedWriter\$Companion.class",
-                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeClassFileAttributeEncodedWriter.class"
-
+                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeClassFileAttributeEncodedWriter.class",
+                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeInstructionEncodedWriter.class",
+                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeMethodAttributeEncodedWriter\$Companion.class",
+                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeStackMapFrameEncodedWriter.class",
+                            "target/classes/com/github/jferard/classwriter/bytecode/writer/ByteCodeVerificationTypeEncodedWriter.class"
                     )) {
                 return
             }

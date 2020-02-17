@@ -44,7 +44,7 @@ class FieldRef(override val classRef: PlainClassRef, override val name: String,
     }
 
     val size: Int
-        get() = type.size
+        get() = type.getSize(0)
 
     companion object {
         @kotlin.jvm.JvmStatic

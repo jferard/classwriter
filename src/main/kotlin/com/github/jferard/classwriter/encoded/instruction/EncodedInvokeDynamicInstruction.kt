@@ -34,7 +34,6 @@ class EncodedInvokeDynamicInstruction(private val index: Int) : EncodedInstructi
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
 
 }

@@ -42,7 +42,7 @@ class EncodedSourceDebugExtensionAttribute(private val attributeNameIndex: Int,
         encodedWriter.sourceDebugExtension(attributeNameIndex, debugExtension)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + debugExtension.size
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {

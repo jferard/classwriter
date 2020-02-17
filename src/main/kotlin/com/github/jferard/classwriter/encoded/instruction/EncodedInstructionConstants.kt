@@ -148,22 +148,17 @@ internal object EncodedInstructionConstants {
                     VerificationType.LONG)
 
     // push const
-    val ACONST_NULL_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.ACONST_NULL, VerificationType.NULL)
-    val DCONST_0_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.DCONST_0, VerificationType.DOUBLE)
-    val DCONST_1_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.DCONST_1, VerificationType.DOUBLE)
-    val FCONST_0_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.FCONST_0, VerificationType.FLOAT)
-    val FCONST_1_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.FCONST_1, VerificationType.FLOAT)
-    val FCONST_2_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.FCONST_2, VerificationType.FLOAT)
-    val LCONST_0_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.LCONST_0, VerificationType.LONG)
-    val LCONST_1_INSTRUCTION: EncodedInstruction = ConstInstruction(
-            OpCodes.LCONST_1, VerificationType.LONG)
+    val ACONST_NULL_INSTRUCTION: EncodedInstruction = EncodedAConstNullInstruction()
+    val DCONST_N_INSTRUCTIONS = arrayOf(
+            EncodedDConstNInstruction(OpCodes.DCONST_0),
+            EncodedDConstNInstruction(OpCodes.DCONST_1))
+    val FCONST_N_INSTRUCTIONS = arrayOf(
+            EncodedFConstNInstruction(OpCodes.FCONST_0),
+            EncodedFConstNInstruction(OpCodes.FCONST_1),
+            EncodedFConstNInstruction(OpCodes.FCONST_2))
+    val LCONST_N_INSTRUCTIONS = arrayOf(
+            EncodedLConstNInstruction(OpCodes.LCONST_0),
+            EncodedLConstNInstruction(OpCodes.LCONST_1))
 
     // conversion
     val D2F_INSTRUCTION: EncodedInstruction = EncodedConvertInstruction(OpCodes.D2F)
@@ -196,7 +191,7 @@ internal object EncodedInstructionConstants {
     val DUP_X2_INSTRUCTION: EncodedInstruction = DupX2Instruction()
     val DUP2_INSTRUCTION: EncodedInstruction = Dup2Instruction()
     val DUP2_X1_INSTRUCTION: EncodedInstruction = Dup2X1Instruction()
-    val DUP2_X2_INSTRUCTION: EncodedInstruction = Dup2X2Instruction()
+    val DUP2_X2_INSTRUCTION: EncodedInstruction = EncodedDup2X2Instruction()
 
     // return
     val ARETURN_INSTRUCTION: EncodedInstruction = ReturnInstruction(OpCodes.ARETURN)
@@ -219,83 +214,56 @@ internal object EncodedInstructionConstants {
             EncodedPopInstruction()
     val POP2_INSTRUCTION: EncodedInstruction =
             NoArgInstruction.pop(OpCodes.POP2, -2)
-    val SWAP_INSTRUCTION: EncodedInstruction =
-            NoArgInstruction.noLocalsNoSTack(OpCodes.SWAP)
+    val SWAP_INSTRUCTION: EncodedInstruction = EncodedSwapInstruction()
     val ARRAYLENGTH_INSTRUCTION: EncodedInstruction = EncodedArrayLengthInstruction()
     val ATHROW_INSTRUCTION: EncodedInstruction = EncodedAThrowInstruction()
     val ICONST_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf(
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_0),
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_1),
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_2),
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_3),
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_4),
-            EncodedIConstNInstruction(
-                    OpCodes.ICONST_5))
+            EncodedIConstNInstruction(OpCodes.ICONST_0),
+            EncodedIConstNInstruction(OpCodes.ICONST_1),
+            EncodedIConstNInstruction(OpCodes.ICONST_2),
+            EncodedIConstNInstruction(OpCodes.ICONST_3),
+            EncodedIConstNInstruction(OpCodes.ICONST_4),
+            EncodedIConstNInstruction(OpCodes.ICONST_5))
     val ALOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf(
-            EncodedALoadNInstruction(
-                    OpCodes.ALOAD_0),
-            EncodedALoadNInstruction(
-                    OpCodes.ALOAD_1),
-            EncodedALoadNInstruction(
-                    OpCodes.ALOAD_2),
-            EncodedALoadNInstruction(
-                    OpCodes.ALOAD_3))
+            EncodedALoadNInstruction(OpCodes.ALOAD_0),
+            EncodedALoadNInstruction(OpCodes.ALOAD_1),
+            EncodedALoadNInstruction(OpCodes.ALOAD_2),
+            EncodedALoadNInstruction(OpCodes.ALOAD_3))
     val DLOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
             NoArgInstruction.longLoadN(OpCodes.DLOAD_0, 0),
             NoArgInstruction.longLoadN(OpCodes.DLOAD_1, 1),
             NoArgInstruction.longLoadN(OpCodes.DLOAD_2, 2),
             NoArgInstruction.longLoadN(OpCodes.DLOAD_3, 3))
     val FLOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            NoArgInstruction.stdLoadN(OpCodes.FLOAD_0, 0),
-            NoArgInstruction.stdLoadN(OpCodes.FLOAD_1, 1),
-            NoArgInstruction.stdLoadN(OpCodes.FLOAD_2, 2),
-            NoArgInstruction.stdLoadN(OpCodes.FLOAD_3, 3))
+            EncodedFLoadNInstruction(OpCodes.FLOAD_0),
+            EncodedFLoadNInstruction(OpCodes.FLOAD_1),
+            EncodedFLoadNInstruction(OpCodes.FLOAD_2),
+            EncodedFLoadNInstruction(OpCodes.FLOAD_3))
     val ILOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            EncodedILoadNInstruction(
-                    OpCodes.ILOAD_0),
-            EncodedILoadNInstruction(
-                    OpCodes.ILOAD_1),
-            EncodedILoadNInstruction(
-                    OpCodes.ILOAD_2),
-            EncodedILoadNInstruction(
-                    OpCodes.ILOAD_3))
+            EncodedILoadNInstruction(OpCodes.ILOAD_0),
+            EncodedILoadNInstruction(OpCodes.ILOAD_1),
+            EncodedILoadNInstruction(OpCodes.ILOAD_2),
+            EncodedILoadNInstruction(OpCodes.ILOAD_3))
     val LLOAD_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
             EncodedLLoadNInstruction(OpCodes.LLOAD_0),
-            NoArgInstruction.longLoadN(OpCodes.LLOAD_1, 1),
-            NoArgInstruction.longLoadN(OpCodes.LLOAD_2, 2),
-            NoArgInstruction.longLoadN(OpCodes.LLOAD_3, 3))
+            EncodedLLoadNInstruction(OpCodes.LLOAD_1),
+            EncodedLLoadNInstruction(OpCodes.LLOAD_2),
+            EncodedLLoadNInstruction(OpCodes.LLOAD_3))
     val ASTORE_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            EncodedAStoreNInstruction(
-                    OpCodes.ASTORE_0),
-            EncodedAStoreNInstruction(
-                    OpCodes.ASTORE_1),
-            EncodedAStoreNInstruction(
-                    OpCodes.ASTORE_2),
-            EncodedAStoreNInstruction(
-                    OpCodes.ASTORE_3))
+            EncodedAStoreNInstruction(OpCodes.ASTORE_0),
+            EncodedAStoreNInstruction(OpCodes.ASTORE_1),
+            EncodedAStoreNInstruction(OpCodes.ASTORE_2),
+            EncodedAStoreNInstruction(OpCodes.ASTORE_3))
     val DSTORE_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            StoreNInstruction(OpCodes.DSTORE_0, 0,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.DSTORE_1, 1,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.DSTORE_2, 2,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.DSTORE_3, 3,
-                    VerificationType.INTEGER))
+            EncodedDStoreNInstruction(OpCodes.DSTORE_0),
+            EncodedDStoreNInstruction(OpCodes.DSTORE_1),
+            EncodedDStoreNInstruction(OpCodes.DSTORE_2),
+            EncodedDStoreNInstruction(OpCodes.DSTORE_3))
     val FSTORE_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
-            StoreNInstruction(OpCodes.FSTORE_0, 0,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.FSTORE_1, 1,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.FSTORE_2, 2,
-                    VerificationType.INTEGER),
-            StoreNInstruction(OpCodes.FSTORE_3, 3,
-                    VerificationType.INTEGER))
+            EncodedFStoreNInstruction(OpCodes.FSTORE_0),
+            EncodedFStoreNInstruction(OpCodes.FSTORE_1),
+            EncodedFStoreNInstruction(OpCodes.FSTORE_2),
+            EncodedFStoreNInstruction(OpCodes.FSTORE_3))
     val ISTORE_INSTRUCTIONS: Array<EncodedInstruction> = arrayOf<EncodedInstruction>(
             EncodedIStoreNInstruction(
                     OpCodes.ISTORE_0),

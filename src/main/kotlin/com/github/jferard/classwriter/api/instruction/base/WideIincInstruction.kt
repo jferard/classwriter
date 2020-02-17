@@ -62,7 +62,6 @@ class WideIincInstruction(private val index: Int, private val c: Int) : BaseInst
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 2 * BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
 
 }

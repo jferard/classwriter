@@ -45,8 +45,7 @@ class EncodedClassFile(private val header: Header,
 
     val entries: List<EncodedConstantPoolEntry> = pool.entries
 
-    override val size: Int
-        get() = 0
+    override fun getSize(pos: Int): Int = 0
 
     companion object {
         const val MAGIC_NUMBER = -0x35014542

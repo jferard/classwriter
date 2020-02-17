@@ -49,8 +49,8 @@ class EncodedUtf8Entry(private val text: String) : EncodedConstantPoolEntry {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
-                text.toByteArray(StandardCharsets.UTF_8).size
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
+            text.toByteArray(StandardCharsets.UTF_8).size
 
     override fun utf8Text(): String {
         return text

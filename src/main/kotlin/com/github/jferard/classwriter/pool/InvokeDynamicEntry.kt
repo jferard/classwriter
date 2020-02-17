@@ -39,7 +39,7 @@ class InvokeDynamicEntry(private val bootstrapMethod: BootstrapMethod, private v
         return pool.addEncodedToPool(encodedInvokeDynamicEntry)
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

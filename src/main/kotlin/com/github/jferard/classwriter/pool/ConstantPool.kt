@@ -61,7 +61,7 @@ class ConstantPool : Encodable<ConstantPool, ConstantPool, ConstantPoolEncodable
     /**
      * @return the size of the pool
      */
-    override val size: Int = Sized.listSize(indexByEntry.keys)
+    override fun getSize(pos: Int): Int = Sized.listSize(0, indexByEntry.keys)
 
     fun count(): Int = indexByEncoded.size
 

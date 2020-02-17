@@ -49,9 +49,8 @@ class EncodedFullFrame(private val offsetDelta: Int,
         TODO("not implemented")
     }
 
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE +
-                Sized.listSize(encodedLocals) + BytecodeHelper.SHORT_SIZE +
-                Sized.listSize(encodedStackItems)
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE +
+            Sized.listSize(0, encodedLocals) + BytecodeHelper.SHORT_SIZE +
+            Sized.listSize(0, encodedStackItems)
 
 }

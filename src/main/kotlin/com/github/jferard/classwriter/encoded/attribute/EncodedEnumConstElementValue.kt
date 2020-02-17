@@ -35,5 +35,5 @@ class EncodedEnumConstElementValue(private val typeNameIndex: Int,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + 2 * BytecodeHelper.SHORT_SIZE
 }

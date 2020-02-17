@@ -84,7 +84,7 @@ class MethodAttributeParser(private val logger: Logger,
         val encodedCode = instructionsParser.parse(input)
         val exceptionTableLength = input.readUnsignedShort()
         logger.finest(
-                "Parse code attribute: length=$length, exceptionTableLength=$exceptionTableLength")
+                "Parse code attribute: exceptionTableLength=$exceptionTableLength")
         val encodedExceptions: List<EncodedExceptionInCode> = (1..exceptionTableLength).map {
             parseEncodedExceptionInCode(input)
         }
@@ -94,8 +94,9 @@ class MethodAttributeParser(private val logger: Logger,
             codeAttributeAttributeParser.parse(input)
         }
         logger.finest(
-                "Parses code attribute: full len=$length, code size = ${encodedCode.size}, exc size:${Sized.listSize(
-                        encodedExceptions)}, attr size:${Sized.listSize(encodedAttributes)}")
+                "Parses code attribute: full len=$length, code size = ${encodedCode.getSize(0)}, exc size:${Sized.listSize(
+                        0,
+                        encodedExceptions)}, attr size:${Sized.listSize(0, encodedAttributes)}")
         return EncodedCodeAttribute(attributeNameIndex, maxStack, maxLocals,
                 encodedCode, encodedExceptions, encodedAttributes)
     }

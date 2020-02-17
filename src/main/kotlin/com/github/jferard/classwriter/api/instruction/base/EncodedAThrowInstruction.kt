@@ -20,11 +20,9 @@ package com.github.jferard.classwriter.api.instruction.base
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.api.instruction.Instruction
-import com.github.jferard.classwriter.pool.EncodableWriter
 
 /**
  * athrow: throws an error or exception (notice that the rest of the stack is cleared,
@@ -40,5 +38,5 @@ class EncodedAThrowInstruction : EncodedInstruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 }

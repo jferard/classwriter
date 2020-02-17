@@ -42,7 +42,7 @@ class EncodedSignatureAttribute(private val attributeNameIndex: Int,
         return encodedWriter.signatureAttribute(attributeNameIndex, signatureIndex)
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {

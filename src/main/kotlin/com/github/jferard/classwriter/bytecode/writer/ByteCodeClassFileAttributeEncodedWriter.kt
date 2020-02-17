@@ -26,18 +26,18 @@ import com.github.jferard.classwriter.encoded.attribute.EncodedClassFileAttribut
 import com.github.jferard.classwriter.encoded.attribute.EncodedInnerClass
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.ClassFileAttributeEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
 class ByteCodeClassFileAttributeEncodedWriter(private val logger: Logger,
-                                              private val output: DataOutput,
+                                              private val output: DataOutputStream,
                                               private val annotationWriter: AnnotationEncodedWriter) :
         ClassFileAttributeEncodedWriter {
 
 
     override fun innerClassesAttribute(attributeNameIndex: Int,
                                        encodedInnerClasses: List<EncodedInnerClass>) {
-        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedInnerClasses)
+        val length = BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedInnerClasses)
         output.writeShort(attributeNameIndex)
         output.writeInt(length)
         output.writeShort(encodedInnerClasses.size)
@@ -74,7 +74,7 @@ class ByteCodeClassFileAttributeEncodedWriter(private val logger: Logger,
                                       encodedAnnotations: List<EncodedAnnotation>) {
         logger.finer("Write class annotations: $encodedAnnotations")
         output.writeShort(annotationsNameIndex)
-        output.writeInt(BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedAnnotations))
+        output.writeInt(BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedAnnotations))
         output.writeShort(encodedAnnotations.size)
         encodedAnnotations.forEach { it.write(this.annotationWriter) }
     }
@@ -94,7 +94,7 @@ class ByteCodeClassFileAttributeEncodedWriter(private val logger: Logger,
     override fun parameterAnnotationsAttribute(attributeNameIndex: Int,
                                                parameterAnnotations: List<List<EncodedAnnotation>>) {
         val length = BytecodeHelper.BYTE_SIZE + parameterAnnotations.map {
-            BytecodeHelper.SHORT_SIZE + Sized.listSize(it)
+            BytecodeHelper.SHORT_SIZE + Sized.listSize(0, it)
         }.sum()
         output.writeShort(attributeNameIndex)
         output.writeInt(length)

@@ -45,8 +45,7 @@ class EncodedSameLocals1StackItemFrame(private val frameType: Int,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() {
-            return BytecodeHelper.BYTE_SIZE + this.encodedFirstStackItemVerificationType.size
-        }
+    override fun getSize(pos: Int): Int {
+        return BytecodeHelper.BYTE_SIZE + this.encodedFirstStackItemVerificationType.getSize(0)
+    }
 }

@@ -36,7 +36,7 @@ class EncodedExceptionInCode(private val startPc: Int, private val endPc: Int,
         return encodedWriter.exceptionInCode(startPc, endPc, handlerPc, catchTypeIndex)
     }
 
-    override val size: Int = 4 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 4 * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): ExceptionInCode {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

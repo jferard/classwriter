@@ -35,6 +35,5 @@ class EncodedBlockInstruction(
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = Sized.listSize(encodedInstructions)
-
+    override fun getSize(pos: Int): Int = Sized.listSize(0, encodedInstructions)
 }

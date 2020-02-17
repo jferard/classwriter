@@ -18,27 +18,33 @@
  */
 package com.github.jferard.classwriter.encoded.instruction
 
+import com.github.jferard.classwriter.OpCodes
+import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import com.github.jferard.classwriter.api.instruction.Instruction
-import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
+import java.lang.IllegalArgumentException
 
 
 /** ```
  * ldc
  * index
  * ``` *   */
-class EncodedLdcInstruction(private val index: Int, private val stackSize: Int) :
+class EncodedLdcInstruction(private val opcode: Int, private val index: Int) :
         EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.ldcInstruction(index, stackSize)
+        return encodedWriter.ldcInstruction(opcode, index)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size = (1 + stackSize) * BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = when (opcode) {
+        OpCodes.LDC -> 2 * BytecodeHelper.BYTE_SIZE
+        OpCodes.LDC_W, OpCodes.LDC2_W -> 3 * BytecodeHelper.BYTE_SIZE
+        else -> throw IllegalArgumentException("LDC: $opcode")
+    }
 
 }

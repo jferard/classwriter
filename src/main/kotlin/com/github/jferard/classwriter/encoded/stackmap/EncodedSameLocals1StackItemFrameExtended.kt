@@ -48,11 +48,10 @@ class EncodedSameLocals1StackItemFrameExtended(private val offsetDelta: Int,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() {
-            return (BytecodeHelper.BYTE_SIZE +
-                    BytecodeHelper.SHORT_SIZE +
-                    encodedFirstStackItemVerificationType.size)
-        }
+    override fun getSize(pos: Int): Int {
+        return (BytecodeHelper.BYTE_SIZE +
+                BytecodeHelper.SHORT_SIZE +
+                encodedFirstStackItemVerificationType.getSize(0))
+    }
 
 }

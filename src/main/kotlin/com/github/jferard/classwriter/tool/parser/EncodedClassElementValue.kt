@@ -34,8 +34,7 @@ class EncodedClassElementValue(classIndex: Int) : EncodedElementValue {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = TODO(
-                "not implemented") //To change initializer of created properties use File | Settings | File Templates.
+    override fun getSize(pos: Int): Int = TODO(
+            "not implemented") //To change initializer of created properties use File | Settings | File Templates.
 
 }

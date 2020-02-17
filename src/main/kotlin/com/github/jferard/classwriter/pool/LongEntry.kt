@@ -31,7 +31,7 @@ class LongEntry(private val value: Long) : ConstantPoolEntry {
         return pool.addEncodedToPool(EncodedLongEntry(this.value))
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

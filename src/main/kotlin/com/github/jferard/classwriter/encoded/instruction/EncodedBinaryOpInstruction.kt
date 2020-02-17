@@ -75,5 +75,5 @@ class EncodedBinaryOpInstruction(private val opcode: Int) : EncodedInstruction {
         }
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 }

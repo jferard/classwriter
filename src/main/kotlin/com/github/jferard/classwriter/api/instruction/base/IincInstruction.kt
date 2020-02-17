@@ -57,7 +57,6 @@ class IincInstruction(private val index: Int, private val c: Int) : BaseInstruct
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 3 * BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = 3 * BytecodeHelper.BYTE_SIZE
 
 }

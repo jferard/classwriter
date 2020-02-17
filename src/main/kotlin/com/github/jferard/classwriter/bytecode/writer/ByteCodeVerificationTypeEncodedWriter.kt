@@ -20,9 +20,9 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeConstants
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 
-class ByteCodeVerificationTypeEncodedWriter(private val output: DataOutput) :
+class ByteCodeVerificationTypeEncodedWriter(private val output: DataOutputStream) :
         VerificationTypeEncodedWriter {
     override fun byteVerificationType(code: Int) {
         output.writeByte(code)

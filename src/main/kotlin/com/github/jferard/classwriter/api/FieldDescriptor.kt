@@ -29,7 +29,7 @@ import com.github.jferard.classwriter.pool.Utf8Entry
 class FieldDescriptor(private val fieldType: ValueType) :
         Descriptor {
     val size: Int
-        get() = fieldType.size
+        get() = fieldType.getSize(0)
 
     override fun toString(): String {
         return fieldType.toString()

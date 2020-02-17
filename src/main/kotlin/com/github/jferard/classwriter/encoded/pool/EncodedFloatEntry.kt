@@ -20,12 +20,9 @@ package com.github.jferard.classwriter.encoded.pool
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
-import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.pool.ConstantPoolEntry
-import com.github.jferard.classwriter.writer.encodable.ClassEncodableWriter
 
 class EncodedFloatEntry(private val value: Float) : EncodedConstantPoolEntry {
     override fun equals(other: Any?): Boolean {
@@ -47,7 +44,7 @@ class EncodedFloatEntry(private val value: Float) : EncodedConstantPoolEntry {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.FLOAT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.FLOAT_SIZE
 
     override fun utf8Text(): String {
         throw IllegalArgumentException()

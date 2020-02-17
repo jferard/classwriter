@@ -50,7 +50,7 @@ class MethodDescriptor(val retType: ValueType?,
      * information can also be derived from the descriptor of the selected method. The redundancy
      * is historical.
      */
-    val argsSize: Int = Sized.listSize(argTypes)
+    val argsSize: Int = Sized.listSize(0, argTypes)
 
     val argsCount: Int = argTypes.size
 

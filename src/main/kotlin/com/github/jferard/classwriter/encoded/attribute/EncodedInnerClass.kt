@@ -45,8 +45,7 @@ class EncodedInnerClass(private val innerClassIndex: Int, private val outerClass
                 innerAccessFlags)
     }
 
-    override val size: Int
-        get() = 4 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 4 * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): InnerClass {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

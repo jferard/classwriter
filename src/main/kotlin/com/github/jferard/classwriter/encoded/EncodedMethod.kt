@@ -46,7 +46,8 @@ class EncodedMethod(private val accessFlags: Int, private val nameIndex: Int,
         return encodedWriter.method(accessFlags, nameIndex, descriptorIndex, attributes)
     }
 
-    override val size: Int = 4 * BytecodeHelper.SHORT_SIZE + Sized.listSize(attributes)
+    override fun getSize(pos: Int): Int = 4 * BytecodeHelper.SHORT_SIZE + Sized.listSize(0,
+            attributes)
 
     override fun toString(): String {
         return String.format("Method [access=%s, name=%s, descriptor=%s, attributes=%s]",

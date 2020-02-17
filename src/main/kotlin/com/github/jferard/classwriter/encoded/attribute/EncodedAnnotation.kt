@@ -45,8 +45,8 @@ class EncodedAnnotation(private val typeIndex: Int,
         return encodedWriter.annotation(typeIndex, encodedElementValuePairs)
     }
 
-    override val size: Int =
-            2 * BytecodeHelper.SHORT_SIZE + Sized.listSize(encodedElementValuePairs)
+    override fun getSize(pos: Int): Int =
+            2 * BytecodeHelper.SHORT_SIZE + Sized.listSize(0, encodedElementValuePairs)
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Annotation {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

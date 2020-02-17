@@ -46,10 +46,9 @@ class EncodedBootstrapMethodsAttribute(private val nameIndex: Int,
         encodedWriter.bootstrapMethodsAttribute(nameIndex, encodedBootstrapMethods)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + length
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + length
 
-    private val length: Int = Sized.listSize(encodedBootstrapMethods)
+    private val length: Int = Sized.listSize(0, encodedBootstrapMethods)
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         return encodedBootstrapMethods

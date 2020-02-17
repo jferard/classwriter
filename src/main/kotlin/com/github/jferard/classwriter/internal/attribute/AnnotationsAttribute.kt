@@ -42,7 +42,7 @@ class AnnotationsAttribute(private val annotationsName: String,
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedAnnotationsAttribute {
         val annotationsNameIndex: Int = context.addUtf8ToPool(annotationsName)
-        val length = Sized.listSize(annotations)
+        val length = Sized.listSize(0, annotations)
         return EncodedAnnotationsAttribute(annotationsNameIndex,
                 annotations.map { a: Annotation -> a.encode(context, codeContext) })
     }

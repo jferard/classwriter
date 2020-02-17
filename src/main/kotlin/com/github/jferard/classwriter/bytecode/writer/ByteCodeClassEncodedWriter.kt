@@ -22,11 +22,11 @@ import com.github.jferard.classwriter.api.Header
 import com.github.jferard.classwriter.encoded.*
 import com.github.jferard.classwriter.pool.ConstantPool
 import com.github.jferard.classwriter.writer.encoded.*
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
 class ByteCodeClassEncodedWriter(
-        private val output: DataOutput,
+        private val output: DataOutputStream,
         private val fieldWriter: FieldEncodedWriter,
         private val methodWriter: MethodEncodedWriter,
         private val classAttributeWriter: ClassFileAttributeEncodedWriter,
@@ -68,7 +68,7 @@ class ByteCodeClassEncodedWriter(
     }
 
     companion object {
-        fun create(logger: Logger, output: DataOutput): ByteCodeClassEncodedWriter {
+        fun create(logger: Logger, output: DataOutputStream): ByteCodeClassEncodedWriter {
             return ByteCodeClassEncodedWriter(
                     output,
                     ByteCodeFieldEncodedWriter.create(output),

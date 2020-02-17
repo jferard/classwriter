@@ -19,9 +19,7 @@
 package com.github.jferard.classwriter.encoded.stackmap
 
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.encoded.stackmap.EncodedVerificationType
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodableWriter
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTypeEncodedWriter
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
@@ -49,6 +47,6 @@ class EncodedByteVerificationType(private val code: Int) :
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
 }

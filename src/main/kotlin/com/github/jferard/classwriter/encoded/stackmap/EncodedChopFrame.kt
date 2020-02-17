@@ -41,7 +41,6 @@ class EncodedChopFrame(private val frameType: Int, private val offsetDelta: Int)
         TODO("not implemented")
     }
 
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE
 
 }

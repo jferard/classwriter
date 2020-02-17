@@ -33,7 +33,6 @@ class EncodedIfElseInstruction(private val opcode: Int, private val encodedIf: E
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = 0
+    override fun getSize(pos: Int): Int = 0
 
 }

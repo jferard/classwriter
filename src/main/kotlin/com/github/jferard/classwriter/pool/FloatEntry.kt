@@ -31,7 +31,7 @@ class FloatEntry(private val value: Float) : ConstantPoolEntry {
         return constantPool.addEncodedToPool(EncodedFloatEntry(this.value))
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

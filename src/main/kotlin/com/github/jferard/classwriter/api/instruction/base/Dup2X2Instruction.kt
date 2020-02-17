@@ -24,6 +24,7 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.api.instruction.Instruction
+import com.github.jferard.classwriter.encoded.instruction.EncodedInstructionConstants
 import com.github.jferard.classwriter.pool.EncodableWriter
 
 /**
@@ -31,7 +32,7 @@ import com.github.jferard.classwriter.pool.EncodableWriter
  * Stack: ({value4, value3}, {value2, value1}) -> ({value2, value1}, {value4, value3},
  * {value2, value1}).
  */
-class Dup2X2Instruction : BaseInstruction, EncodedInstruction {
+class Dup2X2Instruction : BaseInstruction {
     override fun preprocess(context: GlobalContext,
                             codeContext: MethodContext) {
         codeContext.offsetDelta(1)
@@ -53,17 +54,6 @@ class Dup2X2Instruction : BaseInstruction, EncodedInstruction {
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedInstruction {
-        return this
+        return EncodedInstructionConstants.DUP2_X2_INSTRUCTION
     }
-
-    override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.dup2X2Instruction()
-    }
-
-    override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
-        throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE
 }

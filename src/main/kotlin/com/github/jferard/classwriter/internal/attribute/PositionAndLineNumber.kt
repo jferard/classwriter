@@ -49,8 +49,7 @@ class PositionAndLineNumber(private val startPc: Int, private val lineNumber: In
         return encodedWriter.positionAndLineNumber(startPc, lineNumber)
     }
 
-    override val size: Int
-        get() = 2 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): PositionAndLineNumber {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

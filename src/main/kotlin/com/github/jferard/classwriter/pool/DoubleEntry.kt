@@ -41,7 +41,7 @@ class DoubleEntry(private val value: Double) : ConstantPoolEntry {
         return constantPool.addEncodedToPool(EncodedDoubleEntry(this.value))
     }
 
-    override val size: Int = 2 // TODO: check this
+    override fun getSize(pos: Int): Int = 2 // TODO: check this
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

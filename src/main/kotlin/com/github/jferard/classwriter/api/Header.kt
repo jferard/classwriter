@@ -36,8 +36,7 @@ class Header(private val minorVersion: Int, private val majorVersion: Int) :
         encodableWriter.header(minorVersion, majorVersion)
     }
 
-    override val size: Int
-        get() = 2 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.SHORT_SIZE
 
     override fun toString(): String {
         return String.format("Header %s-%s", minorVersion, majorVersion)

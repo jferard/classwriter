@@ -17,25 +17,28 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.github.jferard.classwriter.encoded.instruction
-import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.internal.context.MethodContext
+
 import com.github.jferard.classwriter.api.instruction.Instruction
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
+import com.github.jferard.classwriter.bytecode.BytecodeHelper
+import com.github.jferard.classwriter.internal.context.GlobalContext
+import com.github.jferard.classwriter.internal.context.MethodContext
 
 
 class EncodedTableSwitchInstruction(private val defaultOffset: Int, private val low: Int,
                                     private val high: Int,
-                                    private val jump_offsets: IntArray) :
+                                    private val jumpOffsets: List<Int>) :
         EncodedInstruction {
     override fun write(encodedWriter: InstructionEncodedWriter) {
-        return encodedWriter.tableSwitchInstruction(defaultOffset, low, high, jump_offsets)
+        return encodedWriter.tableSwitchInstruction(defaultOffset, low, high, jumpOffsets)
     }
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): Instruction {
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = -1000000
-
+    // 0 -> pad: 3, 1 -> pad: 2, 2 -> pad: 1, 3 -> pad: 0
+    override fun getSize(pos: Int): Int {
+        return (4 - (pos % 4)) * BytecodeHelper.BYTE_SIZE + (3 + jumpOffsets.size) * BytecodeHelper.INT_SIZE
+    }
 }

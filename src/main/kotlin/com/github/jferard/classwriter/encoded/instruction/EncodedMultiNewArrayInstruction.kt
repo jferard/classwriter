@@ -41,7 +41,7 @@ class EncodedMultiNewArrayInstruction(private val index: Int, private val dimens
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int
-        get() = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE + BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int =
+            BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE + BytecodeHelper.BYTE_SIZE
 
 }

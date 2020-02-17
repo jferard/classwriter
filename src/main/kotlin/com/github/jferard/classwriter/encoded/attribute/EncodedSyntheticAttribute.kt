@@ -42,7 +42,7 @@ class EncodedSyntheticAttribute(private val attributeNameIndex: Int) :
         return encodedWriter.syntheticAttribute(attributeNameIndex)
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

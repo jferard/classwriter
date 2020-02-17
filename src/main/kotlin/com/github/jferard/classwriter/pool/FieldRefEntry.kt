@@ -37,7 +37,7 @@ class FieldRefEntry(private val fieldOrMethodRef: FieldOrMethodRef) : ConstantPo
         return constantPool.addEncodedToPool(fieldOrMethodRefInfo)
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun encode(context: GlobalContext,
                         codeContext: MethodContext): EncodedFieldRefEntry {

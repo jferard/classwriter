@@ -20,7 +20,6 @@ package com.github.jferard.classwriter.text.writer
 
 import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
-import com.github.jferard.classwriter.bytecode.BytecodeHelper
 import com.github.jferard.classwriter.encoded.instruction.EncodedInstruction
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
@@ -53,6 +52,18 @@ class TextInstructionEncodedWriter(private val output: Writer,
         output.write("OpCodes.ICONST_${opcode - OpCodes.ICONST_0},\n")
     }
 
+    override fun dConstNInstruction(opcode: Int) {
+        output.write("OpCodes.DCONST_${opcode - OpCodes.DCONST_0},\n")
+    }
+
+    override fun fConstNInstruction(opcode: Int) {
+        output.write("OpCodes.FCONST_${opcode - OpCodes.FCONST_0},\n")
+    }
+
+    override fun lConstNInstruction(opcode: Int) {
+        output.write("OpCodes.LCONST_${opcode - OpCodes.LCONST_0},\n")
+    }
+
     override fun invokeVirtualInstruction(methodIndex: Int) {
         output.write("OpCodes.INVOKEVIRTUAL, ")
         TextEncodedWriterHelper.writeShortEntryIndex(output, "method", methodIndex, entries,
@@ -67,6 +78,14 @@ class TextInstructionEncodedWriter(private val output: Writer,
 
     override fun aStoreNInstruction(opcode: Int) {
         output.write("OpCodes.ASTORE_${opcode - OpCodes.ASTORE_0},\n")
+    }
+
+    override fun dStoreNInstruction(opcode: Int) {
+        output.write("OpCodes.DSTORE_${opcode - OpCodes.DSTORE_0},\n")
+    }
+
+    override fun fStoreNInstruction(opcode: Int) {
+        output.write("OpCodes.FSTORE_${opcode - OpCodes.FSTORE_0},\n")
     }
 
     override fun gotoWInstruction(branch: Int) {
@@ -98,6 +117,10 @@ class TextInstructionEncodedWriter(private val output: Writer,
         output.write("OpCodes.LLOAD, ")
         TextEncodedWriterHelper.writeByteEntryIndex(output, "integer", referenceIndex, entries,
                 summaryEncodedWriter)
+    }
+
+    override fun fLoadNInstruction(opcode: Int) {
+        output.write("OpCodes.FLOAD_${opcode - OpCodes.FLOAD_0},\n")
     }
 
     override fun iLoadNInstruction(opcode: Int) {
@@ -132,7 +155,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
         encodedInstructions.forEach {
             output.write("/* $i */ ")
             it.write(this)
-            i += it.size
+            i += it.getSize(0)
         }
     }
 
@@ -163,24 +186,16 @@ class TextInstructionEncodedWriter(private val output: Writer,
         TODO("not implemented")
     }
 
-    override fun ldcInstruction(index: Int, stackSize: Int) {
-        when {
-            stackSize == 2 -> {
-                output.write("OpCodes.LDC2_W, ")
-                TextEncodedWriterHelper.writeShortEntryIndex(output, "item", index, entries,
-                        summaryEncodedWriter)
-            }
-            index <= BytecodeHelper.BYTE_MAX -> {
-                output.write("OpCodes.LDC, ")
-                TextEncodedWriterHelper.writeByteEntryIndex(output, "item", index, entries,
-                        summaryEncodedWriter)
-            }
-            else -> {
-                output.write("OpCodes.LDC_W, ")
-                TextEncodedWriterHelper.writeShortEntryIndex(output, "item", index, entries,
-                        summaryEncodedWriter)
-            }
+    override fun ldcInstruction(opcode: Int, index: Int) {
+        val name = when(opcode) {
+            OpCodes.LDC -> "LDC"
+            OpCodes.LDC_W -> "LDC_W"
+            OpCodes.LDC2_W -> "LDC2_W"
+            else -> throw IllegalArgumentException("LDC: $opcode")
         }
+        output.write("OpCodes.$name, ")
+        TextEncodedWriterHelper.writeShortEntryIndex(output, "item", index, entries,
+                summaryEncodedWriter)
     }
 
     override fun invokeStaticInstruction(methodIndex: Int) {
@@ -325,6 +340,18 @@ class TextInstructionEncodedWriter(private val output: Writer,
         TextEncodedWriterHelper.writeU2(output, "value", value)
     }
 
+    override fun methodBlockInstruction(encodedInstructions: List<EncodedInstruction>) {
+        this.code(encodedInstructions)
+    }
+
+    override fun swapInstruction() {
+        output.write("OpCodes.SWAP, \n")
+    }
+
+    override fun aConstNullInstruction() {
+        output.write("OpCodes.ACONST_NULL, \n")
+    }
+
     override fun instanceOfInstruction(typeIndex: Int) {
         output.write("OpCodes.INSTANCE_OF, ")
         TextEncodedWriterHelper.writeShortEntryIndex(output, "branch", typeIndex, entries,
@@ -342,8 +369,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
 
     override fun aStoreInstruction(referenceIndex: Int) {
         output.write("OpCodes.ASTORE, ")
-        TextEncodedWriterHelper.writeByteEntryIndex(output, "reference", referenceIndex, entries,
-                summaryEncodedWriter)
+        TextEncodedWriterHelper.writeU1(output, "local index", referenceIndex)
     }
 
     override fun storeInstruction(opcode: Int, index: Int) {
@@ -351,7 +377,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
     }
 
     override fun convertInstruction(opcode: Int) {
-        val name = when(opcode) {
+        val name = when (opcode) {
             OpCodes.D2F -> "OpCodes.D2F"
             OpCodes.D2I -> "OpCodes.D2I"
             OpCodes.D2L -> "OpCodes.D2L"
@@ -393,7 +419,7 @@ class TextInstructionEncodedWriter(private val output: Writer,
     }
 
     override fun dup2X2Instruction() {
-        TODO("not implemented")
+        output.write("OpCodes.DUP2_X2, \n")
     }
 
     override fun indexedInstruction(opcode: Int, index: Int) {
@@ -437,12 +463,18 @@ class TextInstructionEncodedWriter(private val output: Writer,
     }
 
     override fun tableSwitchInstruction(defaultOffset: Int, low: Int, high: Int,
-                                        jump_offsets: IntArray) {
-        TODO("not implemented")
+                                        jumpOffsets: List<Int>) {
+        output.write("OpCodes.TABLESWITCH, \n")
+        TextEncodedWriterHelper.writeU4(output, "Default Offset", defaultOffset)
+        TextEncodedWriterHelper.writeU4(output, "Low", low)
+        TextEncodedWriterHelper.writeU4(output, "High", high)
+        jumpOffsets.forEach { TextEncodedWriterHelper.writeU4(output, "Offset", it) }
     }
 
     override fun iincInstruction(index: Int, const: Int) {
-        TODO("not implemented")
+        output.write("Opcodes.IINC, ")
+        TextEncodedWriterHelper.writeU1(output, "local index", index)
+        TextEncodedWriterHelper.writeU1(output, "value", const)
     }
 
     override fun loadInstruction(opcode: Int, index: Int) {

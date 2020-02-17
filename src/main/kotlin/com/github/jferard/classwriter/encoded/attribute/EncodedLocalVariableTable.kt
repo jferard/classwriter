@@ -36,7 +36,7 @@ class EncodedLocalVariableTable(private val startPc: Int, private val length: In
                         index)
     }
 
-    override val size: Int = 5 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 5 * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): LocalVariableTable {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

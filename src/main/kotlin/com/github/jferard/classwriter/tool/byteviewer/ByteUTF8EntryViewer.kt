@@ -22,7 +22,6 @@ import com.github.jferard.classwriter.Writable
 import com.github.jferard.classwriter.text.writer.TextEncodedWriterHelper
 import com.github.jferard.classwriter.tool.viewer.ConstantPoolEncodedEntryViewer
 import java.io.ByteArrayOutputStream
-import java.io.DataOutput
 import java.io.DataOutputStream
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -55,7 +54,7 @@ internal class ByteUTF8EntryViewer(private val text: String) :
 
     companion object {
         @Throws(IOException::class)
-        private fun getBytes(writable: Writable<DataOutput>): ByteArray {
+        private fun getBytes(writable: Writable<DataOutputStream>): ByteArray {
             val out = ByteArrayOutputStream()
             writable.write(DataOutputStream(out))
             return out.toByteArray()

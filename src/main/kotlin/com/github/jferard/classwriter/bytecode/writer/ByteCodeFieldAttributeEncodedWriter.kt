@@ -21,9 +21,9 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.encoded.attribute.EncodedAnnotation
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 
-class ByteCodeFieldAttributeEncodedWriter(private val output: DataOutput) :
+class ByteCodeFieldAttributeEncodedWriter(private val output: DataOutputStream) :
         FieldAttributeEncodedWriter {
     override fun constantValueAttribute(attributeNameIndex: Int,
                                         valueIndex: Int) {

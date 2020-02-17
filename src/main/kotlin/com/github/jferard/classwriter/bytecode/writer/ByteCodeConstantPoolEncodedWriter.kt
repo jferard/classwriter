@@ -21,9 +21,9 @@ package com.github.jferard.classwriter.bytecode.writer
 import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.encoded.pool.EncodedConstantPoolEntry
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 
-class ByteCodeConstantPoolEncodedWriter(private val output: DataOutput,
+class ByteCodeConstantPoolEncodedWriter(private val output: DataOutputStream,
                                         private val entryEncodedWriter: ByteCodeConstantPoolEntriesEncodedWriter) :
         ConstantPoolEncodedWriter {
     override fun constantPool(
@@ -34,7 +34,7 @@ class ByteCodeConstantPoolEncodedWriter(private val output: DataOutput,
     }
 
     companion object {
-        fun create(output: DataOutput): ConstantPoolEncodedWriter {
+        fun create(output: DataOutputStream): ConstantPoolEncodedWriter {
             return ByteCodeConstantPoolEncodedWriter(
                     output,
                     ByteCodeConstantPoolEntriesEncodedWriter(

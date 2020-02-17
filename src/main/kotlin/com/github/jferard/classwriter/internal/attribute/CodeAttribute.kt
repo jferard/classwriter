@@ -52,7 +52,7 @@ class CodeAttribute(
         val encodedAttributes: List<EncodedCodeAttributeAttribute<*, *, CodeAttributeAttributeEncodedWriter>> =
                 attributes.map { it.encode(context, MethodContext.create(0)) }
         val attributesLength =
-                Sized.listSize(encodedAttributes)
+                Sized.listSize(0, encodedAttributes)
         return EncodedCodeAttribute(attributeNameIndex, codeContext.maxStack,
                 codeContext.maxLocals, encodedCode, encodedExceptionsInCode,
                 encodedAttributes)

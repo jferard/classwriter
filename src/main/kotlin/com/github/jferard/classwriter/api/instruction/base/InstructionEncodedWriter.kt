@@ -26,9 +26,40 @@ import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationTy
  * Writable instructions factory.
  */
 interface InstructionEncodedWriter : EncodedWriter {
-    /** Load reference from local variable */
+    // LOAD
+    fun aLoadInstruction(referenceIndex: Int)
     fun aLoadNInstruction(opcode: Int)
+    fun loadInstruction(opcode: Int, index: Int)
+    fun iLoadInstruction(referenceIndex: Int)
+    fun iLoadNInstruction(opcode: Int)
+    fun lLoadInstruction(referenceIndex: Int)
+    fun lLoadNInstruction(opcode: Int)
+    fun xaLoadInstruction(opcode: Int)
+    fun fLoadNInstruction(opcode: Int)
+    fun wideLoadInstruction(opcode: Int, index: Int)
+
+    // STORE
     fun aStoreInstruction(referenceIndex: Int)
+    fun storeInstruction(opcode: Int, index: Int)
+    fun storeNInstruction(opcode: Int, localIndex: Int,
+                          verificationType: VerificationType)
+    fun aStoreNInstruction(opcode: Int)
+    fun iStoreInstruction(index: Int)
+    fun iStoreNInstruction(opcode: Int)
+    fun wideStoreInstruction(opcode: Int, index: Int)
+    fun xaStoreInstruction(opcode: Int)
+    fun fStoreNInstruction(opcode: Int)
+    fun dStoreNInstruction(opcode: Int)
+
+    // CONST
+    fun constInstruction(opcode: Int)
+    fun iConstNInstruction(opcode: Int)
+    fun dConstNInstruction(opcode: Int)
+    fun fConstNInstruction(opcode: Int)
+    fun aConstNullInstruction()
+    fun lConstNInstruction(opcode: Int)
+
+    // OTHER
     fun gotoWInstruction(branch: Int)
     fun returnInstruction(opcode: Int)
     fun blockInstruction(
@@ -36,17 +67,13 @@ interface InstructionEncodedWriter : EncodedWriter {
 
     fun mock()
     fun code(encodedInstructions: List<EncodedInstruction>)
-    fun storeNInstruction(opcode: Int, localIndex: Int,
-                          verificationType: VerificationType)
 
     fun multiNewArrayInstruction(index: Int, dimensions: Int)
     fun retInstruction(index: Int)
     fun wideIincInstruction(index: Int, c: Int)
-    fun ldcInstruction(index: Int, stackSize: Int)
+    fun ldcInstruction(opcode: Int, index: Int)
     fun biPushInstruction(b: Int)
-    fun constInstruction(opcode: Int)
     fun gotoInstruction(branch: Int)
-    fun storeInstruction(opcode: Int, index: Int)
     fun convertInstruction(opcode: Int)
     fun dup2Instruction()
     fun dupX2Instruction()
@@ -65,14 +92,11 @@ interface InstructionEncodedWriter : EncodedWriter {
 
     fun newArrayInstruction(atype: Byte)
     fun tableSwitchInstruction(defaultOffset: Int, low: Int, high: Int,
-                               jump_offsets: IntArray)
+                               jumpOffsets: List<Int>)
 
     fun iincInstruction(index: Int, const: Int)
-    fun loadInstruction(opcode: Int, index: Int)
     fun unaryInstuction(opcode: Int)
-    fun wideLoadInstruction(opcode: Int, index: Int)
     fun wideRetInstruction(index: Int)
-    fun wideStoreInstruction(opcode: Int, index: Int)
     fun aThrowInstruction()
     fun newInstruction(classIndex: Int)
     fun invokeSpecialInstruction(classIndex: Int)
@@ -80,28 +104,19 @@ interface InstructionEncodedWriter : EncodedWriter {
     fun getStaticInstruction(fieldIndex: Int)
     fun invokeVirtualInstruction(methodIndex: Int)
     fun invokeStaticInstruction(methodIndex: Int)
-    fun aLoadInstruction(referenceIndex: Int)
     fun putFieldInstruction(fieldIndex: Int)
     fun checkCastInstruction(referenceIndex: Int)
     fun getFieldInstruction(fieldIndex: Int)
-    fun aStoreNInstruction(opcode: Int)
-    fun iStoreInstruction(index: Int)
-    fun iStoreNInstruction(opcode: Int)
     fun ifNonNullInstruction(branch: Int)
-    fun iConstNInstruction(opcode: Int)
     fun ifInstruction(opcode: Int, branch: Int)
     fun popInstruction()
-    fun iLoadInstruction(referenceIndex: Int)
-    fun iLoadNInstruction(opcode: Int)
-    fun lLoadInstruction(referenceIndex: Int)
-    fun lLoadNInstruction(opcode: Int)
     fun nopInstruction()
-    fun xaLoadInstruction(opcode: Int)
-    fun xaStoreInstruction(opcode: Int)
     fun binaryOp(opcode: Int)
     fun ifACmpInstruction(opcode: Int, branch: Int)
     fun instanceOfInstruction(typeIndex: Int)
     fun ifICmpInstruction(opcode: Int, branch: Int)
     fun arrayLength()
     fun siPush(value: Int)
+    fun methodBlockInstruction(encodedInstructions: List<EncodedInstruction>)
+    fun swapInstruction()
 }

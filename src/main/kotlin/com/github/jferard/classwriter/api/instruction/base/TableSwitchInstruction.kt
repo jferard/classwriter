@@ -46,7 +46,7 @@ class TableSwitchInstruction(private val paddingHelper: PaddingHelper,
         val defaultOffset = 0
         val low = low
         val high = 0
-        val jumpOffsets = intArrayOf()
+        val jumpOffsets = listOf<Int>()
         return EncodedTableSwitchInstruction(
                 defaultOffset, low, high, jumpOffsets)
     }

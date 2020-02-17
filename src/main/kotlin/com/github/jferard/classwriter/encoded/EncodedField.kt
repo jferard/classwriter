@@ -51,8 +51,8 @@ class EncodedField(private val accessFlags: Int, private val nameIndex: Int,
                 .field(accessFlags, nameIndex, descriptorIndex, encodedAttributes)
     }
 
-    override val size: Int = 4 * BytecodeHelper.SHORT_SIZE +
-                Sized.listSize(encodedAttributes)
+    override fun getSize(pos: Int): Int = 4 * BytecodeHelper.SHORT_SIZE +
+            Sized.listSize(0, encodedAttributes)
 
     override fun toString(): String {
         return "Field[access=$accessFlags, name index=$nameIndex, descriptor index=$descriptorIndex, attributes=$encodedAttributes]"

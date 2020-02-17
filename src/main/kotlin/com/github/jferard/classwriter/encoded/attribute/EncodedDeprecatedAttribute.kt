@@ -40,7 +40,7 @@ class EncodedDeprecatedAttribute(private val attributeNameIndex: Int) :
         return encodedWriter.deprecatedAttribute(attributeNameIndex)
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         return null

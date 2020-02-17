@@ -44,7 +44,7 @@ class Annotation(private val descriptor: FieldDescriptor,
                 encodedElementValuePairs)
     }
 
-    override val size: Int = 1
+    override fun getSize(pos: Int): Int = 1
     override fun write(encodableWriter: AnnotationEncodableWriter) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

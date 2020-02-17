@@ -36,6 +36,6 @@ class EncodedArrayValue(private val values: List<EncodedElementValue>) : Encoded
         throw NotImplementedError() //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(values)
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE + Sized.listSize(0, values)
 
 }

@@ -33,9 +33,8 @@ class EncodedBootstrapMethod(private val methodRefIndex: Int,
         encodedWriter.bootstrapMethod(methodRefIndex, argumentIndexes)
     }
 
-    override val size: Int
-        get() = 2 * BytecodeHelper.SHORT_SIZE +
-                argumentIndexes.size * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.SHORT_SIZE +
+            argumentIndexes.size * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext, codeContext: MethodContext): BootstrapMethod {
         val methodHandle = context.encodedPool.entries[methodRefIndex-1].toObject() as MethodHandle

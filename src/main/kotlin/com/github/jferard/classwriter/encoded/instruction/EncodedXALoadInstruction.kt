@@ -23,9 +23,7 @@ import com.github.jferard.classwriter.OpCodes
 import com.github.jferard.classwriter.api.instruction.Instruction
 import com.github.jferard.classwriter.api.instruction.InstructionConstants
 import com.github.jferard.classwriter.api.instruction.base.InstructionEncodedWriter
-import com.github.jferard.classwriter.api.instruction.base.XALoadInstruction
 import com.github.jferard.classwriter.bytecode.BytecodeHelper
-import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
 import java.lang.IllegalArgumentException
@@ -49,6 +47,6 @@ class EncodedXALoadInstruction(val opcode: Int) : EncodedInstruction {
         }
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
 }

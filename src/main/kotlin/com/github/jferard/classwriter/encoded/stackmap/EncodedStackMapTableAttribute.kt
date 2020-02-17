@@ -51,7 +51,7 @@ class EncodedStackMapTableAttribute(private val attributeNameIndex: Int,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int =
+    override fun getSize(pos: Int): Int =
             BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE +
-                    Sized.listSize(encodedStackMapFrames)
+                    Sized.listSize(0, encodedStackMapFrames)
 }

@@ -34,8 +34,8 @@ class EncodedClassFileAttributes(
                 encodedAttributes as List<EncodedClassFileAttribute<*, *, ClassFileAttributeEncodedWriter>>)
     }
 
-    override val size: Int = BytecodeHelper.SHORT_SIZE +
-            Sized.listSize(encodedAttributes)
+    override fun getSize(pos: Int): Int = BytecodeHelper.SHORT_SIZE +
+            Sized.listSize(0, encodedAttributes)
 
     override fun toString(): String {
         return String.format("Attributes %s", encodedAttributes)

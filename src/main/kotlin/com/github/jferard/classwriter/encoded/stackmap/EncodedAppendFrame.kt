@@ -46,7 +46,7 @@ class EncodedAppendFrame(private val frameType: Int, private val offsetDelta: In
         TODO("not implemented")
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
-            Sized.listSize(encodedNewTypes)
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE + BytecodeHelper.SHORT_SIZE +
+            Sized.listSize(0, encodedNewTypes)
 
 }

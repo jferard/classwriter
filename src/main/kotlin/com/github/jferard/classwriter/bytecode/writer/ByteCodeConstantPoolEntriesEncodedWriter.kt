@@ -20,9 +20,9 @@ package com.github.jferard.classwriter.bytecode.writer
 
 import com.github.jferard.classwriter.writer.encoded.ConstantPoolEntriesEncodedWriter
 import com.github.jferard.classwriter.pool.ConstantTags
-import java.io.DataOutput
+import java.io.DataOutputStream
 
-class ByteCodeConstantPoolEntriesEncodedWriter(private val output: DataOutput) :
+class ByteCodeConstantPoolEntriesEncodedWriter(private val output: DataOutputStream) :
         ConstantPoolEntriesEncodedWriter {
     override fun classEntry(nameIndex: Int) {
         output.writeByte(ConstantTags.CLASS.toInt())

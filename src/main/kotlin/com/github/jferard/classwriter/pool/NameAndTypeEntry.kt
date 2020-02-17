@@ -39,7 +39,7 @@ class NameAndTypeEntry(private val name: String,
         return pool.addEncodedToPool(EncodedNameAndTypeEntry(nameIndex, descriptorIndex))
     }
 
-    override val size: Int = BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = BytecodeHelper.BYTE_SIZE
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true

@@ -37,8 +37,7 @@ class EncodedLocalVariableTypeTable(private val startPc: Int, private val length
                         index)
     }
 
-    override val size: Int
-        get() = 5 * BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int = 5 * BytecodeHelper.SHORT_SIZE
 
     override fun decode(context: GlobalContext,
                         codeContext: MethodContext): LocalVariableTypeTable {

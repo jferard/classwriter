@@ -24,7 +24,6 @@ import com.github.jferard.classwriter.encoded.EncodedBootstrapMethod
 import com.github.jferard.classwriter.internal.attribute.SourceFileAttribute
 import com.github.jferard.classwriter.internal.context.GlobalContext
 import com.github.jferard.classwriter.internal.context.MethodContext
-import java.util.*
 
 /**
  * 4.7.10. The SourceFile Attribute (ClassFile structure)
@@ -43,8 +42,8 @@ class EncodedSourceFileAttribute(private val attributeNameIndex: Int,
         return encodedWriter.sourceFileAttribute(attributeNameIndex, sourceFileNameIndex)
     }
 
-    override val size: Int
-        get() = BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE
+    override fun getSize(pos: Int): Int =
+            BytecodeHelper.SHORT_SIZE + BytecodeHelper.INT_SIZE + BytecodeHelper.SHORT_SIZE
 
     override fun oGetBootstrapMethods(): List<EncodedBootstrapMethod>? {
         TODO("not implemented")

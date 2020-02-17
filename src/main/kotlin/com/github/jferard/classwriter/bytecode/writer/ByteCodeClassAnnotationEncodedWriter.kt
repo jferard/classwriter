@@ -21,11 +21,11 @@ package com.github.jferard.classwriter.bytecode.writer
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValue
 import com.github.jferard.classwriter.encoded.attribute.EncodedElementValuePair
 import com.github.jferard.classwriter.writer.encoded.AnnotationEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 import java.util.logging.Logger
 
 class ByteCodeClassAnnotationEncodedWriter(private val logger: Logger,
-                                           private val output: DataOutput) :
+                                           private val output: DataOutputStream) :
         AnnotationEncodedWriter {
     /**
      * ```

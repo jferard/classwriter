@@ -41,6 +41,6 @@ class EncodedLLoadInstruction(private val referenceIndex: Int) :
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override val size: Int = 2 * BytecodeHelper.BYTE_SIZE
+    override fun getSize(pos: Int): Int = 2 * BytecodeHelper.BYTE_SIZE
 
 }

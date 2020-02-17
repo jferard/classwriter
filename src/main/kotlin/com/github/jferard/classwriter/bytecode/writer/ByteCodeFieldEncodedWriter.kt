@@ -23,10 +23,10 @@ import com.github.jferard.classwriter.encoded.EncodedField
 import com.github.jferard.classwriter.encoded.attribute.EncodedFieldAttribute
 import com.github.jferard.classwriter.writer.encoded.FieldAttributeEncodedWriter
 import com.github.jferard.classwriter.writer.encoded.FieldEncodedWriter
-import java.io.DataOutput
+import java.io.DataOutputStream
 
 class ByteCodeFieldEncodedWriter(
-        private val output: DataOutput,
+        private val output: DataOutputStream,
         private val attributeEncodedWriter: FieldAttributeEncodedWriter) :
         FieldEncodedWriter {
     override fun field(accessFlags: Int, nameIndex: Int, descriptorIndex: Int,
@@ -45,7 +45,7 @@ class ByteCodeFieldEncodedWriter(
     }
 
     companion object {
-        fun create(output: DataOutput): ByteCodeFieldEncodedWriter {
+        fun create(output: DataOutputStream): ByteCodeFieldEncodedWriter {
             return ByteCodeFieldEncodedWriter(output, ByteCodeFieldAttributeEncodedWriter(
                     output))
         }
