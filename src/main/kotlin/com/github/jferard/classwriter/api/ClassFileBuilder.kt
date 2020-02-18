@@ -161,8 +161,9 @@ class ClassFileBuilder(thisClassRef: PlainClassRef) {
         return this
     }
 
-    fun method(builder: MethodBuilder) {
+    fun method(builder: MethodBuilder): ClassFileBuilder {
         methodBuilders.add(builder)
+        return this
     }
 
     fun encode(): EncodedClassFile {

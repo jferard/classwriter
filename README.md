@@ -98,7 +98,6 @@ Algorithm:
 ### Second step
 * check every entry of `offsetByLabel`.
 * if a label `l` has an offset `o >= 2**16` (= `MAX_SHORT + 1`), for every offset `o'` in `offsetsByGoto(l)` add 2 to offsets that are > `o'` in every map (including `offsetsByGoto`).  
-
 * do the same for `offsetBySubroutine`
 
 # Examples
@@ -186,24 +185,28 @@ Gives:
 ## ClassWriter
 Here's a basic example:
 
-    val classBuilder =
-            builder("HelloWorld")
-                    .access(ClassAccess.ACC_PUBLIC)
-    val mainCode =
-            RawCodeBuilder.instance()
-                    .getstatic(FieldRef.create("java.lang.System", "out", PrintStream::class.java))
-                    .ldc(StringEntry("Hello, World!"))
-                    .invokevirtual(MethodRef(
-                            PlainClassRef("java.io.PrintStream"), "println",
-                            builder().params(get(String::class.java))
-                                    .build()))
-                    .return_().build()
-    val descriptor =
-            MethodDescriptor.builder().params(ValueType.array(ValueType.STRING)).build()
-    val method = MethodBuilder("main",
-            descriptor, mainCode)
-            .access(MethodAccess.builder().publicFlag().staticFlag().finalFlag()
-                    .build())
-    classBuilder.method(method)
-    classBuilder.build().encode(GlobalContext.create(), MethodContext.create(0)).write(ByteCodeClassEncodedWriter.create(
-            Logger.getAnonymousLogger(), DataOutputStream(FileOutputStream("HelloWorld.class"))))
+        val sysOut = FieldRef.create(java.lang.System::class.java, "out")
+        val psPrintln = MethodRef.create(java.io.PrintStream::class.java,
+                "println", String::class.java)
+        val mainCode = RawCodeBuilder.instance()
+                .getstatic(sysOut)
+                .ldc(StringEntry("Hello, World!"))
+                .invokevirtual(psPrintln)
+                .return_().build()
+        val mainDescriptor =
+                MethodDescriptor.builder().params(ValueType.array(ValueType.STRING)).build()
+        val mainAccFlags = MethodAccess.builder().publicFlag().staticFlag().finalFlag()
+                .build()
+        val mainMethod = MethodBuilder("main", mainDescriptor, mainCode).access(mainAccFlags)
+        val encodedClassFile = ClassFile.builder("HelloWorld")
+                .access(ClassAccess.ACC_PUBLIC)
+                .method(mainMethod)
+                .encode()
+        encodedClassFile.write(ByteCodeClassEncodedWriter.create(
+                Logger.getAnonymousLogger(),
+                DataOutputStream(FileOutputStream("HelloWorld.class"))))
+
+Output:
+
+    jferard@jferard-Z170XP-SLI:~/prog/java/classwriter$ java HelloWorld 
+    Hello, World!

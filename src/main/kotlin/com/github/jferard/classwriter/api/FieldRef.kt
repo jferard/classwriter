@@ -22,6 +22,7 @@ import com.github.jferard.classwriter.pool.ConstantPoolEntry
 import com.github.jferard.classwriter.pool.FieldRefEntry
 import com.github.jferard.classwriter.tool.FieldTypeHelper
 import java.io.PrintStream
+import kotlin.reflect.KClass
 
 /**
  * 4.4.2. The CONSTANT_Fieldref_info, CONSTANT_Methodref_info, and
@@ -51,6 +52,12 @@ class FieldRef(override val classRef: PlainClassRef, override val name: String,
         fun create(className: String, fieldName: String,
                    fieldClass: Class<PrintStream>): FieldRef {
             return FieldRef(PlainClassRef(className), fieldName, FieldTypeHelper.get(fieldClass))
+        }
+
+        fun create(jclass: Class<*>, fieldName: String): FieldRef {
+            val field = jclass.getDeclaredField(fieldName)
+            return FieldRef(PlainClassRef(jclass.canonicalName), fieldName,
+                    FieldTypeHelper.get(field.type))
         }
     }
 

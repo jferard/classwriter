@@ -26,7 +26,7 @@ import com.github.jferard.classwriter.api.ValueType
 object FieldTypeHelper {
     @kotlin.jvm.JvmStatic
     operator fun get(clazz: Class<*>): ValueType {
-        val fieldType: ValueType = if (clazz!!.isArray) {
+        val fieldType: ValueType = if (clazz.isArray) {
             ReferenceValueType(ArrayClassRef(clazz.name.replace('.', '/')))
         } else if (clazz.isPrimitive) {
             if (clazz == Boolean::class.javaPrimitiveType) {

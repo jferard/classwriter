@@ -19,47 +19,40 @@
 package com.github.jferard.classwriter
 
 import com.github.jferard.classwriter.api.*
-import com.github.jferard.classwriter.api.ClassFile.Companion.builder
-import com.github.jferard.classwriter.api.MethodDescriptor.Companion.builder
 import com.github.jferard.classwriter.api.instruction.RawCodeBuilder
 import com.github.jferard.classwriter.bytecode.writer.ByteCodeClassEncodedWriter
 import com.github.jferard.classwriter.internal.access.ClassAccess
 import com.github.jferard.classwriter.internal.access.MethodAccess
-import com.github.jferard.classwriter.internal.context.GlobalContext
-import com.github.jferard.classwriter.internal.context.MethodContext
 import com.github.jferard.classwriter.pool.StringEntry
-import com.github.jferard.classwriter.tool.FieldTypeHelper.get
 import org.junit.jupiter.api.Test
 import java.io.DataOutputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.io.PrintStream
 import java.util.logging.Logger
 
 internal class CompilerIT {
     @Test
     @Throws(IOException::class)
     fun testHelloWorld() {
-        val classBuilder =
-                builder("HelloWorld")
-                        .access(ClassAccess.ACC_PUBLIC)
-        val mainCode =
-                RawCodeBuilder.instance()
-                        .getstatic(FieldRef.create("java.lang.System", "out", PrintStream::class.java))
-                        .ldc(StringEntry("Hello, World!"))
-                        .invokevirtual(MethodRef(
-                                PlainClassRef("java.io.PrintStream"), "println",
-                                builder().params(get(String::class.java))
-                                        .build()))
-                        .return_().build()
-        val descriptor =
+        val sysOut = FieldRef.create(java.lang.System::class.java, "out")
+        val psPrintln = MethodRef.create(java.io.PrintStream::class.java,
+                "println", String::class.java)
+        val mainCode = RawCodeBuilder.instance()
+                .getstatic(sysOut)
+                .ldc(StringEntry("Hello, World!"))
+                .invokevirtual(psPrintln)
+                .return_().build()
+        val mainDescriptor =
                 MethodDescriptor.builder().params(ValueType.array(ValueType.STRING)).build()
-        val method = MethodBuilder("main",
-                descriptor, mainCode)
-                .access(MethodAccess.builder().publicFlag().staticFlag().finalFlag()
-                        .build())
-        classBuilder.method(method)
-        classBuilder.build().encode(GlobalContext.create(), MethodContext.create(0)).write(ByteCodeClassEncodedWriter.create(
-                Logger.getAnonymousLogger(), DataOutputStream(FileOutputStream("HelloWorld.class"))))
+        val mainAccFlags = MethodAccess.builder().publicFlag().staticFlag().finalFlag()
+                .build()
+        val mainMethod = MethodBuilder("main", mainDescriptor, mainCode).access(mainAccFlags)
+        val encodedClassFile = ClassFile.builder("HelloWorld")
+                .access(ClassAccess.ACC_PUBLIC)
+                .method(mainMethod)
+                .encode()
+        encodedClassFile.write(ByteCodeClassEncodedWriter.create(
+                Logger.getAnonymousLogger(),
+                DataOutputStream(FileOutputStream("HelloWorld.class"))))
     }
 }

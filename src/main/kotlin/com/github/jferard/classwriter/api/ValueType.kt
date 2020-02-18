@@ -28,7 +28,7 @@ interface ValueType : Sized {
     val verificationType: VerificationType
 
     companion object {
-        fun fromClassRef(classRef: PlainClassRef): ReferenceValueType {
+        fun fromClassRef(classRef: ClassRef): ReferenceValueType {
             return classRef.toValueType()
         }
 

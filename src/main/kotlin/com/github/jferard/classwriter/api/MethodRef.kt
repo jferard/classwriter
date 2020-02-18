@@ -21,6 +21,7 @@ package com.github.jferard.classwriter.api
 import com.github.jferard.classwriter.internal.attribute.stackmap.VerificationType
 import com.github.jferard.classwriter.pool.ConstantPoolEntry
 import com.github.jferard.classwriter.pool.MethodRefEntry
+import com.github.jferard.classwriter.tool.FieldTypeHelper
 
 class MethodRef(override val classRef: PlainClassRef, override val name: String,
                 private val descriptor: MethodDescriptor) :
@@ -46,4 +47,19 @@ class MethodRef(override val classRef: PlainClassRef, override val name: String,
     val classVerificationType: VerificationType
         get() = classRef.toValueType().verificationType
 
+    companion object {
+        fun create(jclass: Class<*>, methodName: String, vararg parameterTypes: Class<*>): MethodRef {
+            val method = jclass.getMethod(methodName, *parameterTypes)
+            val retClass = method.returnType
+            val retType = if (retClass == Void.TYPE) {
+                null
+            } else {
+                FieldTypeHelper.get(retClass)
+            }
+            val argTypes = method.parameterTypes.map { FieldTypeHelper.get(it) }
+            return MethodRef(
+                    PlainClassRef(jclass.canonicalName), methodName,
+                    MethodDescriptor(retType, argTypes))
+        }
+    }
 }
