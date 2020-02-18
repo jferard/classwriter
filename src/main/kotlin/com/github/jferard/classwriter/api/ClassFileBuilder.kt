@@ -35,7 +35,7 @@ import java.util.*
  */
 class ClassFileBuilder(thisClassRef: PlainClassRef) {
     private lateinit var packageName: String
-    private val thisClassRef: PlainClassRef
+    private var thisClassRef: PlainClassRef
     private val superClassRef: PlainClassRef
     private val minorVersion = 0
     private val majorVersion = 52
@@ -152,6 +152,7 @@ class ClassFileBuilder(thisClassRef: PlainClassRef) {
 
     fun packageName(packageName: String): ClassFileBuilder {
         this.packageName = packageName
+        this.thisClassRef = PlainClassRef("$packageName.${this.thisClassRef.javaName}")
         return this
     }
 

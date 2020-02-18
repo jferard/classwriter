@@ -39,8 +39,7 @@ class PlainClassRef(val javaName: String) : ClassRef {
         return other.javaName == javaName
     }
 
-    override val internalValueTypeName: String
-        get() = "L$internalName;"
+    override val internalValueTypeName: String = "L$internalName;"
 
     override val internalName: String
         get() = javaName.replace('.', '/')

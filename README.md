@@ -184,30 +184,26 @@ Gives:
     SourceFile: "HelloWorld.java"
 
 ## ClassWriter
-(FIXME: Java code)
+Here's a basic example:
 
-      ClassWriter classWriter = ClassWriter.builder("HelloWorld").package("com.github.jferard.classwriter")
-        .access(Access.PUBLIC)
-        .init(
-          MethodWriter.builder("<init>")
-            .access(Access.PUBLIC)
-            .code(
-              CodeWriter.builder()
-                .aload_0()
-                .invokespecial(new MethodRef("java.lang.Object", "<init>":()V)
-                .return().build()
-            )
-         )
-        .method(
-          MethodWriter.builder("main")
-            .access(Access.builder().public().static().final().build())
-            .params("args", "String[]")
-            .code(
-              CodeWriter.builder()
-                .getstatic(new FieldRef("java.lang.Sytem", "out"))
-                .ldc("Hello, World!")
-                .invokevirtual(new MethodRef("java/io/PrintStream", "println:(Ljava/lang/String;)V")
-                .return().build()
-            )
-          ).build()).build();
-      classWriter.write(".");
+    val classBuilder =
+            builder("HelloWorld")
+                    .access(ClassAccess.ACC_PUBLIC)
+    val mainCode =
+            RawCodeBuilder.instance()
+                    .getstatic(FieldRef.create("java.lang.System", "out", PrintStream::class.java))
+                    .ldc(StringEntry("Hello, World!"))
+                    .invokevirtual(MethodRef(
+                            PlainClassRef("java.io.PrintStream"), "println",
+                            builder().params(get(String::class.java))
+                                    .build()))
+                    .return_().build()
+    val descriptor =
+            MethodDescriptor.builder().params(ValueType.array(ValueType.STRING)).build()
+    val method = MethodBuilder("main",
+            descriptor, mainCode)
+            .access(MethodAccess.builder().publicFlag().staticFlag().finalFlag()
+                    .build())
+    classBuilder.method(method)
+    classBuilder.build().encode(GlobalContext.create(), MethodContext.create(0)).write(ByteCodeClassEncodedWriter.create(
+            Logger.getAnonymousLogger(), DataOutputStream(FileOutputStream("HelloWorld.class"))))

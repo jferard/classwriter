@@ -33,7 +33,7 @@ interface ValueType : Sized {
         }
 
         fun array(valueType: ValueType): ReferenceValueType {
-            return ReferenceValueType(PlainClassRef("[${valueType}"))
+            return ReferenceValueType(ArrayClassRef(valueType.toString()))
         }
 
         val BOOLEAN: PrimitiveValueType = PrimitiveValueType.integer("Z")
